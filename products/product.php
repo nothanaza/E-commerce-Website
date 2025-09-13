@@ -67,11 +67,20 @@ if ($id) {
         </p>
 
         <!-- Add to Cart -->
-        <?php if ($product['in_stock']): ?>
-          <button class="btn">Add to Cart</button>
-        <?php else: ?>
-          <button class="btn disabled" disabled>Out of Stock</button>
-        <?php endif; ?>
+        <!-- Add to Cart Form -->
+<?php if ($product['in_stock']): ?>
+  <form method="POST" action="cart.php">
+    <input type="hidden" name="id" value="<?= $product['id'] ?>">
+    <input type="hidden" name="name" value="<?= htmlspecialchars($product['name']) ?>">
+    <input type="hidden" name="price" value="<?= $product['price'] ?>">
+    <input type="hidden" name="image" value="<?= $product['image'] ?>">
+    <input type="hidden" name="quantity" value="1">
+    <button type="submit" class="btn">Add to Cart</button>
+  </form>
+<?php else: ?>
+  <button class="btn disabled" disabled>Out of Stock</button>
+<?php endif; ?>
+
 
         <!-- Description -->
         <div class="description">
