@@ -1,0 +1,323 @@
+<?php
+ require 'data.php'; 
+?>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gaming Hardware Store</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <h1>Gaming Hardware Store</h1>
+    <p>Discover premium gaming equipment from top brands</p>
+    <div class="search-wrap">
+      <!-- search icon -->
+      <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
+        <path d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15z"
+              stroke="#9aa0a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <input id="search" class="search-input" placeholder="Search products..." />
+    </div>
+  </div>
+</section>
+
+<!-- FILTERS -->
+<section class="filters">
+  <div class="container">
+    <div class="filters-inner">
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <!-- Category -->
+        <div class="pill-select">
+          <select id="f-category" class="pill">
+            <?php foreach($categories as $c): ?>
+              <option value="<?= htmlspecialchars($c['id']) ?>"><?= htmlspecialchars($c['name']) ?></option>
+            <?php endforeach; ?>
+          </select>
+          <!-- chevron -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 9l6 6 6-6" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <!-- Price -->
+        <div class="pill-select">
+          <select id="f-price" class="pill">
+            <option value="all">All Prices</option>
+            <option value="0-5000">Under R5,000</option>
+            <option value="5000-15000">R5,000 - R15,000</option>
+            <option value="15000-30000">R15,000 - R30,000</option>
+            <option value="30000+">Over R30,000</option>
+          </select>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 9l6 6 6-6" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <!-- Sort -->
+        <div class="pill-select">
+          <select id="f-sort" class="pill">
+            <option value="featured">Featured</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
+            <option value="name">Name A-Z</option>
+            <option value="rating">Highest Rated</option>
+          </select>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 9l6 6 6-6" stroke="#475569" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="right-tools">
+        <span id="count"><?= count($products) ?> products found</span>
+        <div class="view-toggle">
+          <button id="btn-grid" class="toggle-btn active" title="Grid view" aria-label="Grid view">
+            <!-- grid icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="3" width="7" height="7" rx="2"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="2"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="2"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="2"></rect>
+            </svg>
+          </button>
+          <button id="btn-list" class="toggle-btn" title="List view" aria-label="List view">
+            <!-- list icon -->
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="3" y="4" width="18" height="3" rx="1"></rect>
+              <rect x="3" y="10.5" width="18" height="3" rx="1"></rect>
+              <rect x="3" y="17" width="18" height="3" rx="1"></rect>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products">
+  <div class="container">
+    <div id="wrap" class="grid"></div>
+  </div>
+</section>
+
+<!-- CATEGORY SECTION -->
+<!-- SHOP BY CATEGORY SECTION -->
+<section class="categories" style="padding:50px 0">
+  <div class="container">
+    <h2 style="text-align:center;font-size:28px;font-weight:800;margin-bottom:10px">Shop by Category</h2>
+    <p style="text-align:center;color:var(--sub);margin-bottom:30px">Find exactly what you're looking for</p>
+
+    <!-- First row (5 cards) -->
+    <div class="category-grid">
+      <?php
+      $iconMap = [
+        "gaming-pcs"     => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
+        "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png
+",
+        "motherboards"   => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
+        "monitors"       => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
+        "peripherals"    => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
+        "audio"          => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
+      ];
+
+      // Render the first 5 categories
+      $firstFive = array_slice($categories, 1, 5);
+      foreach ($firstFive as $cat):
+        $count = count(array_filter($products, fn($p) => $p['category'] === $cat['id']));
+      ?>
+        <div class="category-box">
+          <div class="category-icon">
+            <img src="<?= $iconMap[$cat['id']] ?>" alt="<?= $cat['name'] ?>">
+          </div>
+          <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
+          <div class="category-count"><?= $count ?> items</div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+
+    <!-- Second row (1 card aligned left) -->
+    <div class="category-grid single-card-row">
+      <?php
+        $lastCat = end($categories); // Audio
+        $count = count(array_filter($products, fn($p) => $p['category'] === $lastCat['id']));
+      ?>
+      <div class="category-box">
+        <div class="category-icon">
+          <img src="<?= $iconMap[$lastCat['id']] ?>" alt="<?= $lastCat['name'] ?>">
+        </div>
+        <div class="category-name"><?= htmlspecialchars($lastCat['name']) ?></div>
+        <div class="category-count"><?= $count ?> items</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  /* ====== DATA from PHP ====== */
+  const PRODUCTS = <?php echo json_encode($products, JSON_UNESCAPED_SLASHES); ?>;
+
+  /* ====== Helpers ====== */
+  const fmtRand = v => "R" + Number(v).toLocaleString("en-ZA", {minimumFractionDigits:2, maximumFractionDigits:2});
+  const el = sel => document.querySelector(sel);
+  const wrap = el("#wrap");
+  const countEl = el("#count");
+  const searchEl = el("#search");
+  const fCat = el("#f-category");
+  const fPrice = el("#f-price");
+  const fSort = el("#f-sort");
+  const btnGrid = el("#btn-grid");
+  const btnList = el("#btn-list");
+  let view = "grid";
+
+  function starSvg(){
+    return `<svg width="18" height="18" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#d1d5db"/>
+    </svg>`;
+  }
+
+  function renderStars(stars){
+    const pct = Math.max(0, Math.min(5, stars)) / 5 * 100;
+    return `
+      <div class="stars">
+        <div class="star-bar">
+          <div class="empty" style="width:100%">${starSvg()+starSvg()+starSvg()+starSvg()+starSvg()}</div>
+          <div class="fill" style="width:${pct}%">${starSvg()+starSvg()+starSvg()+starSvg()+starSvg()}</div>
+        </div>
+      </div>`;
+  }
+
+  function cardHTML(p, isList=false){
+    const sale = p.old_price && p.price < p.old_price;
+    const cat = p.category;
+    const out = !p.in_stock;
+
+    const topBadge = out
+      ? `<div class="badge out">Out of Stock</div>`
+      : (p.discount ? `<div class="badge">${p.discount}</div>` : ``);
+
+    const rating = `
+      <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+        ${renderStars(p.stars)}
+        <span class="reviews">(${p.reviews})</span>
+      </div>`;
+
+    const price = `
+      <div class="price-wrap">
+        <div class="price">${fmtRand(p.price)}</div>
+        ${sale ? `<div class="old">${fmtRand(p.old_price)}</div>` : ``}
+      </div>`;
+
+    const btn = out
+      ? `<button class="btn disabled" disabled>
+           ${cartIcon()} Out of Stock
+         </button>`
+      : `<button class="btn" data-add="${p.id}">${cartIcon()} Add to Cart</button>`;
+
+    return `
+      <a href="product.php?id=${p.id}" class="card-link">
+      <div class="card ${isList ? 'list-row' : ''}" data-id="${p.id}" data-cat="${p.category}" data-price="${p.price}" data-stars="${p.stars}">
+        <div class="card-img">
+          ${topBadge}
+          <img src="${p.image}" alt="${p.name}">
+        </div>
+        <div class="card-body">
+          <h3 class="name">${p.name}</h3>
+          <div class="cat">${cat}</div>
+          ${rating}
+          ${price}
+          <div class="actions">${btn}</div>
+        </div>
+      </div>`;
+  }
+
+  function cartIcon(){
+    return `<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
+      <path d="M6 6h15l-1.5 9h-12L6 6z"></path><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle>
+    </svg>`;
+  }
+
+  /* ====== Filtering & Sorting ====== */
+  function passFilters(p){
+    // search
+    const q = (searchEl.value || '').trim().toLowerCase();
+    if (q){
+      const hay = `${p.name} ${p.category}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    // category
+    if (fCat.value !== 'all' && p.category !== fCat.value) return false;
+
+    // price
+    const price = Number(p.price);
+    switch (fPrice.value){
+      case '0-5000': if (!(price < 5000)) return false; break;
+      case '5000-15000': if (!(price >= 5000 && price < 15000)) return false; break;
+      case '15000-30000': if (!(price >= 15000 && price < 30000)) return false; break;
+      case '30000+': if (!(price >= 30000)) return false; break;
+    }
+    return true;
+  }
+
+  function sortProducts(arr){
+    const v = fSort.value;
+    if (v === 'featured') return arr; // keep original order
+    const a2 = [...arr];
+    switch (v){
+      case 'price-low': a2.sort((a,b)=>a.price-b.price); break;
+      case 'price-high': a2.sort((a,b)=>b.price-a.price); break;
+      case 'name': a2.sort((a,b)=>a.name.localeCompare(b.name)); break;
+      case 'rating': a2.sort((a,b)=>b.stars-a.stars || b.reviews-a.reviews); break;
+    }
+    return a2;
+  }
+
+  function render(){
+    const filtered = PRODUCTS.filter(passFilters);
+    const sorted = sortProducts(filtered);
+    countEl.textContent = `${sorted.length} products found`;
+    wrap.className = (view === 'grid' ? 'grid' : 'list');
+
+    wrap.innerHTML = sorted.map(p => cardHTML(p, view==='list')).join('');
+
+    // wire "Add to Cart"
+    wrap.querySelectorAll('[data-add]').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        const id = e.currentTarget.getAttribute('data-add');
+        const item = PRODUCTS.find(x=>x.id===id);
+        if (!item || !item.in_stock) return;
+        // demo action
+        alert(`${item.name} added to cart ✅`);
+      });
+    });
+  }
+
+  /* ====== Events ====== */
+  [searchEl, fCat, fPrice, fSort].forEach(input=>{
+    input.addEventListener('input', render);
+    input.addEventListener('change', render);
+  });
+
+  btnGrid.addEventListener('click',()=>{
+    view='grid';
+    btnGrid.classList.add('active');
+    btnList.classList.remove('active');
+    render();
+  });
+  btnList.addEventListener('click',()=>{
+    view='list';
+    btnList.classList.add('active');
+    btnGrid.classList.remove('active');
+    render();
+  });
+
+  // initial
+  render();
+</script>
+</body>
+</html>
+
