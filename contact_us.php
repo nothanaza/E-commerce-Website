@@ -35,7 +35,7 @@
             line-height: 1.6;
         }
         
-        /* ===== LAYOUT ===== */
+    
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -64,7 +64,7 @@
             }
         }
         
-        /* ===== TYPOGRAPHY ===== */
+
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -90,7 +90,7 @@
             color: #333;
         }
         
-        /* ===== BUTTONS ===== */
+        
         .btn {
             padding: 12px 24px;
             border-radius: 5px;
@@ -162,7 +162,7 @@
             color: white;
         }
         
-        /* ===== CARDS ===== */
+    
         .card {
             background: white;
             padding: 2rem;
@@ -217,7 +217,7 @@
         .email i { color: #e56b08ff; }
         .hours i { color: #9561e2; }
         
-        /* ===== FORM ELEMENTS ===== */
+        
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -245,7 +245,7 @@
             text-align: center;
         }
         
-        /* ===== SPECIAL SECTIONS ===== */
+    
         .hero {
             background: linear-gradient(to right, var(--black), #222);
             color: white;
@@ -277,7 +277,7 @@
             padding: 2rem;
         }
         
-        /* ===== NEWSLETTER SECTION ===== */
+        
         .newsletter {
             background: var(--black);
             color: white;
@@ -289,7 +289,7 @@
             background-color: var(--navy);
             border-radius: 10px;
             padding: 40px;
-            max-width: 800px;
+            max-width: 1080px;
             margin: 0 auto;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
@@ -342,7 +342,7 @@
             background: #cc5a06;
         }
         
-        /* ===== SOCIAL LINKS ===== */
+    
         .social-links, .footer-social {
             list-style: none;
             padding: 0;
@@ -386,7 +386,7 @@
             border-radius: 3px;
         }
         
-        /* ===== FOOTER ===== */
+    
         footer {
             background: var(--black);
             color: white;
@@ -475,7 +475,7 @@
             font-weight: bold;
         }
         
-        /* ===== CONTACT INFO ===== */
+        
         .contact-info {
             margin-top: 1rem;
         }
