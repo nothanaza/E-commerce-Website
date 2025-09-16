@@ -520,24 +520,227 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             background: #f2f2f2;
         }
 
+        /* Footer Styles */
         footer {
-            background: #111;
-            color: #bbb;
-            padding: 40px 20px;
-            text-align: center;
-            margin-top: 60px;
+            background: #000;
+            color: #ccc;
+            padding: 60px 0 20px;
+            text-align: left;
         }
 
-        footer a {
-            color: #ff6600;
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .tg-logo {
+            width: 50px;
+            height: 50px;
+            background: #e56b08;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .brand-text h3 {
+            margin: 0;
+            line-height: 1.2;
+            color: #fff;
+        }
+
+        .footer-column h3 {
+            color: #fff;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-column ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-column a {
+            color: #ccc;
             text-decoration: none;
-            margin: 0 8px;
-            transition: color 0.3s;
         }
 
-        footer a:hover {
+        .footer-column a:hover {
+            color: #fff;
             text-decoration: underline;
-            color: #e65c00;
+        }
+
+        .contact-info {
+            margin-top: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+        }
+
+        .contact-icon {
+            margin-right: 10px;
+            margin-top: 3px;
+            color: #e56b08;
+            min-width: 20px;
+        }
+
+        .contact-details {
+            color: #ccc;
+            line-height: 1.4;
+        }
+
+        .footer-social {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-social li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-social a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #ccc;
+        }
+
+        .footer-social a:hover {
+            opacity: 0.8;
+        }
+
+        .footer-social i {
+            font-size: 1.4rem;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-instagram i { color: #E1306C; }
+        .footer-tiktok i { color: #000; background-color: #fff; border-radius: 3px; }
+        .footer-website i { color: #3498db; }
+
+        .support-links {
+            margin-top: 1.5rem;
+        }
+
+        .support-links a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .support-links a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .gaming-excellence {
+            color: #e56b08;
+            font-weight: bold;
+        }
+
+        /* Newsletter Section */
+        .newsletter {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .newsletter-box {
+            background-color: #2c3e50;
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 1080px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .newsletter h2 {
+            margin-bottom: 1rem;
+        }
+
+        .newsletter p {
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #ccc;
+        }
+
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+            background-color: #2c3e50;
+            color: #fff;
+        }
+
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .newsletter-btn {
+            background: #e56b08;
+            color: #fff;
+            border: none;
+            padding: 0 25px;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            background: #cc5a06;
         }
 
         /* Responsive Design */
@@ -577,6 +780,9 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             .hero-text h1 {
                 font-size: 32px;
             }
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -591,8 +797,8 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             <button data-page="contact">Contact</button>
         </nav>
         <div class="user-actions">
-            <a href="account.php" class="account-link">👤 My Account</a>
-            <a href="products/cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
+            <a href="signin.php" class="account-link">👤 My Account</a>
+            <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
         </div>
     </header>
 
@@ -686,13 +892,82 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 
     <!-- FOOTER -->
     <footer>
-        <p>© <?= date('Y') ?> Tech Giants. All Rights Reserved.</p>
-        <div>
-            <a href="privacy.php">Privacy Policy</a> |
-            <a href="terms.php">Terms of Service</a> |
-            <a href="contact.php">Contact</a>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-brand">
+                        <div class="tg-logo">TG</div>
+                        <div class="brand-text">
+                            <h3>Tech Giants</h3>
+                        </div>
+                    </div>
+                    <p>South Africa's premier destination for gaming hardware and accessories. We provide cutting-edge technology for serious gamers who demand the best performance.</p>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
+                            <div class="contact-details">Pretoria, Gauteng</div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon"><i class="fas fa-phone"></i></span>
+                            <div class="contact-details">+27 21 123 4567</div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon"><i class="fas fa-envelope"></i></span>
+                            <div class="contact-details">info@techgiants.co.za</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <ul>
+                        <li><a href="#">Our Story</a></li>
+                        <li><a href="#">Why Choose Us</a></li>
+                        <li><a href="#">Gaming Community</a></li>
+                        <li><a href="#">Expert Reviews</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Gaming PCs</a></li>
+                        <li><a href="#">Graphics Cards</a></li>
+                        <li><a href="#">Gaming Peripherals</a></li>
+                        <li><a href="#">Special Deals</a></li>
+                        <li><a href="#">Build Configurator</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column footer-connect">
+                    <h3>Connect With Us</h3>
+                    <ul class="footer-social">
+                        <li><a href="#" class="footer-instagram"><i class="fab fa-instagram"></i> @techgiants</a></li>
+                        <li><a href="#" class="footer-website"><i class="fas fa-globe"></i> techgiants.co.za</a></li>
+                        <li><a href="#" class="footer-tiktok"><i class="fab fa-tiktok"></i> @techgiants</a></li>
+                    </ul>
+                    <div class="support-links">
+                        <a href="#">Customer Support</a>
+                        <a href="#">Warranty Claims</a>
+                        <a href="#">Return Policy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2024 Tech Giants. All rights reserved. <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Shipping Info</a> Powered by <span class="gaming-excellence">Gaming Excellence</span></p>
+            </div>
         </div>
     </footer>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="newsletter-box">
+            <h2>Stay Updated with Tech Giants</h2>
+            <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" class="newsletter-input" placeholder="Enter your email">
+                <button type="submit" class="newsletter-btn">Subscribe</button>
+            </form>
+        </div>
+    </section>
 
     <script>
         // Navigation for header logo and buttons
@@ -709,7 +984,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 
         // Navigation for user actions
         document.querySelector('.account-link').addEventListener('click', () => {
-            window.location.href = 'account.php';
+            window.location.href = 'signin.php';
         });
 
         document.querySelector('.cart-link').addEventListener('click', () => {
@@ -737,7 +1012,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
         document.querySelectorAll('footer a').forEach(link => {
             link.addEventListener('click', (e) => {
                 const href = link.getAttribute('href');
-                window.location.href = href;
+                if (href) window.location.href = href;
             });
         });
     </script>
