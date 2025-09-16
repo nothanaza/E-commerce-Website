@@ -9,13 +9,17 @@
     <title>Contact TechGiants</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* ===== VARIABLES & RESET ===== */
         :root {
-            --primary: #e6771d;
+            --primary: #e56b08ff;
             --secondary: #38c172;
             --accent: #9561e2;
             --dark: #222;
             --light: #f5f5f5;
             --gray: #6c757d;
+            --navy: #001f3f;
+            --light-navy: #2c3e50;
+            --black: #000;
         }
         
         * {
@@ -31,11 +35,61 @@
             line-height: 1.6;
         }
         
+    
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
+        
+        .section {
+            padding: 60px 0;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #ccc;
+            margin-bottom: 2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .info-box h2, .info-box h3, .card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .follow-us p {
+            margin-bottom: 1.2rem;
+            margin-top: -0.2rem;
+            color: #333;
+        }
+        
         
         .btn {
             padding: 12px 24px;
@@ -54,12 +108,11 @@
         }
         
         .btn-primary:hover {
-            background: #d46912;
+            background: #e56b08ff;
         }
         
-        /* New black button style */
         .btn-black {
-            background: #000;
+            background: var(--black);
             color: white;
             border: none;
             width: 100%; 
@@ -82,31 +135,6 @@
             color: var(--dark);
         }
         
-        .section {
-            padding: 60px 0;
-        }
-        
-        .hero {
-            background: linear-gradient(to right, #000, #222);
-            color: white;
-            text-align: center;
-            position: relative;
-        }
-        
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-        
-        .hero p {
-            font-size: 1.2rem;
-            color: #ccc;
-            margin-bottom: 2rem;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
         .live-chat-btn {
             display: inline-flex;
             align-items: center;
@@ -117,12 +145,24 @@
             font-size: 1.2rem;
         }
         
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
+        .faq-btn {
+            color: #333;
+            border: 2px solid #333;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+            transition: all 0.3s ease;
         }
         
+        .faq-btn:hover {
+            background: #333;
+            color: white;
+        }
+        
+    
         .card {
             background: white;
             padding: 2rem;
@@ -136,20 +176,9 @@
             transform: translateY(-5px);
         }
         
-        .card h3 {
-            margin-bottom: 1rem;
-        }
-        
-        .card i {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        /* Updated Icon Styling */
         .icon-container {
             width: 80px;
             height: 80px;
-            background-color: #f7f7f7;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -161,45 +190,33 @@
         
         .icon-container i {
             font-size: 2rem;
-            margin-bottom: 0;
         }
         
         .address .icon-container {
-            border: 1px solid #d8e5f8;
+            border-color: #d8e5f8;
             background-color: #f0f6ff;
         }
 
         .phone .icon-container {
-            border: 1px solid #d8f8e0;
+            border-color: #d8f8e0;
             background-color: #f0fff2;
         }
 
         .email .icon-container {
-            border: 1px solid #f8e8d8;
+            border-color: #f8e8d8;
             background-color: #fff8f0;
         }
 
         .hours .icon-container {
-            border: 1px solid #e7d8f8;
+            border-color: #e7d8f8;
             background-color: #f6f0ff;
         }
         
         .address i { color: #3490dc; }
         .phone i { color: #38c172; }
-        .email i { color: #e6771d; }
+        .email i { color: #e56b08ff; }
         .hours i { color: #9561e2; }
         
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-        
-        @media (max-width: 768px) {
-            .two-column {
-                grid-template-columns: 1fr;
-            }
-        }
         
         .form-group {
             margin-bottom: 1.5rem;
@@ -228,23 +245,20 @@
             text-align: center;
         }
         
+    
+        .hero {
+            background: linear-gradient(to right, var(--black), #222);
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        
         .info-box {
             background: white;
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 2rem;
-        }
-        
-        .info-box h3 {
-            margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-        
-        .follow-us p {
-            margin-bottom: 1.2rem;
-            margin-top: -0.2rem;
-            color: #333;
         }
         
         .map-placeholder {
@@ -258,72 +272,31 @@
             color: #aaa;
         }
         
-        .social-links {
-            list-style: none;
-            padding: 0;
-        }
-        
-        .social-links li {
-            margin-bottom: 0.8rem;
-        }
-        
-        .social-links a {
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.1rem;
-            color: #333;
-        }
-        
-        .social-links a:hover {
-            opacity: 0.8;
-        }
-        
-        .instagram i { color: #E1306C; }
-        .tiktok i { color: #000000; }
-        .website i { color: #3498db; }
-        
-        .social-links i {
-            font-size: 1.4rem;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
         .faq-cta {
             text-align: center;
             padding: 2rem;
         }
         
-        .faq-btn {
-            color: #333;
-            border: 2px solid #333;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: 600;
-            display: inline-block;
-            margin-top: 10px;
-            transition: all 0.3s ease;
-        }
-        
-        .faq-btn:hover {
-            background: #333;
-            color: white;
-        }
         
         .newsletter {
-            background: var(--dark);
+            background: var(--black);
             color: white;
             text-align: center;
-            padding: 40px 0;
+            padding: 30px 20px;
+        }
+        
+        .newsletter-box {
+            background-color: var(--navy);
+            border-radius: 10px;
+            padding: 40px;
+            max-width: 1080px;
+            margin: 0 auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
         
         .newsletter h2 {
             margin-bottom: 1rem;
+            color: white;
         }
         
         .newsletter p {
@@ -331,6 +304,7 @@
             max-width: 600px;
             margin-left: auto;
             margin-right: auto;
+            color: #ccc;
         }
         
         .newsletter-form {
@@ -341,24 +315,80 @@
         
         .newsletter-input {
             flex: 1;
-            padding: 12px;
+            padding: 15px 20px;
             border: none;
             border-radius: 5px 0 0 5px;
             font-size: 1rem;
+            background-color: var(--light-navy);
+            color: white;
+        }
+        
+        .newsletter-input::placeholder {
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .newsletter-btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 0 20px;
+            padding: 0 25px;
             border-radius: 0 5px 5px 0;
             cursor: pointer;
             font-weight: 600;
+            transition: background 0.3s ease;
         }
         
+        .newsletter-btn:hover {
+            background: #cc5a06;
+        }
+        
+    
+        .social-links, .footer-social {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .social-links li, .footer-social li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .social-links a, .footer-social a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #333;
+        }
+        
+        .social-links a:hover, .footer-social a:hover {
+            opacity: 0.8;
+        }
+        
+        .social-links i, .footer-social i {
+            font-size: 1.4rem;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .social-links a {
+            font-size: 1.1rem;
+        }
+        
+        .instagram i, .footer-instagram i { color: #E1306C; }
+        .tiktok i, .footer-tiktok i { color: #000000; }
+        .website i, .footer-website i { color: #3498db; }
+        
+        .footer-tiktok i {
+            background-color: white;
+            border-radius: 3px;
+        }
+        
+    
         footer {
-            background: #222;
+            background: var(--black);
             color: white;
             padding: 60px 0 20px;
         }
@@ -397,6 +427,10 @@
         }
         
         .footer-column h3 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 15px;
             color: white;
             margin-bottom: 1.5rem;
             font-size: 1.2rem;
@@ -440,8 +474,8 @@
             color: var(--primary);
             font-weight: bold;
         }
-
-        /* NEW STYLES FOR FIXED FOOTER */
+        
+        
         .contact-info {
             margin-top: 1rem;
         }
@@ -493,43 +527,6 @@
             color: white;
             text-decoration: underline;
         }
-        
-        /* Social media icons in footer */
-        .footer-social {
-            list-style: none;
-            padding: 0;
-            margin-top: 1rem;
-        }
-        
-        .footer-social li {
-            margin-bottom: 0.8rem;
-        }
-        
-        .footer-social a {
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1rem;
-            color: #ccc;
-        }
-        
-        .footer-social a:hover {
-            color: white;
-        }
-        
-        .footer-social i {
-            font-size: 1.2rem;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .footer-instagram i { color: #E1306C; }
-        .footer-website i { color: #3498db; }
-        .footer-tiktok i { color: #000000; background-color: white; border-radius: 3px; }
     </style>
 </head>
 <body>
@@ -644,17 +641,17 @@
                         
                         <ul class="social-links">
                             <li>
-                                <a href="https://instagram.com/techgiants" target="_blank" class="instagram">
+                                <a href="https://www.instagram.com/the_tech_giants1?igsh=MTV3bHp6OXpma2d1dg==" target="_blank" class="instagram">
                                     <i class="fab fa-instagram"></i> @techgiants
                                 </a>
                             </li>
                             <li>
-                                <a href="https://tiktok.com/@techgiants" target="_blank" class="tiktok">
+                                <a href="https://www.tiktok.com/@the_tech_giants?_t=ZS-8zjDmUwy463&_r=1" target="_blank" class="tiktok">
                                     <i class="fab fa-tiktok"></i> @techgiants
                                 </a>
                             </li>
                             <li>
-                                <a href="https://techgiants.co.za" target="_blank" class="website">
+                                <a href="https://thetechgiants.co.za/" target="_blank" class="website">
                                     <i class="fas fa-globe"></i> techgiants.co.za
                                 </a>
                             </li>
@@ -754,19 +751,21 @@
             </div>
             
             <div class="footer-bottom">
-                <p>© 2024 Tech Giants. All rights reserved. <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Shipping Info</a> Powered by <span class="gaming-excellence">Gaming Excellence</span></p>
+                <p>© 2024 Tech Giants. All rights reserved.     <a href="#">Privacy Policy</a>  <a href="#">Terms of Service</a><a href="#">Shipping Info</a> Powered by <span class="gaming-excellence">Gaming Excellence</span></p>
             </div>
         </div>
     </footer>
     <section class="newsletter">
         <div class="container">
-            <h2>Stay Updated with Tech Giants</h2>
-            <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-            
-            <form class="newsletter-form">
-                <input type="email" class="newsletter-input" placeholder="Enter your email">
-                <button type="submit" class="newsletter-btn">Subscribe</button>
-            </form>
+            <div class="newsletter-box">
+                <h2>Stay Updated with Tech Giants</h2>
+                <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
+                
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Enter your email">
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
         </div>
     </section>
 </body>
