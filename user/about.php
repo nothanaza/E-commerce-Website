@@ -10,9 +10,17 @@ if (isset($_SESSION['cart'])) {
 }
 ?>
 
-
-
 <style>
+
+   :root {
+            --primary: #e6771d;
+            --secondary: #38c172;
+            --accent: #9561e2;
+            --dark: #222;
+            --light: #f5f5f5;
+            --gray: #6c757d;
+        }
+        
 /* ========== Global Styles ========== */
 body {
   margin: 0;
@@ -248,14 +256,195 @@ section img {
   background: #fff;
   color: #f97316;
 }
+
+/*Footer Styles*/
+footer {
+            background: #222;
+            color: white;
+            padding: 60px 0 20px;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+        }
+        
+        .tg-logo {
+            width: 50px;
+            height: 50px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .footer-column h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-column a {
+            color: #ccc;
+            text-decoration: none;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .footer-contact i {
+            color: var(--primary);
+            margin-right: 8px;
+            width: 20px;
+            height: 20px;
+            text-align: center;
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+        
+        .gaming-excellence {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* NEW STYLES FOR FIXED FOOTER */
+        .contact-info {
+            margin-top: 1rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+        }
+        
+        .checkbox-icon {
+            margin-right: 10px;
+            margin-top: 3px;
+            color: var(--primary);
+            min-width: 20px;
+        }
+        
+        .contact-details {
+            color: #ccc;
+            line-height: 1.4;
+        }
+        
+        .footer-connect ul li {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-connect .checkbox-icon {
+            color: var(--primary);
+        }
+        
+        .footer-connect .contact-details {
+            color: #ccc;
+        }
+        
+        .support-links {
+            margin-top: 1.5rem;
+        }
+        
+        .support-links a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .support-links a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        /* Social media icons in footer */
+        .footer-social {
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+        
+        .footer-social li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-social a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            color: #ccc;
+        }
+        
+        .footer-social a:hover {
+            color: white;
+        }
+        
+        .footer-social i {
+            font-size: 1.2rem;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .footer-instagram i { color: #E1306C; }
+        .footer-website i { color: #3498db; }
+        .footer-tiktok i { color: #000000; background-color: white; border-radius: 3px; }
+     
 </style>
 
 <!DOCTYPE html>
 <html lang="en">
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - The Tech Giants</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
 <body class="min-h-screen bg-background text-foreground dark">
 
-<?php include 'includes/header.php'; ?>
+<?php include 'components/header.php'; ?>
 
 <main>
     <!-- Hero Section -->
@@ -435,9 +624,99 @@ section img {
             </div>
         </div>
     </section>
+
+     <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <div class="footer-brand">
+                        <div class="tg-logo">TG</div>
+                        <div class="brand-text">
+                            <h3 style="margin: 0; line-height: 1.2;">Tech Giants</h3>
+                        </div>
+                    </div>
+                    <p>South Africa's premier destination for gaming hardware and accessories. We provide cutting-edge technology for serious gamers who demand the best performance.</p>
+                    
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <span class="checkbox-icon"><i class="fas fa-map-marker-alt"></i></span>
+                            <div class="contact-details">
+                                Pretoria, Gauteng
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="checkbox-icon"><i class="fas fa-phone"></i></span>
+                            <div class="contact-details">
+                                +27 21 123 4567
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <span class="checkbox-icon"><i class="fas fa-envelope"></i></span>
+                            <div class="contact-details">info@techgiants.co.za</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>About Us</h3>
+                    <ul>
+                        <li><a href="#">Our Story</a></li>
+                        <li><a href="#">Why Choose Us</a></li>
+                        <li><a href="#">Gaming Community</a></li>
+                        <li><a href="#">Expert Reviews</a></li>
+                        <li><a href="#">Careers</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#">Gaming PCs</a></li>
+                        <li><a href="#">Graphics Cards</a></li>
+                        <li><a href="#">Gaming Peripherals</a></li>
+                        <li><a href="#">Special Deals</a></li>
+                        <li><a href="#">Build Configurator</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column footer-connect">
+                    <h3>Connect With Us</h3>
+                    <ul class="footer-social">
+                        <li>
+                            <a href="#" class="footer-instagram">
+                                <i class="fab fa-instagram"></i> @techgiants
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer-website">
+                                <i class="fas fa-globe"></i> techgiants.co.za
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="footer-tiktok">
+                                <i class="fab fa-tiktok"></i> @techgiants
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <div class="support-links">
+                        <a href="#">Customer Support</a>
+                        <a href="#">Warranty Claims</a>
+                        <a href="#">Return Policy</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2024 Tech Giants. All rights reserved. <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Shipping Info</a> Powered by <span class="gaming-excellence">Gaming Excellence</span></p>
+            </div>
+        </div>
+    </footer>
+    
+    
 </main>
 
-<?php include 'includes/footer.php'; ?>
+<?php>
 
 <script>
 // Mobile menu toggle

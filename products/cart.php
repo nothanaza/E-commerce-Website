@@ -648,7 +648,8 @@ $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
   <link rel="stylesheet" href="styles/globals.css">
 </head>
 <body>
-  <?php include 'includes/header.php'; ?>
+
+  <?php include 'components/header.php'; ?>
 
   <div class="cart-page">
     <div class="cart-container">
