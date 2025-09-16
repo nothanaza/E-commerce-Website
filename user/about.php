@@ -195,8 +195,6 @@ section img {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
-  width: 450px;
-  gap: 1rem 
 }
 
 .card:hover {
@@ -225,8 +223,10 @@ section img {
 
 .value-foreground {
   color: #fff; 
-  justify-content: center; 
-  align-content: center;
+  height: 50px;
+  align-items: center;
+  padding-top: 8px;
+  margin-top:0.5rem;
 }
 
 /* ========== CTA Section ========== */
@@ -250,6 +250,10 @@ section img {
 .cta-section .btn {
   border: 2px solid #fff;
   color: #fff;
+  background: transparent;
+  margin: 0 10px;
+  padding: 10px 20px;
+  font-size: 1rem;
 }
 
 .cta-section .btn:hover {
