@@ -334,8 +334,9 @@
 
     const rating = `
       <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
-        ${renderStars(p.stars)}
-        <span class="reviews">(${p.reviews})</span>
+       ${renderStars(p.stars)}
+      <span class = "reviews">(${p.reviews})</span> 
+        
       </div>`;
 
     const price = `
