@@ -592,7 +592,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
         </nav>
         <div class="user-actions">
             <a href="account.php" class="account-link">👤 My Account</a>
-            <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
+            <a href="products/cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
         </div>
     </header>
 
