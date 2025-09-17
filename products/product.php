@@ -64,7 +64,7 @@ if ($id) {
     </div>
 
     <!-- Price -->
-    <div class="price-wrap">
+    <div class="price-wrap" style="display:flex;align-items:center;gap:16px;">
       <div class="price" id="total-price" data-unit="<?= $product['price'] ?>">
   R<?= number_format($product['price'], 2) ?>
 </div>
