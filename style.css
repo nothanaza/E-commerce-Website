@@ -43,7 +43,8 @@
             cursor: pointer;
         }
 
-        .nav button {
+         .nav ul li {
+            display: inline;
             background: none;
             border: none;
             font-weight: bold;
