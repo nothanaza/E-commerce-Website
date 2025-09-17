@@ -68,17 +68,18 @@ p {
             cursor: pointer;
         }
 
-        .nav ul li {
-            display: inline;
-            background: none;
-            border: none;
-            font-weight: bold;
-            margin: 0 10px;
-            cursor: pointer;
-            font-size: 16px;
-            color: #333;
-            transition: color 0.3s;
-        }
+.nav a {
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 10px;
+  font-size: 16px;
+  color: #333;
+  transition: color 0.3s;
+}
+
+.nav a:hover {
+  color: #ff6a00;
+}
 
         .nav-menu ul {
   display: flex;
@@ -95,7 +96,6 @@ p {
   transition: color 0.2s;
 }
 
-.nav-menu a:hover,
 .nav-menu a.active {
   color: #f97316;
 }
@@ -530,14 +530,13 @@ section img {
 
   <header class="header">
         <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
-        <nav class="nav">
-           <ul>
-           <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
-            <li><a href="shop.php" class="<?= basename($_SERVER['PHP_SELF']) == 'shop.php' ? 'active' : '' ?>">Shop</a></li>
-            <li><a href="about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About Us</a></li>
-            <li><a href="contact.php" class="<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : '' ?>">Contact</a></li>
-          </ul>
-        </nav>
+       <nav class="nav">
+  <a href="index.php">Home</a>
+  <a href="shop.php">Shop</a>
+  <a href="about.php">About Us</a>
+  <a href="contact.php">Contact</a>
+</nav>
+
         <div class="user-actions">
             <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>

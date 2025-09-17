@@ -1,41 +1,8 @@
 <?php
-// Start session with error checking
 session_start();
 if (session_status() === PHP_SESSION_ACTIVE) {
-    // Handle Add to Cart
-    if (isset($_POST['add_to_cart'])) {
-        $product_id = $_POST['product_id'] ?? '';
-        $product_name = $_POST['product_name'] ?? '';
-        $product_price = isset($_POST['product_price']) ? floatval($_POST['product_price']) : 0;
 
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-
-        if ($product_id !== '' && array_key_exists($product_id, array_column($products, 'id'))) {
-            if (isset($_SESSION['cart'][$product_id])) {
-                $_SESSION['cart'][$product_id]['quantity']++;
-            } else {
-                $_SESSION['cart'][$product_id] = [
-                    'name' => $product_name,
-                    'price' => $product_price,
-                    'quantity' => 1
-                ];
-            }
-        }
-
-        // Redirect to avoid resubmission
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
-    }
-
-    // Get cart count
-    $cart_count = 0;
-    if (isset($_SESSION['cart'])) {
-        $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
-    }
-
-    // Product data
+    //  Product data 
     $products = [
         [
             "id" => "1",
@@ -46,7 +13,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             "discount" => "-10%",
             "stars" => 4.5,
             "reviews" => 247,
-            "image" => "https://images.unsplash.com/photo-1636914011676-039d36b73765?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBQQyUyMGRlc2t0b3AlMjBjb21wdXRlcnxlbnwxfHx8fDE3NTcwMTc2MTN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+            "image" => "https://images.unsplash.com/photo-1636914011676-039d36b73765?...",
             "in_stock" => true
         ],
         [
@@ -58,11 +25,11 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             "discount" => null,
             "stars" => 4.6,
             "reviews" => 189,
-            "image" => "https://images.unsplash.com/photo-1634672350437-f9632adc9c3f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBncmFwaGljcyUyMGNhcmQlMjBHUFV8ZW58MXx8fHwxNzU2OTk1Mjg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+            "image" => "https://images.unsplash.com/photo-1634672350437-f9632adc9c3f?...",
             "in_stock" => true
         ],
         [
-            "id" => "3",
+            "id" => "3", 
             "name" => "Gaming Motherboard Z790",
             "category" => "motherboards",
             "price" => 6499.99,
@@ -70,7 +37,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             "discount" => null,
             "stars" => 4.3,
             "reviews" => 156,
-            "image" => "https://images.unsplash.com/photo-1694444070793-13db645409f4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBtb3RoZXJib2FyZCUyMGNvbXB1dGVyJTIwcGFydHN8ZW58MXx8fHwxNzU3MDE3NjE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+            "image" => "https://images.unsplash.com/photo-1694444070793-13db645409f4?...",
             "in_stock" => true
         ],
         [
@@ -82,10 +49,52 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             "discount" => "-15%",
             "stars" => 4.4,
             "reviews" => 203,
-            "image" => "https://images.unsplash.com/photo-1696710240292-05aad88b94b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBtb25pdG9yJTIwc2V0dXB8ZW58MXx8fHwxNzU3MDE3NjE0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+            "image" => "https://images.unsplash.com/photo-1696710240292-05aad88b94b8?...",
             "in_stock" => true
         ]
     ];
+
+    // Add to Cart
+    if (isset($_POST['add_to_cart'])) {
+        $product_id = $_POST['product_id'] ?? '';
+        $product_name = $_POST['product_name'] ?? '';
+        $product_price = isset($_POST['product_price']) ? floatval($_POST['product_price']) : 0;
+
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+
+       
+        $product_exists = false;
+        foreach ($products as $product) {
+            if ($product['id'] === $product_id) {
+                $product_exists = true;
+                break;
+            }
+        }
+
+        if ($product_id !== '' && $product_exists) {
+            if (isset($_SESSION['cart'][$product_id])) {
+                $_SESSION['cart'][$product_id]['quantity']++;
+            } else {
+                $_SESSION['cart'][$product_id] = [
+                    'name' => $product_name,
+                    'price' => $product_price,
+                    'quantity' => 1
+                ];
+            }
+        }
+
+      
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
+    }
+
+    // Get cart count
+    $cart_count = 0;
+    if (isset($_SESSION['cart'])) {
+        $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
+    }
 
     // Categories
     $categories = [
@@ -136,21 +145,19 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             cursor: pointer;
         }
 
-        .nav ul li {
-            display: inline;
-            background: none;
-            border: none;
-            font-weight: bold;
-            margin: 0 10px;
-            cursor: pointer;
-            font-size: 16px;
-            color: #333;
-            transition: color 0.3s;
-        }
+        .nav a {
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 10px;
+  font-size: 16px;
+  color: #333;
+  transition: color 0.3s;
+}
 
-        .nav button:hover {
-            color: #ff6a00;
-        }
+.nav a:hover {
+  color: #ff6a00;
+}
+
 
         .user-actions {
             display: flex;
@@ -565,14 +572,13 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     <!-- Header -->
     <header class="header">
         <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
-        <nav class="nav">
-           <ul>
-           <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
-            <li><a href="shop.php" class="<?= basename($_SERVER['PHP_SELF']) == 'shop.php' ? 'active' : '' ?>">Shop</a></li>
-            <li><a href="about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About Us</a></li>
-            <li><a href="contact.php" class="<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : '' ?>">Contact</a></li>
-          </ul>
-        </nav>
+       <nav class="nav">
+  <a href="index.php">Home</a>
+  <a href="shop.php">Shop</a>
+  <a href="about.php">About Us</a>
+  <a href="contact.php">Contact</a>
+</nav>
+
         <div class="user-actions">
             <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
