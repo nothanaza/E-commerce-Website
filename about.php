@@ -68,7 +68,8 @@ p {
             cursor: pointer;
         }
 
-        .nav button {
+        .nav ul li {
+            display: inline;
             background: none;
             border: none;
             font-weight: bold;
@@ -79,9 +80,25 @@ p {
             transition: color 0.3s;
         }
 
-        .nav button:hover {
-            color: #ff6a00;
-        }
+        .nav-menu ul {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-menu a:hover,
+.nav-menu a.active {
+  color: #f97316;
+}
 
         .user-actions {
             display: flex;
@@ -509,23 +526,23 @@ section img {
 
 <!DOCTYPE html>
 <html lang="en">
-<!-- Header -->
-    <header class="header">
+<body class="min-h-screen bg-background text-foreground dark">
+
+  <header class="header">
         <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
         <nav class="nav">
-            <button data-page="home">Home</button>
-            <button data-page="shop">Shop</button>
-            <button data-page="about">About Us</button>
-            <button data-page="contact">Contact</button>
+           <ul>
+           <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
+            <li><a href="shop.php" class="<?= basename($_SERVER['PHP_SELF']) == 'shop.php' ? 'active' : '' ?>">Shop</a></li>
+            <li><a href="about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About Us</a></li>
+            <li><a href="contact.php" class="<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : '' ?>">Contact</a></li>
+          </ul>
         </nav>
         <div class="user-actions">
-            <a href="account.php" class="account-link">👤 My Account</a>
+            <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
         </div>
     </header>
-
-<body class="min-h-screen bg-background text-foreground dark">
-
 <?php ?>
 
 <main>

@@ -35,6 +35,64 @@
             line-height: 1.6;
         }
         
+         .header {
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff6a00;
+            cursor: pointer;
+        }
+
+         .nav ul li {
+            display: inline;
+            background: none;
+            border: none;
+            font-weight: bold;
+            margin: 0 10px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        .nav button:hover {
+            color: #ff6a00;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .account-link, .cart-link {
+            text-decoration: none;
+            color: #333;
+            margin-left: 10px;
+            transition: color 0.3s;
+        }
+
+        .account-link:hover, .cart-link:hover {
+            color: #ff6a00;
+        }
+
+        .cart-badge {
+            background: #ff6a00;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
     
         .container {
             max-width: 1200px;
@@ -529,7 +587,24 @@
         }
     </style>
 </head>
+
 <body>
+     <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
+        <nav class="nav">
+           <ul>
+           <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
+            <li><a href="shop.php" class="<?= basename($_SERVER['PHP_SELF']) == 'shop.php' ? 'active' : '' ?>">Shop</a></li>
+            <li><a href="about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About Us</a></li>
+            <li><a href="contact.php" class="<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : '' ?>">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="user-actions">
+            <a href="signin.php" class="account-link">👤 My Account</a>
+            <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
+        </div>
+    </header>
     <section class="hero section">
         <div class="container">
             <h1>Get in Touch</h1>
