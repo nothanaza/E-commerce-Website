@@ -134,9 +134,10 @@
 }
 
 .empty-cart-button-primary {
-  background-color: var(--secondary);
+  background-color:white;
   color: var(--secondary-foreground);
   border: none;
+
 }
 
 .empty-cart-button-primary:hover {
@@ -745,9 +746,7 @@ $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
             <a href="shop.php" class="empty-cart-button empty-cart-button-primary">
               Browse Products
             </a>
-            <a href="index.php" class="empty-cart-button empty-cart-button-outline">
-              Continue Browsing
-            </a>
+      
           </div>
         </div>
 
