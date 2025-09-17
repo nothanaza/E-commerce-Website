@@ -136,7 +136,8 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             cursor: pointer;
         }
 
-        .nav button {
+        .nav ul li {
+            display: inline;
             background: none;
             border: none;
             font-weight: bold;
@@ -565,10 +566,12 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     <header class="header">
         <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
         <nav class="nav">
-            <button data-page="home">Home</button>
-            <button data-page="shop">Shop</button>
-            <button data-page="about">About Us</button>
-            <button data-page="contact">Contact</button>
+           <ul>
+           <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
+            <li><a href="shop.php" class="<?= basename($_SERVER['PHP_SELF']) == 'shop.php' ? 'active' : '' ?>">Shop</a></li>
+            <li><a href="about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About Us</a></li>
+            <li><a href="contact.php" class="<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : '' ?>">Contact</a></li>
+          </ul>
         </nav>
         <div class="user-actions">
             <a href="signin.php" class="account-link">👤 My Account</a>

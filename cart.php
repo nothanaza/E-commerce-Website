@@ -701,7 +701,9 @@ $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Header -->
+</head>
+<body>
+<!-- Header -->
     <header class="header">
         <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
         <nav class="nav">
@@ -715,10 +717,7 @@ $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
         </div>
     </header>
-</head>
-<body>
-
-  <?php include 'components/header.php'; ?>
+  <?php?>
 
   <div class="cart-page">
     <div class="cart-container">
@@ -841,6 +840,6 @@ $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
     </div>
   </div>
 
-  <?php include 'includes/footer.php'; ?>
+  <?php  ?>
 </body>
 </html>
