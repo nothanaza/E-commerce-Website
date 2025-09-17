@@ -1,5 +1,14 @@
 <?php
- require 'data.php'; 
+session_start();
+require 'data.php'; 
+
+// Get cart count for header
+$cart_count = 0;
+if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cart_count += $item['quantity'];
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -542,15 +551,6 @@ document.querySelector('.cta-link').addEventListener('click', () => {
     window.location.href = 'shop.php';
 });
 
-// Navigation for footer links
-document.querySelectorAll('footer a').forEach(link => {
-    link.addEventListener('click', (e) => {
-        const href = link.getAttribute('href');
-        window.location.href = href;
-    });
-});
-// ...existing code...
-  
 </script>
 </body> 
 </html>
