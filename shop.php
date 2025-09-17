@@ -536,13 +536,7 @@ document.querySelector('.cart-link').addEventListener('click', () => {
     window.location.href = 'cart.php';
 });
 
-// Navigation for category boxes
-document.querySelectorAll('.category-box').forEach(box => {
-    box.addEventListener('click', () => {
-        const category = box.getAttribute('data-cat');
-        window.location.href = `shop.php?category=${category}`;
-    });
-});
+
 
 // Navigation for view all and CTA link
 document.querySelector('.view-all').addEventListener('click', () => {
