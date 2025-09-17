@@ -520,230 +520,6 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             background: #f2f2f2;
         }
 
-        /* Footer Styles */
-        footer {
-            background: #000;
-            color: #ccc;
-            padding: 60px 0 20px;
-            text-align: left;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 1rem;
-        }
-
-        .tg-logo {
-            width: 50px;
-            height: 50px;
-            background: #e56b08;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #fff;
-        }
-
-        .brand-text h3 {
-            margin: 0;
-            line-height: 1.2;
-            color: #fff;
-        }
-
-        .footer-column h3 {
-            color: #fff;
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
-        }
-
-        .footer-column ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-column ul li {
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-column a {
-            color: #ccc;
-            text-decoration: none;
-        }
-
-        .footer-column a:hover {
-            color: #fff;
-            text-decoration: underline;
-        }
-
-        .contact-info {
-            margin-top: 1rem;
-        }
-
-        .contact-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 0.8rem;
-        }
-
-        .contact-icon {
-            margin-right: 10px;
-            margin-top: 3px;
-            color: #e56b08;
-            min-width: 20px;
-        }
-
-        .contact-details {
-            color: #ccc;
-            line-height: 1.4;
-        }
-
-        .footer-social {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-social li {
-            display: flex;
-            align-items: center;
-            margin-bottom: 0.8rem;
-        }
-
-        .footer-social a {
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #ccc;
-        }
-
-        .footer-social a:hover {
-            opacity: 0.8;
-        }
-
-        .footer-social i {
-            font-size: 1.4rem;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .footer-instagram i { color: #E1306C; }
-        .footer-tiktok i { color: #000; background-color: #fff; border-radius: 3px; }
-        .footer-website i { color: #3498db; }
-
-        .support-links {
-            margin-top: 1.5rem;
-        }
-
-        .support-links a {
-            color: #ccc;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-        }
-
-        .support-links a:hover {
-            color: #fff;
-            text-decoration: underline;
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid #444;
-            color: #ccc;
-            font-size: 0.9rem;
-        }
-
-        .gaming-excellence {
-            color: #e56b08;
-            font-weight: bold;
-        }
-
-        /* Newsletter Section */
-        .newsletter {
-            background: #000;
-            color: #fff;
-            text-align: center;
-            padding: 30px 20px;
-        }
-
-        .newsletter-box {
-            background-color: #2c3e50;
-            border-radius: 10px;
-            padding: 40px;
-            max-width: 1080px;
-            margin: 0 auto;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-
-        .newsletter h2 {
-            margin-bottom: 1rem;
-        }
-
-        .newsletter p {
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            color: #ccc;
-        }
-
-        .newsletter-form {
-            display: flex;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .newsletter-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 5px 0 0 5px;
-            font-size: 1rem;
-            background-color: #2c3e50;
-            color: #fff;
-        }
-
-        .newsletter-input::placeholder {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .newsletter-btn {
-            background: #e56b08;
-            color: #fff;
-            border: none;
-            padding: 0 25px;
-            border-radius: 0 5px 5px 0;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s ease;
-        }
-
-        .newsletter-btn:hover {
-            background: #cc5a06;
-        }
-
-        /* Responsive Design */
         @media (max-width: 1200px) {
             .products-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -785,6 +561,8 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             }
         }
     </style>
+     <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
 <body>
     <!-- Header -->
@@ -891,83 +669,129 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     </main>
 
     <!-- FOOTER -->
-    <footer>
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-column">
-                    <div class="footer-brand">
-                        <div class="tg-logo">TG</div>
-                        <div class="brand-text">
-                            <h3>Tech Giants</h3>
-                        </div>
-                    </div>
-                    <p>South Africa's premier destination for gaming hardware and accessories. We provide cutting-edge technology for serious gamers who demand the best performance.</p>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <span class="contact-icon"><i class="fas fa-map-marker-alt"></i></span>
-                            <div class="contact-details">Pretoria, Gauteng</div>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-icon"><i class="fas fa-phone"></i></span>
-                            <div class="contact-details">+27 21 123 4567</div>
-                        </div>
-                        <div class="contact-item">
-                            <span class="contact-icon"><i class="fas fa-envelope"></i></span>
-                            <div class="contact-details">info@techgiants.co.za</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-column">
-                    <h3>About Us</h3>
-                    <ul>
-                        <li><a href="#">Our Story</a></li>
-                        <li><a href="#">Why Choose Us</a></li>
-                        <li><a href="#">Gaming Community</a></li>
-                        <li><a href="#">Expert Reviews</a></li>
-                        <li><a href="#">Careers</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h3>Quick Links</h3>
-                    <ul>
-                        <li><a href="#">Gaming PCs</a></li>
-                        <li><a href="#">Graphics Cards</a></li>
-                        <li><a href="#">Gaming Peripherals</a></li>
-                        <li><a href="#">Special Deals</a></li>
-                        <li><a href="#">Build Configurator</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column footer-connect">
-                    <h3>Connect With Us</h3>
-                    <ul class="footer-social">
-                        <li><a href="#" class="footer-instagram"><i class="fab fa-instagram"></i> @techgiants</a></li>
-                        <li><a href="#" class="footer-website"><i class="fas fa-globe"></i> techgiants.co.za</a></li>
-                        <li><a href="#" class="footer-tiktok"><i class="fab fa-tiktok"></i> @techgiants</a></li>
-                    </ul>
-                    <div class="support-links">
-                        <a href="#">Customer Support</a>
-                        <a href="#">Warranty Claims</a>
-                        <a href="#">Return Policy</a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>© 2024 Tech Giants. All rights reserved. <a href="#">Privacy Policy</a> <a href="#">Terms of Service</a> <a href="#">Shipping Info</a> Powered by <span class="gaming-excellence">Gaming Excellence</span></p>
-            </div>
-        </div>
-    </footer>
+      <!-- Footer -->
+  <footer class="bg-black text-white">
+    <div class="container mx-auto px-4 py-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
 
-    <!-- Newsletter Section -->
-    <section class="newsletter">
-        <div class="newsletter-box">
-            <h2>Stay Updated with Tech Giants</h2>
-            <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-            <form class="newsletter-form">
-                <input type="email" class="newsletter-input" placeholder="Enter your email">
-                <button type="submit" class="newsletter-btn">Subscribe</button>
-            </form>
+        <!-- Company Info -->
+        <div class="space-y-4">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 bg-secondary rounded-lg flex items-center justify-center">
+              <span class="text-secondary-foreground font-bold text-sm">TG</span>
+            </div>
+            <span class="text-xl font-bold">Tech Giants</span>
+          </div>
+          <p class="text-gray-300 text-sm leading-relaxed">
+            South Africa's premier destination for gaming hardware and accessories. 
+            We provide cutting-edge technology for serious gamers who demand the best performance.
+          </p>
+          <div class="space-y-2">
+            <div class="flex items-center space-x-2 text-sm text-gray-300">
+              <span class="text-secondary">📍</span>
+              <span>Pretoria, Gauteng</span>
+            </div>
+            <div class="flex items-center space-x-2 text-sm text-gray-300">
+              <span class="text-secondary">📞</span>
+              <span>‪+27 21 123 4567‬</span>
+            </div>
+            <div class="flex items-center space-x-2 text-sm text-gray-300">
+              <span class="text-secondary">✉</span>
+              <span>info@techgiants.co.za</span>
+            </div>
+          </div>
         </div>
-    </section>
+        <!-- About Us -->
+        <div class="space-y-4">
+          <h3 class="font-semibold text-lg">About Us</h3>
+          <div class="space-y-3">
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Our Story</a>
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Why Choose Us</a>
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Gaming Community</a>
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Expert Reviews</a>
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Careers</a>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="space-y-4">
+          <h3 class="font-semibold text-lg">Quick Links</h3>
+          <div class="space-y-3">
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Gaming PCs</a>
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Graphics Cards</a>
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Gaming Peripherals</a>
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Special Deals</a>
+            <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Build Configurator</a>
+          </div>
+        </div>
+          <!-- Social & Support -->
+        <div class="space-y-4">
+          <h3 class="font-semibold text-lg">Connect With Us</h3>
+          <div class="space-y-4">
+            <div class="space-y-3">
+              <a href="https://instagram.com/techgiants" target="_blank" class="flex items-center space-x-2 text-gray-300 hover:text-secondary transition-colors text-sm group">
+                <span class="group-hover:scale-110 transition-transform">📸</span>
+                <span>@techgiants</span>
+              </a>
+              <a href="https://techgiants.co.za" target="_blank" class="flex items-center space-x-2 text-gray-300 hover:text-secondary transition-colors text-sm group">
+                <span class="group-hover:scale-110 transition-transform">🌍</span>
+                <span>techgiants.co.za</span>
+              </a>
+              <a href="https://tiktok.com/@techgiants" target="_blank" class="flex items-center space-x-2 text-gray-300 hover:text-secondary transition-colors text-sm group">
+                <span class="group-hover:scale-110 transition-transform">🎵</span>
+                <span>@techgiants</span>
+              </a>
+            </div>
+            <div class="space-y-2 pt-2">
+              <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Customer Support</a>
+              <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Warranty Claims</a>
+              <a href="#" class="block text-gray-300 hover:text-secondary transition-colors text-sm">Return Policy</a>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- Separator -->
+    <div class="my-8 h-px bg-gray-800"></div>
+
+      <!-- Bottom Section -->
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-6 text-sm text-gray-400">
+          <p>&copy; 2024 Tech Giants. All rights reserved.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="hover:text-secondary transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-secondary transition-colors">Terms of Service</a>
+            <a href="#" class="hover:text-secondary transition-colors">Shipping Info</a>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2 text-sm text-gray-400">
+          <span>Powered by</span>
+          <span class="text-secondary font-semibold">Gaming Excellence</span>
+        </div>
+      </div>
+    <!-- Newsletter -->
+      <div class="mt-8 p-6 bg-gray-900 rounded-lg">
+        <div class="text-center space-y-4">
+          <h4 class="font-semibold text-lg">Stay Updated with Tech Giants</h4>
+          <p class="text-gray-300 text-sm">
+            Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.
+          </p>
+          <form id="newsletterForm" class="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+            <input 
+              type="email" 
+              id="email" 
+              placeholder="Enter your email"
+              class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-secondary"
+              required
+            />
+            <button type="submit" class="px-6 py-2 bg-secondary text-black font-semibold rounded-lg hover:opacity-90 transition">
+              Subscribe
+            </button>
+          </form>
+          <p id="message" class="text-sm mt-2"></p>
+        </div>
+      </div>
+    </div>
+  </footer>
 
     <script>
         // Navigation for header logo and buttons
@@ -1015,6 +839,34 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                 if (href) window.location.href = href;
             });
         });
+
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            secondary: "#ff6600", // green
+            "secondary-foreground": "#000"
+          }
+        }
+      }
+    }
+    // JavaScript for Newsletter
+  
+    document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const message = document.getElementById('message');
+
+      if (!email.includes('@')) {
+        message.textContent = "❌ Please enter a valid email.";
+        message.className = "text-red-500 text-sm mt-2";
+      } else {
+        message.textContent = "✅ Thank you for subscribing!";
+        message.className = "text-green-500 text-sm mt-2";
+        document.getElementById('email').value = "";
+      }
+    });
+
     </script>
 </body>
 </html>
