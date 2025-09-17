@@ -829,7 +829,7 @@ footer {
     
 </main>
 
-<?php>
+<?php ?>
 
 <script>
 // Mobile menu toggle
