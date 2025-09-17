@@ -22,12 +22,11 @@ if (isset($_SESSION['cart'])) {
         }
         
 /* ========== Global Styles ========== */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #fff;
-  color: #111827;
-  line-height: 1.6;
+ body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #222;
 }
 
 .container {
@@ -80,25 +79,9 @@ p {
             transition: color 0.3s;
         }
 
-        .nav-menu ul {
-  display: flex;
-  list-style: none;
-  gap: 1.5rem;
-  margin: 0;
-  padding: 0;
-}
-
-.nav-menu a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.nav-menu a:hover,
-.nav-menu a.active {
-  color: #f97316;
-}
+        .nav a:hover {
+            color: #ff6a00;
+        }
 
         .user-actions {
             display: flex;
