@@ -12,6 +12,20 @@
 </head>
 <body>
 
+ <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
+        <nav class="nav">
+            <button data-page="home">Home</button>
+            <button data-page="shop">Shop</button>
+            <button data-page="about">About Us</button>
+            <button data-page="contact">Contact</button>
+        </nav>
+        <div class="user-actions">
+            <a href="account.php" class="account-link">👤 My Account</a>
+            <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
+        </div>
+    </header>
 
   
 <!-- HERO -->
@@ -114,48 +128,29 @@
   <div class="container">
     <h2 style="text-align:center;font-size:28px;font-weight:800;margin-bottom:10px">Shop by Category</h2>
     <p style="text-align:center;color:var(--sub);margin-bottom:30px">Find exactly what you're looking for</p>
-
-    <!-- First row (5 cards) -->
-    <div class="category-grid">
+    <div class="category-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:auto;">
       <?php
-      $iconMap = [
-        "gaming-pcs"     => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
-        "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png
-",
-        "motherboards"   => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
-        "monitors"       => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
-        "peripherals"    => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
-        "audio"          => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
-      ];
-
-      // Render the first 5 categories
-      $firstFive = array_slice($categories, 1, 5);
-      foreach ($firstFive as $cat):
-        $count = count(array_filter($products, fn($p) => $p['category'] === $cat['id']));
+        $iconMap = [
+          "gaming-pcs"     => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
+          "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
+          "motherboards"   => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
+          "monitors"       => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
+          "peripherals"    => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
+          "audio"          => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
+        ];
+        // Get all categories except "All Categories"
+        $realCats = array_slice($categories, 1, 6);
+        foreach ($realCats as $cat):
+          $count = count(array_filter($products, fn($p) => $p['category'] === $cat['id']));
       ?>
-        <div class="category-box" data-cat="<?= $cat['id'] ?>">
-          <div class="category-icon">
-            <img src="<?= $iconMap[$cat['id']] ?>" alt="<?= $cat['name'] ?>">
+        <div class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>" style="background:#fff;border:1px solid #eceef2;border-radius:16px;text-align:center;padding:30px 20px;transition:transform 0.25s,box-shadow 0.25s;box-shadow:0 2px 6px rgba(0,0,0,0.05);cursor:pointer;">
+          <div class="category-icon" style="background:#ff6600;border-radius:50%;width:60px;height:60px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
+            <img src="<?= $iconMap[$cat['id']] ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon" style="width:26px;height:26px;">
           </div>
-          <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
-          <div class="category-count"><?= $count ?> items</div>
+          <div class="category-name" style="font-weight:600;color:#222;font-size:16px;margin-bottom:4px;"><?= htmlspecialchars($cat['name']) ?></div>
+          <div class="category-count" style="font-size:13px;color:#666;"><?= $count ?> items</div>
         </div>
       <?php endforeach; ?>
-    </div>
-
-    <!-- Second row (1 card aligned left) -->
-    <div class="category-grid single-card-row">
-      <?php
-        $lastCat = end($categories); // Audio
-        $count = count(array_filter($products, fn($p) => $p['category'] === $lastCat['id']));
-      ?>
-      <div class="category-box" data-cat="<?= $cat['id'] ?>">
-        <div class="category-icon">
-          <img src="<?= $iconMap[$lastCat['id']] ?>" alt="<?= $lastCat['name'] ?>">
-        </div>
-        <div class="category-name"><?= htmlspecialchars($lastCat['name']) ?></div>
-        <div class="category-count"><?= $count ?> items</div>
-      </div>
     </div>
   </div>
 </section>
@@ -290,6 +285,7 @@
 
 
 <script>
+  
   /* ====== DATA from PHP ====== */
   const PRODUCTS = <?php echo json_encode($products, JSON_UNESCAPED_SLASHES); ?>;
 
@@ -312,16 +308,27 @@
     </svg>`;
   }
 
+ 
   function renderStars(stars){
-    const pct = Math.max(0, Math.min(5, stars)) / 5 * 100;
-    return `
-      <div class="stars">
-        <div class="star-bar">
-          <div class="empty" style="width:100%">${starSvg()+starSvg()+starSvg()+starSvg()+starSvg()}</div>
-          <div class="fill" style="width:${pct}%">${starSvg()+starSvg()+starSvg()+starSvg()+starSvg()}</div>
-        </div>
-      </div>`;
-  }
+  const fullStars = Math.floor(stars);
+  const halfStar = stars % 1 >= 0.5 ? 1 : 0;
+  const emptyStars = 5 - fullStars - halfStar;
+  let html = '';
+  for(let i=0; i<fullStars; i++) html += starSvg();
+  if(halfStar) html += starSvgHalf();
+  for(let i=0; i<emptyStars; i++) html += starSvgEmpty();
+  return `<div class="stars">${html}</div>`;
+}
+
+function starSvg(){
+  return `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#fbbf24"/></svg>`;
+}
+function starSvgHalf(){
+  return `<svg width="18" height="18" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stop-color="#fbbf24"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="url(#half)"/></svg>`;
+}
+function starSvgEmpty(){
+  return `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#d1d5db"/></svg>`;
+}
 
   function cardHTML(p, isList=false){
     const sale = p.old_price && p.price < p.old_price;
@@ -495,6 +502,54 @@ tailwind.config = {
         document.getElementById('email').value = "";
       }
     });
+
+    // ...existing code...
+// Navigation for header logo and buttons
+document.querySelector('.logo').addEventListener('click', () => {
+    window.location.href = 'home.php';
+});
+
+document.querySelectorAll('.nav button').forEach(button => {
+    button.addEventListener('click', () => {
+        const page = button.getAttribute('data-page');
+        window.location.href = `${page}.php`;
+    });
+});
+
+// Navigation for user actions
+document.querySelector('.account-link').addEventListener('click', () => {
+    window.location.href = 'account.php';
+});
+
+document.querySelector('.cart-link').addEventListener('click', () => {
+    window.location.href = 'cart.php';
+});
+
+// Navigation for category boxes
+document.querySelectorAll('.category-box').forEach(box => {
+    box.addEventListener('click', () => {
+        const category = box.getAttribute('data-cat');
+        window.location.href = `shop.php?category=${category}`;
+    });
+});
+
+// Navigation for view all and CTA link
+document.querySelector('.view-all').addEventListener('click', () => {
+    window.location.href = 'shop.php';
+});
+
+document.querySelector('.cta-link').addEventListener('click', () => {
+    window.location.href = 'shop.php';
+});
+
+// Navigation for footer links
+document.querySelectorAll('footer a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        window.location.href = href;
+    });
+});
+// ...existing code...
   
 </script>
 </body> 
