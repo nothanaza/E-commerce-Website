@@ -21,20 +21,37 @@
             cursor: pointer;
         }
 
-        .nav button {
-            background: none;
-            border: none;
-            font-weight: bold;
-            margin: 0 10px;
-            cursor: pointer;
-            font-size: 16px;
-            color: #333;
-            transition: color 0.3s;
-        }
+.nav a {
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0 10px;
+  font-size: 16px;
+  color: #333;
+  transition: color 0.3s;
+}
 
-        .nav button:hover {
-            color: #ff6a00;
-        }
+.nav a:hover {
+  color: #ff6a00;
+}
+
+        .nav-menu ul {
+  display: flex;
+  list-style: none;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-menu a.active {
+  color: #f97316;
+}
 
         .user-actions {
             display: flex;
@@ -706,17 +723,18 @@ $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
 <body>
 <!-- Header -->
     <header class="header">
-        <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
-        <nav class="nav">
-            <button data-page="home">Home</button>
-            <button data-page="shop">Shop</button>
-            <button data-page="about">About Us</button>
-            <button data-page="contact">Contact</button>
-        </nav>
-        <div class="user-actions">
-            <a href="account.php" class="account-link">👤 My Account</a>
+    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+     <nav class="nav">
+        <a href="index.php">Home</a>
+        <a href="shop.php">Shop</a>
+        <a href="about.php">About Us</a>
+        <a href="contact.php">Contact</a>
+    </nav>
+
+     <div class="user-actions">
+            <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
-        </div>
+     </div>
     </header>
   <?php?>
 

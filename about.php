@@ -528,7 +528,7 @@ section img {
 <body class="min-h-screen bg-background text-foreground dark">
 
   <header class="header">
-        <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
+        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
        <nav class="nav">
   <a href="index.php">Home</a>
   <a href="shop.php">Shop</a>

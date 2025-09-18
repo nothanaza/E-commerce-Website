@@ -23,7 +23,7 @@ if (isset($_SESSION['cart'])) {
 
  <!-- Header -->
     <header class="header">
-        <div class="logo" onclick="window.location.href='home.php'">Tech Giants</div>
+        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
         <nav class="nav">
             <ul>
            <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
