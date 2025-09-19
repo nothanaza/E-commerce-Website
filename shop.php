@@ -1,48 +1,15 @@
 <?php
 session_start();
 require 'data.php'; 
-if (session_status() === PHP_SESSION_ACTIVE)
-// Add to Cart
-    if (isset($_POST['add_to_cart'])) {
-        $product_id = $_POST['product_id'] ?? '';
-        $product_name = $_POST['product_name'] ?? '';
-        $product_price = isset($_POST['product_price']) ? floatval($_POST['product_price']) : 0;
 
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
-
-       
-        $product_exists = false;
-        foreach ($products as $product) {
-            if ($product['id'] === $product_id) {
-                $product_exists = true;
-                break;
-            }
-        }
-
-        if ($product_id !== '' && $product_exists) {
-            if (isset($_SESSION['cart'][$product_id])) {
-                $_SESSION['cart'][$product_id]['quantity']++;
-            } else {
-                $_SESSION['cart'][$product_id] = [
-                    'name' => $product_name,
-                    'price' => $product_price,
-                    'quantity' => 1
-                ];
-            }
-        }
-
-      
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
+// Get cart count for header
+$cart_count = 0;
+if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cart_count += $item['quantity'];
     }
+}
 
-    // Get cart count
-    $cart_count = 0;
-    if (isset($_SESSION['cart'])) {
-        $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
-    }
 ?>
 <!doctype html>
 <html lang="en">
@@ -55,19 +22,19 @@ if (session_status() === PHP_SESSION_ACTIVE)
 </head>
 <body>
   <!-- Header -->
-  <header class="header">
-        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-       <nav class="nav">
-  <a href="index.php">Home</a>
-  <a href="shop.php">Shop</a>
-  <a href="about.php">About Us</a>
-  <a href="contact.php">Contact</a>
-</nav>
+    <header class="header">
+    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+     <nav class="nav">
+        <a href="index.php">Home</a>
+        <a href="shop.php">Shop</a>
+        <a href="about.php">About Us</a>
+        <a href="contact.php">Contact</a>
+    </nav>
 
-        <div class="user-actions">
+     <div class="user-actions">
             <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
-        </div>
+     </div>
     </header>
 
 <!-- HERO -->
@@ -569,14 +536,6 @@ document.querySelector('.cart-link').addEventListener('click', () => {
 
 
 
-// Navigation for view all and CTA link
-document.querySelector('.view-all').addEventListener('click', () => {
-    window.location.href = 'shop.php';
-});
-
-document.querySelector('.cta-link').addEventListener('click', () => {
-    window.location.href = 'shop.php';
-});
 
 </script>
 </body> 
