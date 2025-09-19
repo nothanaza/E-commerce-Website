@@ -513,29 +513,6 @@ tailwind.config = {
     });
 
     // ...existing code...
-// Navigation for header logo and buttons
-document.querySelector('.logo').addEventListener('click', () => {
-    window.location.href = 'home.php';
-});
-
-document.querySelectorAll('.nav button').forEach(button => {
-    button.addEventListener('click', () => {
-        const page = button.getAttribute('data-page');
-        window.location.href = `${page}.php`;
-    });
-});
-
-// Navigation for user actions
-document.querySelector('.account-link').addEventListener('click', () => {
-    window.location.href = 'account.php';
-});
-
-document.querySelector('.cart-link').addEventListener('click', () => {
-    window.location.href = 'cart.php';
-});
-
-
-
 
 </script>
 </body> 
