@@ -55,16 +55,15 @@ if (session_status() === PHP_SESSION_ACTIVE)
 </head>
 <body>
   <!-- Header -->
-    <header class="header">
+  <header class="header">
         <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-        <nav class="nav">
-           <ul>
-           <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
-            <li><a href="shop.php" class="<?= basename($_SERVER['PHP_SELF']) == 'shop.php' ? 'active' : '' ?>">Shop</a></li>
-            <li><a href="about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About Us</a></li>
-            <li><a href="contact.php" class="<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : '' ?>">Contact</a></li>
-          </ul>
-        </nav>
+       <nav class="nav">
+  <a href="index.php">Home</a>
+  <a href="shop.php">Shop</a>
+  <a href="about.php">About Us</a>
+  <a href="contact.php">Contact</a>
+</nav>
+
         <div class="user-actions">
             <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
