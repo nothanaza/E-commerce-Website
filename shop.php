@@ -1,14 +1,48 @@
 <?php
 session_start();
 require 'data.php'; 
+if (session_status() === PHP_SESSION_ACTIVE)
+// Add to Cart
+    if (isset($_POST['add_to_cart'])) {
+        $product_id = $_POST['product_id'] ?? '';
+        $product_name = $_POST['product_name'] ?? '';
+        $product_price = isset($_POST['product_price']) ? floatval($_POST['product_price']) : 0;
 
-// Get cart count for header
-$cart_count = 0;
-if (isset($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $cart_count += $item['quantity'];
+        if (!isset($_SESSION['cart'])) {
+            $_SESSION['cart'] = [];
+        }
+
+       
+        $product_exists = false;
+        foreach ($products as $product) {
+            if ($product['id'] === $product_id) {
+                $product_exists = true;
+                break;
+            }
+        }
+
+        if ($product_id !== '' && $product_exists) {
+            if (isset($_SESSION['cart'][$product_id])) {
+                $_SESSION['cart'][$product_id]['quantity']++;
+            } else {
+                $_SESSION['cart'][$product_id] = [
+                    'name' => $product_name,
+                    'price' => $product_price,
+                    'quantity' => 1
+                ];
+            }
+        }
+
+      
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit;
     }
-}
+
+    // Get cart count
+    $cart_count = 0;
+    if (isset($_SESSION['cart'])) {
+        $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
+    }
 ?>
 <!doctype html>
 <html lang="en">
@@ -20,12 +54,11 @@ if (isset($_SESSION['cart'])) {
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-
- <!-- Header -->
+  <!-- Header -->
     <header class="header">
         <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
         <nav class="nav">
-            <ul>
+           <ul>
            <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
             <li><a href="shop.php" class="<?= basename($_SERVER['PHP_SELF']) == 'shop.php' ? 'active' : '' ?>">Shop</a></li>
             <li><a href="about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About Us</a></li>
@@ -33,12 +66,11 @@ if (isset($_SESSION['cart'])) {
           </ul>
         </nav>
         <div class="user-actions">
-            <a href="account.php" class="account-link">👤 My Account</a>
+            <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
         </div>
     </header>
 
-  
 <!-- HERO -->
 <section class="hero">
   <div class="container">

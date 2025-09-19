@@ -1,6 +1,16 @@
 <?php
-// contact us page
+
+session_start();
+
+// Get cart count for header
+$cart_count = 0;
+if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cart_count += $item['quantity'];
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -844,5 +854,7 @@
             </div>
         </div>
     </section>
+
+
 </body>
 </html>
