@@ -13,6 +13,15 @@ if ($id) {
         }
     }
 }
+session_start();
+
+// Get cart count for header
+$cart_count = 0;
+if (isset($_SESSION['cart'])) {
+    foreach ($_SESSION['cart'] as $item) {
+        $cart_count += $item['quantity'];
+    }
+}
 ?>
 
 <!doctype html>
@@ -26,6 +35,22 @@ if ($id) {
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
+
+<!-- Header -->
+    <header class="header">
+    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+     <nav class="nav">
+        <a href="index.php">Home</a>
+        <a href="shop.php">Shop</a>
+        <a href="about.php">About Us</a>
+        <a href="contact.php">Contact</a>
+    </nav>
+
+     <div class="user-actions">
+            <a href="signin.php" class="account-link">👤 My Account</a>
+            <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
+     </div>
+    </header>
 
 <div class="container" style="padding:40px 0">
   <?php if ($product): ?>
