@@ -9,6 +9,7 @@ if (isset($_SESSION['cart'])) {
         $cart_count += $item['quantity'];
     }
 }
+
 ?>
 <!doctype html>
 <html lang="en">
@@ -20,25 +21,22 @@ if (isset($_SESSION['cart'])) {
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-
- <!-- Header -->
+  <!-- Header -->
     <header class="header">
-        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-        <nav class="nav">
-            <ul>
-           <li><a href="index.php" class="<?= basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : '' ?>">Home</a></li>
-            <li><a href="shop.php" class="<?= basename($_SERVER['PHP_SELF']) == 'shop.php' ? 'active' : '' ?>">Shop</a></li>
-            <li><a href="about.php" class="<?= basename($_SERVER['PHP_SELF']) == 'about.php' ? 'active' : '' ?>">About Us</a></li>
-            <li><a href="contact.php" class="<?= basename($_SERVER['PHP_SELF']) == 'contact.php' ? 'active' : '' ?>">Contact</a></li>
-          </ul>
-        </nav>
-        <div class="user-actions">
-            <a href="account.php" class="account-link">👤 My Account</a>
+    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+     <nav class="nav">
+        <a href="index.php">Home</a>
+        <a href="shop.php">Shop</a>
+        <a href="about.php">About Us</a>
+        <a href="contact.php">Contact</a>
+    </nav>
+
+     <div class="user-actions">
+            <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
-        </div>
+     </div>
     </header>
 
-  
 <!-- HERO -->
 <section class="hero">
   <div class="container">
@@ -515,37 +513,6 @@ tailwind.config = {
     });
 
     // ...existing code...
-// Navigation for header logo and buttons
-document.querySelector('.logo').addEventListener('click', () => {
-    window.location.href = 'home.php';
-});
-
-document.querySelectorAll('.nav button').forEach(button => {
-    button.addEventListener('click', () => {
-        const page = button.getAttribute('data-page');
-        window.location.href = `${page}.php`;
-    });
-});
-
-// Navigation for user actions
-document.querySelector('.account-link').addEventListener('click', () => {
-    window.location.href = 'account.php';
-});
-
-document.querySelector('.cart-link').addEventListener('click', () => {
-    window.location.href = 'cart.php';
-});
-
-
-
-// Navigation for view all and CTA link
-document.querySelector('.view-all').addEventListener('click', () => {
-    window.location.href = 'shop.php';
-});
-
-document.querySelector('.cta-link').addEventListener('click', () => {
-    window.location.href = 'shop.php';
-});
 
 </script>
 </body> 

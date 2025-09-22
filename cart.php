@@ -736,7 +736,7 @@ $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
      </div>
     </header>
-  <?php?>
+  
 
   <div class="cart-page">
     <div class="cart-container">
