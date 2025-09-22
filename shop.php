@@ -1,30 +1,8 @@
+
+
 <?php
-include 'components/db.php';
-
-$result = $conn->query("SELECT * FROM products");
-?>
-
-<div class="shop">
-  <?php while ($row = $result->fetch_assoc()): ?>
-    <div class="product">
-      <img src="uploads/<?php echo $row['image']; ?>" alt="<?php echo $row['name']; ?>">
-      <h2><?php echo $row['name']; ?></h2>
-      <p>R <?php echo number_format($row['price'], 2); ?></p>
-    <form method="POST" action="cart_handler.php">
-      <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
-       <input type="hidden" name="name" value="<?php echo $row['name']; ?>">
-      <input type="hidden" name="price" value="<?php echo $row['price']; ?>">
-      <input type="hidden" name="image" value="<?php echo $row['image']; ?>">
-       <button type="submit" name="add_to_cart">Add to Cart</button>
-    </form>
-
-    </div>
-  <?php endwhile; ?>
-</div>
-
-<?php 
 session_start();
-require 'data.php'; 
+require 'data.php';
 
 // Get cart count for header
 $cart_count = 0;
