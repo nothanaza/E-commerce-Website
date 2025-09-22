@@ -666,8 +666,12 @@
 
 </style>    
 
-<?php
+<?php 
+include 'components/db.php'; 
+
 session_start();
+
+$cart_items = isset($_SESSION['cart']) ? $_SESSION['cart'] : [];
 
 // Initialize cart if not exists
 if (!isset($_SESSION['cart'])) {
