@@ -175,17 +175,15 @@ body {
 .summary-row .free { color: #10b981; font-weight: 600; }
 
 .checkout-btn {
-  width: 100%; 
   background: #f97316; 
   color: #fff; 
   border: none;
-  padding: 0.75rem; 
+  padding: 0.50rem; 
   border-radius: 0.5rem; 
   font-weight: 600;
-  cursor: pointer; 
-  margin-top: 1rem;
+  margin: 10px 0 0 0;
 }
-.checkout-btn:hover { background: #ea580c; }
+.checkout-btn:hover { background: black; }
 
 .note { margin-top: 1rem; font-size: 0.9rem; color: #374151; }
 

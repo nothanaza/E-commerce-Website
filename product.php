@@ -1,26 +1,67 @@
 <?php
-require 'data.php';
+session_start();
+require_once 'components/db.php';
 
 // Get product ID from URL
 $id = $_GET['id'] ?? null;
 $product = null;
 
 if ($id) {
-    foreach ($products as $p) {
-        if ($p['id'] === $id) {
-            $product = $p;
-            break;
+    $stmt = $pdo->prepare("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.id = ?");
+    $stmt->execute([$id]);
+    $product = $stmt->fetch();
+}
+
+// Add to Cart
+if (isset($_POST['add_to_cart'])) {
+    $product_id = $_POST['id'] ?? '';
+    $product_name = $_POST['name'] ?? '';
+    $product_price = isset($_POST['price']) ? floatval($_POST['price']) : 0;
+    $product_image = $_POST['image'] ?? '';
+    $quantity = intval($_POST['quantity'] ?? 1);
+
+    if ($product_id) {
+        // Check if product exists and is in stock
+        $stmt = $pdo->prepare("SELECT id, in_stock FROM products WHERE id = ?");
+        $stmt->execute([$product_id]);
+        $product_exists = $stmt->fetch();
+
+        if ($product_exists && $product_exists['in_stock']) {
+            $session_id = session_id();
+            try {
+                // Insert or update cart item in database
+                $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, ?) 
+                                     ON DUPLICATE KEY UPDATE quantity = quantity + ?");
+                $stmt->execute([$session_id, $product_id, $quantity, $quantity]);
+
+                // Sync session data
+                if (!isset($_SESSION['cart'])) {
+                    $_SESSION['cart'] = [];
+                }
+                if (isset($_SESSION['cart'][$product_id])) {
+                    $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+                } else {
+                    $_SESSION['cart'][$product_id] = [
+                        'id' => $product_id,
+                        'name' => $product_name,
+                        'price' => 'R ' . number_format($product_price, 2),
+                        'image' => $product_image,
+                        'quantity' => $quantity
+                    ];
+                }
+            } catch (PDOException $e) {
+                die("Database error: " . $e->getMessage());
+            }
         }
     }
+    header("Location: product.php?id=$product_id");
+    exit;
 }
-session_start();
 
-// Get cart count for header
+// Get cart count
 $cart_count = 0;
 if (isset($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $cart_count += $item['quantity'];
-    }
+    $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
 }
 ?>
 
@@ -61,25 +102,25 @@ if (isset($_SESSION['cart'])) {
 
   <!-- LEFT: Image + Thumbnails -->
   <div class="product-detail-img">
-    <img id="main-img" src="<?= $product['image'] ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+    <img id="main-img" src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
     <?php if (!$product['in_stock']): ?>
       <div class="badge out">Out of Stock</div>
     <?php elseif ($product['discount']): ?>
-      <div class="badge"><?= $product['discount'] ?></div>
+      <div class="badge"><?= htmlspecialchars($product['discount']) ?></div>
     <?php endif; ?>
 
     <!-- Thumbnails -->
     <div class="thumbs">
-      <img src="<?= $product['image'] ?>" alt="thumb 1" onclick="swapImage(this)">
-      <img src="<?= $product['image'] ?>" alt="thumb 2" onclick="swapImage(this)">
-      <img src="<?= $product['image'] ?>" alt="thumb 3" onclick="swapImage(this)">
+      <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 1" onclick="swapImage(this)">
+      <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 2" onclick="swapImage(this)">
+      <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 3" onclick="swapImage(this)">
     </div>
   </div>
 
   <!-- RIGHT: Product Info -->
   <div class="product-detail-info">
     <h1><?= htmlspecialchars($product['name']) ?></h1>
-    <div class="cat"><?= htmlspecialchars($product['category']) ?></div>
+    <div class="cat"><?= htmlspecialchars($product['category_name']) ?></div>
 
     <!-- Rating -->
     <div class="rating">
@@ -95,7 +136,7 @@ if (isset($_SESSION['cart'])) {
 </div>
       <?php if ($product['old_price']): ?>
         <div class="old">R<?= number_format($product['old_price'], 2) ?></div>
-        <div class="badge save">Save <?= $product['discount'] ?></div>
+        <div class="badge save">Save <?= htmlspecialchars($product['discount']) ?></div>
       <?php endif; ?>
     </div>
 
@@ -121,7 +162,7 @@ if (isset($_SESSION['cart'])) {
 
     <!-- Quantity + Add to Cart -->
     <?php if ($product['in_stock']): ?>
-      <form method="POST" action="cart.php" class="cart-form">
+      <form method="POST" action="product.php?id=<?= htmlspecialchars($product['id']) ?>" class="cart-form">
         <label for="qty">Quantity:</label>
         <div class="qty-control">
           <button type="button" class="qty-bt" onclick="changeQty(-1)">-</button>
@@ -129,10 +170,11 @@ if (isset($_SESSION['cart'])) {
           <button type="button" class="qty-bt" onclick="changeQty(1)">+</button>
         </div>
 
-        <input type="hidden" name="id" value="<?= $product['id'] ?>">
+        <input type="hidden" name="add_to_cart" value="1">
+        <input type="hidden" name="id" value="<?= htmlspecialchars($product['id']) ?>">
         <input type="hidden" name="name" value="<?= htmlspecialchars($product['name']) ?>">
         <input type="hidden" name="price" value="<?= $product['price'] ?>">
-        <input type="hidden" name="image" value="<?= $product['image'] ?>">
+        <input type="hidden" name="image" value="<?= htmlspecialchars($product['image']) ?>">
 
         <div class="cart-actions">
           <button type="submit" class="bt primary">
@@ -203,7 +245,6 @@ if (isset($_SESSION['cart'])) {
   </div>
 </div>
 
-<!-- Footer -->
 <!-- Footer -->
   <footer class="site-footer">
   <div class="footer-top">
@@ -326,6 +367,11 @@ function updatePrice(qty) {
   buttonPriceEl.textContent = formatted;
 }
 
+function swapImage(element) {
+  const mainImg = document.getElementById('main-img');
+  mainImg.src = element.src;
+}
+
 tailwind.config = {
       theme: {
         extend: {
@@ -337,12 +383,14 @@ tailwind.config = {
       }
     }
  
-    document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+    document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const message = document.getElementById('message');
+      const email = document.getElementById('email')?.value;
+      const message = document.getElementById('message') || document.createElement('p');
+      message.id = 'message';
+      this.appendChild(message);
 
-      if (!email.includes('@')) {
+      if (!email || !email.includes('@')) {
         message.textContent = "❌ Please enter a valid email.";
         message.className = "text-red-500 text-sm mt-2";
       } else {
