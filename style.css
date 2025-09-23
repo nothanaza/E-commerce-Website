@@ -182,6 +182,30 @@
   line-height: 1.2;
   white-space: nowrap;
 }
+.card-img {
+  position: relative;
+}
+
+.badge.out {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #ff0000;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.out-of-stock {
+  background-color: #ff0000;
+  color: #fff;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.out-of-stock:hover {
+  background-color: #ff0000; /* Prevent hover effect */
+}
 
   .card-body{padding:14px 16px 16px}
   .name{font-size:16px;font-weight:700;margin:0 0 6px}
@@ -808,3 +832,5 @@
     margin: 0;
   }
 }
+
+

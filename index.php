@@ -760,42 +760,47 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
         </section>
 
-        <!-- FEATURED PRODUCTS -->
-        <section class="featured-products-section">
-            <div class="section-header">
-                <h2 class="section-title">Featured Products</h2>
-                <a href="shop.php" class="view-all">View All Products →</a>
+<!-- FEATURED PRODUCTS -->
+<section class="featured-products-section">
+    <div class="section-header">
+        <h2 class="section-title">Featured Products</h2>
+        <a href="shop.php" class="view-all">View All Products →</a>
+    </div>
+    <div class="products-grid">
+        <?php 
+        // Limit to the first 4 products and debug
+        $limited_products = array_slice($products, 0, 4);
+        // Debug: Check the number of products
+        // Uncomment the next line to verify: echo count($limited_products); // Should output 4
+        foreach ($limited_products as $product): ?>
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://placehold.co/300x200/ff6a00/fff?text=Image+Error'">
+                    <?php if ($product['discount']): ?>
+                        <span class="discount-badge"><?= htmlspecialchars($product['discount']) ?></span>
+                    <?php endif; ?>
+                </div>
+                <div class="product-details">
+                    <h3><?= htmlspecialchars($product['name']) ?></h3>
+                    <p class="category"><?= htmlspecialchars($product['category_name']) ?></p>
+                    <p class="rating">★★★★☆ <span class="rating-count">(<?= $product['reviews'] ?>)</span></p>
+                    <p class="price">R<?= number_format($product['price'], 2) ?>
+                        <?php if ($product['old_price']): ?>
+                            <span class="original-price">R<?= number_format($product['old_price'], 2) ?></span>
+                        <?php endif; ?>
+                    </p>
+                    <form method="post" action="">
+                        <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']) ?>">
+                        <input type="hidden" name="product_name" value="<?= htmlspecialchars($product['name']) ?>">
+                        <input type="hidden" name="product_price" value="<?= htmlspecialchars($product['price']) ?>">
+                        <input type="hidden" name="image" value="<?= htmlspecialchars($product['image']) ?>">
+                        <button type="submit" name="add_to_cart" class="add-to-cart">🛒 Add to Cart</button>
+                    </form>
+                </div>
             </div>
-            <div class="products-grid">
-                <?php foreach ($products as $product): ?>
-                    <div class="product-card">
-                        <div class="product-image">
-                            <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://placehold.co/300x200/ff6a00/fff?text=Image+Error'">
-                            <?php if ($product['discount']): ?>
-                                <span class="discount-badge"><?= htmlspecialchars($product['discount']) ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <div class="product-details">
-                            <h3><?= htmlspecialchars($product['name']) ?></h3>
-                            <p class="category"><?= htmlspecialchars($product['category_name']) ?></p>
-                            <p class="rating">★★★★☆ <span class="rating-count">(<?= $product['reviews'] ?>)</span></p>
-                            <p class="price">R<?= number_format($product['price'], 2) ?>
-                                <?php if ($product['old_price']): ?>
-                                    <span class="original-price">R<?= number_format($product['old_price'], 2) ?></span>
-                                <?php endif; ?>
-                            </p>
-                            <form method="post" action="">
-                                <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']) ?>">
-                                <input type="hidden" name="product_name" value="<?= htmlspecialchars($product['name']) ?>">
-                                <input type="hidden" name="product_price" value="<?= htmlspecialchars($product['price']) ?>">
-                                <input type="hidden" name="image" value="<?= htmlspecialchars($product['image']) ?>">
-                                <button type="submit" name="add_to_cart" class="add-to-cart">🛒 Add to Cart</button>
-                            </form>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </section>
+        <?php endforeach; ?>
+    </div>
+</section>
 
         <!-- READY TO GAME CTA -->
         <section class="cta-section">

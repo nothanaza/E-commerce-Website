@@ -1,18 +1,68 @@
-
-
 <?php
 session_start();
-require 'data.php';
+require_once 'components/db.php';
 
-// Get cart count for header
-$cart_count = 0;
-if (isset($_SESSION['cart'])) {
-    foreach ($_SESSION['cart'] as $item) {
-        $cart_count += $item['quantity'];
+// Get categories
+$stmt = $pdo->query("SELECT * FROM categories");
+$categories = $stmt->fetchAll() ?: [];
+
+// Get products
+$stmt = $pdo->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id");
+$products = $stmt->fetchAll() ?: [];
+
+// Add to Cart
+if (isset($_POST['add_to_cart'])) {
+    $product_id = $_POST['id'] ?? '';
+    $product_name = $_POST['name'] ?? '';
+    $product_price = isset($_POST['price']) ? floatval(str_replace(['R', ','], '', $_POST['price'])) : 0;
+    $product_image = $_POST['image'] ?? '';
+    $quantity = intval($_POST['quantity'] ?? 1);
+
+    if ($product_id) {
+        // Check if product exists in database
+        $stmt = $pdo->prepare("SELECT id, in_stock FROM products WHERE id = ?");
+        $stmt->execute([$product_id]);
+        $product_exists = $stmt->fetch();
+
+        if ($product_exists && $product_exists['in_stock']) {
+            $session_id = session_id();
+            try {
+                // Insert or update cart item in database
+                $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, ?) 
+                                     ON DUPLICATE KEY UPDATE quantity = quantity + ?");
+                $stmt->execute([$session_id, $product_id, $quantity, $quantity]);
+
+                // Sync session data
+                if (!isset($_SESSION['cart'])) {
+                    $_SESSION['cart'] = [];
+                }
+                if (isset($_SESSION['cart'][$product_id])) {
+                    $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+                } else {
+                    $_SESSION['cart'][$product_id] = [
+                        'id' => $product_id,
+                        'name' => $product_name,
+                        'price' => 'R ' . number_format($product_price, 2),
+                        'image' => $product_image,
+                        'quantity' => $quantity
+                    ];
+                }
+            } catch (PDOException $e) {
+                die("Database error: " . $e->getMessage());
+            }
+        }
     }
+    header("Location: shop.php");
+    exit;
 }
 
+// Get cart count
+$cart_count = 0;
+if (isset($_SESSION['cart'])) {
+    $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
+}
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -63,6 +113,7 @@ if (isset($_SESSION['cart'])) {
         <!-- Category -->
         <div class="pill-select">
           <select id="f-category" class="pill">
+            <option value="all">All Categories</option>
             <?php foreach($categories as $c): ?>
               <option value="<?= htmlspecialchars($c['id']) ?>"><?= htmlspecialchars($c['name']) ?></option>
             <?php endforeach; ?>
@@ -127,12 +178,11 @@ if (isset($_SESSION['cart'])) {
 </section>
 
 <!-- PRODUCTS -->
-<section class="products">
-  <div class="container">
-    <div id="wrap" class="grid"></div>
-  </div>
-</section>
-
+    <section class="products">
+        <div class="container">
+            <div id="wrap" class="grid"></div>
+        </div>
+    </section>
 
 <!-- SHOP BY CATEGORY SECTION -->
 <section class="categories" style="padding:50px 0">
@@ -149,10 +199,10 @@ if (isset($_SESSION['cart'])) {
           "peripherals"    => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
           "audio"          => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
         ];
-        // Get all categories except "All Categories"
-        $realCats = array_slice($categories, 1, 6);
+        // Get all categories except "All Categories" (if applicable)
+        $realCats = array_slice($categories, 0, 6);
         foreach ($realCats as $cat):
-          $count = count(array_filter($products, fn($p) => $p['category'] === $cat['id']));
+          $count = count(array_filter($products, fn($p) => $p['category_id'] === $cat['id']));
       ?>
         <div class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>" style="background:#fff;border:1px solid #eceef2;border-radius:16px;text-align:center;padding:30px 20px;transition:transform 0.25s,box-shadow 0.25s;box-shadow:0 2px 6px rgba(0,0,0,0.05);cursor:pointer;">
           <div class="category-icon" style="background:#ff6600;border-radius:50%;width:60px;height:60px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
@@ -248,7 +298,6 @@ if (isset($_SESSION['cart'])) {
   </div>
 </footer>
 
-
 <script>
   
   /* ====== DATA from PHP ====== */
@@ -295,60 +344,61 @@ function starSvgEmpty(){
   return `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#d1d5db"/></svg>`;
 }
 
-  function cardHTML(p, isList=false){
-    const sale = p.old_price && p.price < p.old_price;
-    const cat = p.category;
-    const out = !p.in_stock;
+ 
+function cardHTML(p, isList=false){
+  const sale = p.old_price && p.price < p.old_price;
+  const cat = p.category_name;
+  const out = !p.in_stock; // Debug: Check if this evaluates to true for out-of-stock
 
-    const topBadge = out
-      ? `<div class="badge out">Out of Stock</div>`
-      : (p.discount ? `<div class="badge">${p.discount}</div>` : ``);
+  // Debug: Log the product status
+  // Uncomment next line to verify: console.log("Product ID: " + p.id + ", In Stock: " + p.in_stock + ", Out: " + out);
 
-    const rating = `
-      <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
-       ${renderStars(p.stars)}
-      <span class = "reviews">(${p.reviews})</span> 
-        
-      </div>`;
+  const topBadge = out
+    ? `<div class="badge out" style="position: absolute; top: 10px; left: 10px;">Out of Stock</div>`
+    : (p.discount ? `<div class="badge">${p.discount}</div>` : ``);
 
-    const price = `
-      <div class="price-wrap">
-        <div class="price">${fmtRand(p.price)}</div>
-        ${sale ? `<div class="old">${fmtRand(p.old_price)}</div>` : ``}
-      </div>`;
+  const rating = `
+    <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+     ${renderStars(p.stars)}
+    <span class="reviews">(${p.reviews})</span> 
+    </div>`;
+
+  const price = `
+    <div class="price-wrap">
+      <div class="price">${fmtRand(p.price)}</div>
+      ${sale ? `<div class="old">${fmtRand(p.old_price)}</div>` : ``}
+    </div>`;
 
   const btn = out
-  ? `<button class="btn disabled" disabled>
-       ${cartIcon()} Out of Stock
-     </button>`
-  : `
-    <form method="POST" action="cart.php" style="display:inline;">
-      <input type="hidden" name="add_to_cart" value="1">
-      <input type="hidden" name="id" value="${p.id}">
-      <input type="hidden" name="name" value="${p.name}">
-      <input type="hidden" name="price" value="${fmtRand(p.price)}">
-      <input type="hidden" name="image" value="${p.image}">
-      <input type="hidden" name="quantity" value="1">
-      <button type="submit" class="btn">${cartIcon()} Add to Cart</button>
-    </form>
-  `;
+    ? `<button class="btn out-of-stock" disabled style="background-color: #ff0000; color: #fff;">${cartIcon()} Out of Stock</button>`
+    : `
+      <form method="POST" action="shop.php" style="display:inline;">
+        <input type="hidden" name="add_to_cart" value="1">
+        <input type="hidden" name="id" value="${p.id}">
+        <input type="hidden" name="name" value="${p.name}">
+        <input type="hidden" name="price" value="${fmtRand(p.price)}">
+        <input type="hidden" name="image" value="${p.image}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit" class="btn">${cartIcon()} Add to Cart</button>
+      </form>
+    `;
 
-    return `
-      <a href="product.php?id=${p.id}" class="card-link">
-      <div class="card ${isList ? 'list-row' : ''}" data-id="${p.id}" data-cat="${p.category}" data-price="${p.price}" data-stars="${p.stars}">
-        <div class="card-img">
-          ${topBadge}
-          <img src="${p.image}" alt="${p.name}">
-        </div>
-        <div class="card-body">
-          <h3 class="name">${p.name}</h3>
-          <div class="cat">${cat}</div>
-          ${rating}
-          ${price}
-          <div class="actions">${btn}</div>
-        </div>
-      </div>`;
-  }
+  return `
+    <a href="product.php?id=${p.id}" class="card-link">
+    <div class="card ${isList ? 'list-row' : ''}" data-id="${p.id}" data-cat="${p.category_id}" data-price="${p.price}" data-stars="${p.stars}">
+      <div class="card-img" style="position: relative;">
+        ${topBadge}
+        <img src="${p.image}" alt="${p.name}">
+      </div>
+      <div class="card-body">
+        <h3 class="name">${p.name}</h3>
+        <div class="cat">${cat}</div>
+        ${rating}
+        ${price}
+        <div class="actions">${btn}</div>
+      </div>
+    </div>`;
+}
 
   function cartIcon(){
     return `<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
@@ -361,11 +411,11 @@ function starSvgEmpty(){
     // search
     const q = (searchEl.value || '').trim().toLowerCase();
     if (q){
-      const hay = `${p.name} ${p.category}`.toLowerCase();
+      const hay = `${p.name} ${p.category_name}`.toLowerCase();
       if (!hay.includes(q)) return false;
     }
     // category
-    if (fCat.value !== 'all' && p.category !== fCat.value) return false;
+    if (fCat.value !== 'all' && p.category_id !== fCat.value) return false;
 
     // price
     const price = Number(p.price);
@@ -398,17 +448,6 @@ function starSvgEmpty(){
     wrap.className = (view === 'grid' ? 'grid' : 'list');
 
     wrap.innerHTML = sorted.map(p => cardHTML(p, view==='list')).join('');
-
-    // wire "Add to Cart"
-    wrap.querySelectorAll('[data-add]').forEach(btn=>{
-      btn.addEventListener('click', e=>{
-        const id = e.currentTarget.getAttribute('data-add');
-        const item = PRODUCTS.find(x=>x.id===id);
-        if (!item || !item.in_stock) return;
-        // demo action
-        alert(`${item.name} added to cart ✅`);
-      });
-    });
   }
 
   /* ====== Events ====== */
@@ -439,9 +478,12 @@ document.querySelectorAll(".category-box").forEach(box => {
   });
 });
 
-
-  // initial
+// Set default category to "all" on page load
+document.addEventListener('DOMContentLoaded', () => {
+  fCat.value = 'all';
   render();
+});
+
 tailwind.config = {
       theme: {
         extend: {
@@ -453,12 +495,14 @@ tailwind.config = {
       }
     }
  
-    document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+    document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
       e.preventDefault();
-      const email = document.getElementById('email').value;
-      const message = document.getElementById('message');
+      const email = document.getElementById('email')?.value;
+      const message = document.getElementById('message') || document.createElement('p');
+      message.id = 'message';
+      this.appendChild(message);
 
-      if (!email.includes('@')) {
+      if (!email || !email.includes('@')) {
         message.textContent = "❌ Please enter a valid email.";
         message.className = "text-red-500 text-sm mt-2";
       } else {
@@ -468,9 +512,6 @@ tailwind.config = {
       }
     });
 
-    // ...existing code...
-
 </script>
 </body> 
 </html>
-
