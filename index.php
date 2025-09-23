@@ -1,91 +1,57 @@
 <?php
 session_start();
 if (session_status() === PHP_SESSION_ACTIVE) {
+    require_once 'components/db.php';
 
-    //  Product data 
-    $products = [
-        [
-            "id" => "1",
-            "name" => "TechGiant Gaming PC Elite",
-            "category" => "gaming-pcs",
-            "price" => 44999.99,
-            "old_price" => 49999.99,
-            "discount" => "-10%",
-            "stars" => 4.5,
-            "reviews" => 247,
-            "image" => "https://images.unsplash.com/photo-1636914011676-039d36b73765?...",
-            "in_stock" => true
-        ],
-        [
-            "id" => "2",
-            "name" => "RTX 4080 Super Graphics Card",
-            "category" => "graphics-cards",
-            "price" => 21999.99,
-            "old_price" => null,
-            "discount" => null,
-            "stars" => 4.6,
-            "reviews" => 189,
-            "image" => "https://images.unsplash.com/photo-1634672350437-f9632adc9c3f?...",
-            "in_stock" => true
-        ],
-        [
-            "id" => "3", 
-            "name" => "Gaming Motherboard Z790",
-            "category" => "motherboards",
-            "price" => 6499.99,
-            "old_price" => null,
-            "discount" => null,
-            "stars" => 4.3,
-            "reviews" => 156,
-            "image" => "https://images.unsplash.com/photo-1694444070793-13db645409f4?...",
-            "in_stock" => true
-        ],
-        [
-            "id" => "4",
-            "name" => "4K Gaming Monitor 27\"",
-            "category" => "monitors",
-            "price" => 10999.99,
-            "old_price" => 12999.99,
-            "discount" => "-15%",
-            "stars" => 4.4,
-            "reviews" => 203,
-            "image" => "https://images.unsplash.com/photo-1696710240292-05aad88b94b8?...",
-            "in_stock" => true
-        ]
-    ];
+    // Get categories
+    $stmt = $pdo->query("SELECT * FROM categories");
+    $categories = $stmt->fetchAll() ?: [];
+
+    // Get products
+    $stmt = $pdo->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id");
+    $products = $stmt->fetchAll() ?: [];
 
     // Add to Cart
     if (isset($_POST['add_to_cart'])) {
         $product_id = $_POST['product_id'] ?? '';
         $product_name = $_POST['product_name'] ?? '';
         $product_price = isset($_POST['product_price']) ? floatval($_POST['product_price']) : 0;
+        $product_image = $_POST['image'] ?? '';
 
-        if (!isset($_SESSION['cart'])) {
-            $_SESSION['cart'] = [];
-        }
+        if ($product_id) {
+            // Check if product exists in database
+            $stmt = $pdo->prepare("SELECT id FROM products WHERE id = ?");
+            $stmt->execute([$product_id]);
+            $product_exists = $stmt->fetch() !== false;
 
-       
-        $product_exists = false;
-        foreach ($products as $product) {
-            if ($product['id'] === $product_id) {
-                $product_exists = true;
-                break;
+            if ($product_exists) {
+                $session_id = session_id();
+                try {
+                    // Insert or update cart item in database
+                    $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, 1) 
+                                         ON DUPLICATE KEY UPDATE quantity = quantity + 1");
+                    $stmt->execute([$session_id, $product_id]);
+
+                    // Sync session data
+                    if (!isset($_SESSION['cart'])) {
+                        $_SESSION['cart'] = [];
+                    }
+                    if (isset($_SESSION['cart'][$product_id])) {
+                        $_SESSION['cart'][$product_id]['quantity']++;
+                    } else {
+                        $_SESSION['cart'][$product_id] = [
+                            'name' => $product_name,
+                            'price' => $product_price,
+                            'quantity' => 1,
+                            'image' => $product_image
+                        ];
+                    }
+                } catch (PDOException $e) {
+                    die("Database error: " . $e->getMessage());
+                }
             }
         }
 
-        if ($product_id !== '' && $product_exists) {
-            if (isset($_SESSION['cart'][$product_id])) {
-                $_SESSION['cart'][$product_id]['quantity']++;
-            } else {
-                $_SESSION['cart'][$product_id] = [
-                    'name' => $product_name,
-                    'price' => $product_price,
-                    'quantity' => 1
-                ];
-            }
-        }
-
-      
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
@@ -95,16 +61,6 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     if (isset($_SESSION['cart'])) {
         $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
     }
-
-    // Categories
-    $categories = [
-        ['id' => 'gaming-pcs', 'name' => 'Gaming PCs'],
-        ['id' => 'graphics-cards', 'name' => 'Graphics Cards'],
-        ['id' => 'motherboards', 'name' => 'Motherboards'],
-        ['id' => 'monitors', 'name' => 'Monitors'],
-        ['id' => 'peripherals', 'name' => 'Peripherals'],
-        ['id' => 'audio', 'name' => 'Audio']
-    ];
 } else {
     die("Session failed to start.");
 }
@@ -146,18 +102,17 @@ if (session_status() === PHP_SESSION_ACTIVE) {
         }
 
         .nav a {
-  text-decoration: none;
-  font-weight: bold;
-  margin: 0 10px;
-  font-size: 16px;
-  color: #333;
-  transition: color 0.3s;
-}
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+            font-size: 16px;
+            color: #333;
+            transition: color 0.3s;
+        }
 
-.nav a:hover {
-  color: #ff6a00;
-}
-
+        .nav a:hover {
+            color: #ff6a00;
+        }
 
         .user-actions {
             display: flex;
@@ -567,207 +522,198 @@ if (session_status() === PHP_SESSION_ACTIVE) {
         }
 
         /*Footer Styles*/
-/* ================= FOOTER ================= */
-.site-footer {
-  background-color: #000;
-  color: #f3f4f6;
-  padding-top: 3rem;
-  font-size: 0.875rem;
-}
+        .site-footer {
+            background-color: #000;
+            color: #f3f4f6;
+            padding-top: 3rem;
+            font-size: 0.875rem;
+        }
 
-/* Top section: 4 columns */
-.footer-top {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  padding: 0 1rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 0 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-.footer-col h4 {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
+        .footer-col h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
 
-.footer-col ul {
-  list-style: none;
-  padding: 0;
-}
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
 
-.footer-col ul li {
-  margin-bottom: 0.5rem;
-}
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
 
-.footer-col ul li a {
-  color: #d1d5db;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
+        .footer-col ul li a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
 
-.footer-col ul li a:hover {
-  color: #f97316;
-}
+        .footer-col ul li a:hover {
+            color: #f97316;
+        }
 
-/* Logo */
-.footer-logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
 
-.logo-box {
-  width: 2.5rem;
-  height: 2.5rem;
-  background: #f97316;
-  color: #fff;
-  font-weight: 700;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5rem;
-}
+        .logo-box {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: #f97316;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+        }
 
-.brand-name {
-  font-weight: 700;
-  font-size: 1.2rem;
-}
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
 
-.footer-description {
-  margin-bottom: 1rem;
-  color: #9ca3af;
-}
+        .footer-description {
+            margin-bottom: 1rem;
+            color: #9ca3af;
+        }
 
-.footer-contact li {
-  margin-bottom: 0.3rem;
-  color: #d1d5db;
-}
+        .footer-contact li {
+            margin-bottom: 0.3rem;
+            color: #d1d5db;
+        }
 
-/* Middle row */
-.footer-middle {
-  border-top: 1px solid #374151;
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.85rem;
-  color: #9ca3af;
-  margin: 0 5rem 0 5rem;
-}
+        .footer-middle {
+            border-top: 1px solid #374151;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin: 0 5rem 0 5rem;
+        }
 
-.footer-links {
-  margin: 0.5rem 0;
-}
+        .footer-links {
+            margin: 0.5rem 0;
+        }
 
-.footer-links a {
-  margin: 0 0.75rem;
-  color: #9ca3af;
-  text-decoration: none;
-}
+        .footer-links a {
+            margin: 0 0.75rem;
+            color: #9ca3af;
+            text-decoration: none;
+        }
 
-.footer-links a:hover {
-  color: #f97316;
-}
+        .footer-links a:hover {
+            color: #f97316;
+        }
 
-.powered {
-  margin-top: 0.5rem;
-}
+        .powered {
+            margin-top: 0.5rem;
+        }
 
-.powered span {
-  color: #f97316;
-  font-weight: 600;
-}
+        .powered span {
+            color: #f97316;
+            font-weight: 600;
+        }
 
-/* Newsletter */
-.footer-newsletter {
-  background: #111827;
-  color: #fff;
-  text-align: center;
-  padding: 2rem 1rem;
-  margin: 2rem 0 0 5rem;
-  border-radius: 0.5rem 0.5rem 0 0;
-  max-width: 1200px;
-}
+        .footer-newsletter {
+            background: #111827;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin: 2rem 0 0 5rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            max-width: 1200px;
+        }
 
-.footer-newsletter h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
+        .footer-newsletter h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
 
-.footer-newsletter p {
-  color: #d1d5db;
-  margin-bottom: 1rem;
-}
+        .footer-newsletter p {
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
 
-.newsletter-form {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
 
-.newsletter-form input {
-  padding: 0.75rem 1rem;
-  border-radius: 0.375rem;
-  border: 1px solid #374151;
-  background: #1f2937;
-  color: #f3f4f6;
-  flex: 1;
-  max-width: 250px;
-}
+        .newsletter-form input {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #374151;
+            background: #1f2937;
+            color: #f3f4f6;
+            flex: 1;
+            max-width: 250px;
+        }
 
-.newsletter-form button {
-  padding: 0.75rem 1.5rem;
-  background: #f97316;
-  color: #fff;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+        .newsletter-form button {
+            padding: 0.75rem 1.5rem;
+            background: #f97316;
+            color: #fff;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
-.newsletter-form button:hover {
-  background: #ea580c;
-}
+        .newsletter-form button:hover {
+            background: #ea580c;
+        }
 
-/* Responsive */
-@media (min-width: 768px) {
-  .footer-top {
-    grid-template-columns: repeat(4, 1fr);
-  }
+        @media (min-width: 768px) {
+            .footer-top {
+                grid-template-columns: repeat(4, 1fr);
+            }
 
-  .footer-middle {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-  }
+            .footer-middle {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
 
-  .footer-links {
-    margin: 0;
-  }
-}
-
+            .footer-links {
+                margin: 0;
+            }
+        }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body>
-    <!-- Header -->
     <header class="header">
-    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-     <nav class="nav">
-        <a href="index.php">Home</a>
-        <a href="shop.php">Shop</a>
-        <a href="about.php">About Us</a>
-        <a href="contact.php">Contact</a>
-    </nav>
-
-     <div class="user-actions">
+        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+        <nav class="nav">
+            <a href="index.php">Home</a>
+            <a href="shop.php">Shop</a>
+            <a href="about.php">About Us</a>
+            <a href="contact.php">Contact</a>
+        </nav>
+        <div class="user-actions">
             <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
-     </div>
+        </div>
     </header>
 
     <main>
@@ -831,7 +777,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                         </div>
                         <div class="product-details">
                             <h3><?= htmlspecialchars($product['name']) ?></h3>
-                            <p class="category"><?= htmlspecialchars($product['category']) ?></p>
+                            <p class="category"><?= htmlspecialchars($product['category_name']) ?></p>
                             <p class="rating">★★★★☆ <span class="rating-count">(<?= $product['reviews'] ?>)</span></p>
                             <p class="price">R<?= number_format($product['price'], 2) ?>
                                 <?php if ($product['old_price']): ?>
@@ -842,6 +788,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                                 <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']) ?>">
                                 <input type="hidden" name="product_name" value="<?= htmlspecialchars($product['name']) ?>">
                                 <input type="hidden" name="product_price" value="<?= htmlspecialchars($product['price']) ?>">
+                                <input type="hidden" name="image" value="<?= htmlspecialchars($product['image']) ?>">
                                 <button type="submit" name="add_to_cart" class="add-to-cart">🛒 Add to Cart</button>
                             </form>
                         </div>
@@ -859,147 +806,123 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     </main>
 
     <!-- Footer -->
-  <footer class="site-footer">
-  <div class="footer-top">
-    <!-- Column 1: Logo + Info -->
-    <div class="footer-col">
-      <div class="footer-logo">
-        <div class="logo-box">TG</div>
-        <span class="brand-name">Tech Giants</span>
-      </div>
-      <p class="footer-description">
-        South Africa's premier destination for gaming hardware and accessories. 
-        We provide cutting-edge technology for serious gamers who demand the best performance.
-      </p>
-      <ul class="footer-contact">
-        <li>📍 Pretoria, Gauteng</li>
-        <li>📞 +27 21 123 4567</li>
-        <li>✉️ info@techgiants.co.za</li>
-      </ul>
-    </div>
-
-    <!-- Column 2: About -->
-    <div class="footer-col">
-      <h4>About Us</h4>
-      <ul>
-        <li><a href="#">Our Story</a></li>
-        <li><a href="#">Why Choose Us</a></li>
-        <li><a href="#">Gaming Community</a></li>
-        <li><a href="#">Expert Reviews</a></li>
-        <li><a href="#">Careers</a></li>
-      </ul>
-    </div>
-
-    <!-- Column 3: Quick Links -->
-    <div class="footer-col">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="#">Gaming PCs</a></li>
-        <li><a href="#">Graphics Cards</a></li>
-        <li><a href="#">Gaming Peripherals</a></li>
-        <li><a href="#">Special Deals</a></li>
-        <li><a href="#">Build Configurator</a></li>
-      </ul>
-    </div>
-
-    <!-- Column 4: Connect -->
-    <div class="footer-col">
-      <h4>Connect With Us</h4>
-      <ul>
-        <li>📸 @techgiants</li>
-        <li>🌍 techgiants.co.za</li>
-        <li>🎵 @techgiants</li>
-      </ul>
-      <ul class="footer-support">
-        <li><a href="#">Customer Support</a></li>
-        <li><a href="#">Warranty Claims</a></li>
-        <li><a href="#">Return Policy</a></li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- Middle Row -->
-  <div class="footer-middle">
-    <p>© 2024 Tech Giants. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Shipping Info</a>
-    </div>
-    <p class="powered">Powered by <span>Gaming Excellence</span></p>
-  </div>
-
-  <!-- Newsletter -->
-  <div class="footer-newsletter">
-    <h3>Stay Updated with Tech Giants</h3>
-    <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-    <form class="newsletter-form">
-      <input type="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe</button>
-    </form>
-  </div>
-</footer>
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <div class="logo-box">TG</div>
+                    <span class="brand-name">Tech Giants</span>
+                </div>
+                <p class="footer-description">
+                    South Africa's premier destination for gaming hardware and accessories. 
+                    We provide cutting-edge technology for serious gamers who demand the best performance.
+                </p>
+                <ul class="footer-contact">
+                    <li>📍 Pretoria, Gauteng</li>
+                    <li>📞 +27 21 123 4567</li>
+                    <li>✉️ info@techgiants.co.za</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>About Us</h4>
+                <ul>
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Why Choose Us</a></li>
+                    <li><a href="#">Gaming Community</a></li>
+                    <li><a href="#">Expert Reviews</a></li>
+                    <li><a href="#">Careers</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Gaming PCs</a></li>
+                    <li><a href="#">Graphics Cards</a></li>
+                    <li><a href="#">Gaming Peripherals</a></li>
+                    <li><a href="#">Special Deals</a></li>
+                    <li><a href="#">Build Configurator</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect With Us</h4>
+                <ul>
+                    <li>📸 @techgiants</li>
+                    <li>🌍 techgiants.co.za</li>
+                    <li>🎵 @techgiants</li>
+                </ul>
+                <ul class="footer-support">
+                    <li><a href="#">Customer Support</a></li>
+                    <li><a href="#">Warranty Claims</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-middle">
+            <p>© 2024 Tech Giants. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Shipping Info</a>
+            </div>
+            <p class="powered">Powered by <span>Gaming Excellence</span></p>
+        </div>
+        <div class="footer-newsletter">
+            <h3>Stay Updated with Tech Giants</h3>
+            <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </footer>
 
     <script>
-        // Navigation for header logo and buttons
         document.querySelector('.logo').addEventListener('click', () => {
-            window.location.href = 'home.php';
+            window.location.href = 'index.php';
         });
-
-        document.querySelectorAll('.nav button').forEach(button => {
-            button.addEventListener('click', () => {
-                const page = button.getAttribute('data-page');
-                window.location.href = `${page}.php`;
+        document.querySelectorAll('.nav a').forEach(a => {
+            a.addEventListener('click', () => {
+                const page = a.getAttribute('href');
+                window.location.href = page;
             });
         });
-
-        // Navigation for user actions
         document.querySelector('.account-link').addEventListener('click', () => {
             window.location.href = 'signin.php';
         });
-
         document.querySelector('.cart-link').addEventListener('click', () => {
             window.location.href = 'cart.php';
         });
-
-        // Navigation for category boxes
         document.querySelectorAll('.category-box').forEach(box => {
             box.addEventListener('click', () => {
                 const category = box.getAttribute('data-cat');
                 window.location.href = `shop.php?category=${category}`;
             });
         });
-
-        // Navigation for view all and CTA link
         document.querySelector('.view-all').addEventListener('click', () => {
             window.location.href = 'shop.php';
         });
-
         document.querySelector('.cta-link').addEventListener('click', () => {
             window.location.href = 'shop.php';
         });
-
-        // Navigation for footer links
         document.querySelectorAll('footer a').forEach(link => {
             link.addEventListener('click', (e) => {
                 const href = link.getAttribute('href');
                 if (href) window.location.href = href;
             });
         });
-
-        // JavaScript for Newsletter
-        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+        document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = document.getElementById('email').value;
-            const message = document.getElementById('message');
-
+            const email = this.querySelector('input').value;
+            const message = document.createElement('p');
+            message.id = 'message';
+            this.appendChild(message);
             if (!email.includes('@')) {
                 message.textContent = "❌ Please enter a valid email.";
                 message.className = "text-red-500 text-sm mt-2";
             } else {
                 message.textContent = "✅ Thank you for subscribing!";
                 message.className = "text-green-500 text-sm mt-2";
-                document.getElementById('email').value = "";
+                this.querySelector('input').value = "";
             }
         });
     </script>
