@@ -70,131 +70,12 @@ $total = $subtotal + $shipping;
 $cart_count = array_sum(array_column($cart_items, 'quantity'));
 ?>
 
-
-<style>
-body {
-  font-family: 'Inter', sans-serif;
-  margin: 0;
-  background: #f9fafb;
-  color: #111827;
-}
-
-.header {
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo { font-weight: 700; color: #f97316; cursor: pointer; }
-
-.nav a {
-  margin: 0 10px;
-  text-decoration: none;
-  font-weight: 500;
-  color: #374151;
-}
-
-.nav a:hover { color: #f97316; }
-
-.user-actions a { margin-left: 1rem; text-decoration: none; color: #374151; }
-
-.cart-badge {
-  background: #f97316;
-  color: #fff;
-  border-radius: 50%;
-  padding: 2px 8px;
-  font-size: 0.8rem;
-}
-
-.cart-page { padding: 2rem; }
-
-.cart-header { margin-bottom: 1.5rem; }
-.cart-header h1 { margin: 0; font-size: 1.75rem; }
-.cart-header p { color: #6b7280; }
-
-.cart-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-}
-
-/* Cart Item */
-.cart-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #fff;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid #e5e7eb;
-  margin-bottom: 1rem;
-}
-
-.cart-item img {
-  width: 80px; height: 80px; border-radius: 0.5rem; object-fit: cover;
-}
-
-.item-info { flex: 1; margin-left: 1rem; }
-.item-info h3 { margin: 0; font-size: 1.1rem; font-weight: 600; }
-.item-info .category { color: #6b7280; font-size: 0.9rem; }
-
-.quantity-controls {
-  display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem;
-}
-
-.quantity-controls button {
-  background: #f3f4f6; border: 1px solid #d1d5db; padding: 0.3rem 0.75rem;
-  border-radius: 0.375rem; cursor: pointer; font-weight: 600;
-}
-
-.item-price { text-align: right; }
-.item-price strong { color: #f97316; display: block; }
-.item-price p { color: #6b7280; font-size: 0.9rem; }
-
-.remove-btn { border: none; background: none; color: #ef4444; cursor: pointer; }
-
-/* Order Summary */
-.order-summary {
-  background: #fff;
-  padding: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid #e5e7eb;
-}
-
-.order-summary h2 { margin-bottom: 1rem; }
-
-.summary-row {
-  display: flex; justify-content: space-between; margin: 0.5rem 0;
-}
-
-.summary-row.total { font-weight: 700; border-top: 1px solid #e5e7eb; padding-top: 0.5rem; }
-
-.summary-row .free { color: #10b981; font-weight: 600; }
-
-.checkout-btn {
-  background: #f97316; 
-  color: #fff; 
-  border: none;
-  padding: 0.50rem; 
-  border-radius: 0.5rem; 
-  font-weight: 600;
-  margin: 10px 0 0 0;
-}
-.checkout-btn:hover { background: black; }
-
-.note { margin-top: 1rem; font-size: 0.9rem; color: #374151; }
-
-</style>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Shopping Cart</title>
-  <link rel="stylesheet" href="styles/cart.css">
+ <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header class="header">
@@ -290,5 +171,86 @@ body {
       </div>
     <?php endif; ?>
   </main>
+  <!-- Footer -->
+  <footer class="site-footer">
+  <div class="footer-top">
+    <!-- Column 1: Logo + Info -->
+    <div class="footer-col">
+      <div class="footer-logo">
+        <div class="logo-box">TG</div>
+        <span class="brand-name">Tech Giants</span>
+      </div>
+      <p class="footer-description">
+        South Africa's premier destination for gaming hardware and accessories. 
+        We provide cutting-edge technology for serious gamers who demand the best performance.
+      </p>
+      <ul class="footer-contact">
+        <li>📍 Pretoria, Gauteng</li>
+        <li>📞 +27 21 123 4567</li>
+        <li>✉️ info@techgiants.co.za</li>
+      </ul>
+    </div>
+
+    <!-- Column 2: About -->
+    <div class="footer-col">
+      <h4>About Us</h4>
+      <ul>
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Why Choose Us</a></li>
+        <li><a href="#">Gaming Community</a></li>
+        <li><a href="#">Expert Reviews</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: Quick Links -->
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#">Gaming PCs</a></li>
+        <li><a href="#">Graphics Cards</a></li>
+        <li><a href="#">Gaming Peripherals</a></li>
+        <li><a href="#">Special Deals</a></li>
+        <li><a href="#">Build Configurator</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4: Connect -->
+    <div class="footer-col">
+      <h4>Connect With Us</h4>
+      <ul>
+        <li>📸 @techgiants</li>
+        <li>🌍 techgiants.co.za</li>
+        <li>🎵 @techgiants</li>
+      </ul>
+      <ul class="footer-support">
+        <li><a href="#">Customer Support</a></li>
+        <li><a href="#">Warranty Claims</a></li>
+        <li><a href="#">Return Policy</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Middle Row -->
+  <div class="footer-middle">
+    <p>© 2024 Tech Giants. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Shipping Info</a>
+    </div>
+    <p class="powered">Powered by <span>Gaming Excellence</span></p>
+  </div>
+
+  <!-- Newsletter -->
+  <div class="footer-newsletter">
+    <h3>Stay Updated with Tech Giants</h3>
+    <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
+    <form class="newsletter-form">
+      <input type="email" placeholder="Enter your email" required>
+      <button type="submit">Subscribe</button>
+    </form>
+  </div>
+</footer>
 </body>
 </html>
