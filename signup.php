@@ -1,37 +1,35 @@
 <?php
 session_start();
-if (session_status() === PHP_SESSION_ACTIVE) {
-    if (isset($_SESSION['user_id'])) {
-        header("Location: account.php");
-        exit;
-    }
+require_once 'components/db.php';
 
-    $error = '';
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $username = trim($_POST['username'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $password = trim($_POST['password'] ?? '');
-        $confirm_password = trim($_POST['confirm_password'] ?? '');
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-        // Basic validation
-        if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
-            $error = "All fields are required.";
-        } elseif ($password !== $confirm_password) {
-            $error = "Passwords do not match.";
-        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $error = "Invalid email format.";
-        } else {
-            // Simulate user registration (replace with database logic)
-            $_SESSION['user_id'] = uniqid();
-            $_SESSION['username'] = $username;
-            header("Location: signin.php");
-            exit;
+    if ($email && $password) {
+        try {
+            $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
+
+            if ($user && password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                header("Location: account.php");
+                exit;
+            } else {
+                $error = "Invalid email or password.";
+            }
+        } catch (PDOException $e) {
+            $error = "An error occurred. Please try again.";
         }
+    } else {
+        $error = "Please fill in all fields.";
     }
-} else {
-    die("Session failed to start.");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -122,7 +120,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 </head>
 <body>
     <div class="container">
-        <div class="logo">Tech Giants</div>
+        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
         <h2>Sign Up</h2>
         <?php if ($error): ?>
             <div class="error"><?= htmlspecialchars($error) ?></div>
@@ -150,7 +148,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     </div>
     <script>
         document.querySelector('.logo').addEventListener('click', () => {
-            window.location.href = 'home.php';
+            window.location.href = 'index.php';
         });
     </script>
 </body>

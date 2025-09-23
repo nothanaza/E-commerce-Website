@@ -1,30 +1,35 @@
 <?php
 session_start();
-if (session_status() === PHP_SESSION_ACTIVE) {
-    if (isset($_SESSION['user_id'])) {
-        header("Location: account.php");
-        exit;
-    }
+require_once 'components/db.php';
 
-    $error = '';
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $email = trim($_POST['email'] ?? '');
-        $password = trim($_POST['password'] ?? '');
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-        // Simulate user login (replace with database logic)
-        if ($email === 'test@example.com' && $password === 'password123') {
-            $_SESSION['user_id'] = uniqid();
-            $_SESSION['username'] = 'TestUser';
-            header("Location: account.php");
-            exit;
-        } else {
-            $error = "Invalid email or password.";
+    if ($email && $password) {
+        try {
+            $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE email = ?");
+            $stmt->execute([$email]);
+            $user = $stmt->fetch();
+
+            if ($user && password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                header("Location: account.php");
+                exit;
+            } else {
+                $error = "Invalid email or password.";
+            }
+        } catch (PDOException $e) {
+            $error = "An error occurred. Please try again.";
         }
+    } else {
+        $error = "Please fill in all fields.";
     }
-} else {
-    die("Session failed to start.");
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,7 +120,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 </head>
 <body>
     <div class="container">
-        <div class="logo">Tech Giants</div>
+        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
         <h2>Sign In</h2>
         <?php if ($error): ?>
             <div class="error"><?= htmlspecialchars($error) ?></div>
@@ -135,7 +140,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     </div>
     <script>
         document.querySelector('.logo').addEventListener('click', () => {
-            window.location.href = 'home.php';
+            window.location.href = 'index.php';
         });
     </script>
 </body>

@@ -703,18 +703,20 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 </head>
 <body>
     <header class="header">
-        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-        <nav class="nav">
-            <a href="index.php">Home</a>
-            <a href="shop.php">Shop</a>
-            <a href="about.php">About Us</a>
-            <a href="contact.php">Contact</a>
-        </nav>
-        <div class="user-actions">
+    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+     <nav class="nav">
+        <a href="index.php">Home</a>
+        <a href="shop.php">Shop</a>
+        <a href="about.php">About Us</a>
+        <a href="contact.php">Contact</a>
+    </nav>
+
+     <div class="user-actions">
             <a href="signin.php" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
-        </div>
+     </div>
     </header>
+
 
     <main>
         <!-- HERO -->
