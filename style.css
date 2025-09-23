@@ -1059,10 +1059,24 @@ body {
         grid-column: span 1;
       }
     }
+/* ====== THANK YOU PAGE ====== */
+
 .thank-you-page {
   text-align: center;
   margin-top: 4rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 3rem 2rem;
+  width: 100% ;
+  max-width: 500px ;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
+
+
 .thank-you-page h1 {
   font-size: 32px;
   color: #10b981;
@@ -1071,5 +1085,28 @@ body {
   font-size: 18px;
   color: #374151;
 }
+.thank-you-page a {
+      display: inline-block;
+      margin-top: 1.5rem;
+      background: #f97316;
+      color: #fff;
+      text-decoration: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .thank-you-page a:hover {
+      background: #000;
+    }
+
+     @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .thank-you-page {
+      animation: fadeIn 0.5s ease-out;
+    }
 
 
