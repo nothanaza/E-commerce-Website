@@ -344,17 +344,16 @@ function starSvgEmpty(){
   return `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#d1d5db"/></svg>`;
 }
 
- 
 function cardHTML(p, isList=false){
   const sale = p.old_price && p.price < p.old_price;
   const cat = p.category_name;
-  const out = !p.in_stock; // Debug: Check if this evaluates to true for out-of-stock
+  const out = !p.in_stock;
 
-  // Debug: Log the product status
-  // Uncomment next line to verify: console.log("Product ID: " + p.id + ", In Stock: " + p.in_stock + ", Out: " + out);
+  // Debug: Uncomment to verify
+  // console.log("Product ID: " + p.id + ", In Stock: " + p.in_stock + ", Out: " + out);
 
   const topBadge = out
-    ? `<div class="badge out" style="position: absolute; top: 10px; left: 10px;">Out of Stock</div>`
+    ? `<div class="badge out">Out of Stock</div>`
     : (p.discount ? `<div class="badge">${p.discount}</div>` : ``);
 
   const rating = `
@@ -370,7 +369,7 @@ function cardHTML(p, isList=false){
     </div>`;
 
   const btn = out
-    ? `<button class="btn out-of-stock" disabled style="background-color: #ff0000; color: #fff;">${cartIcon()} Out of Stock</button>`
+    ? `<button class="btn out-of-stock" disabled>${cartIcon()} Out of Stock</button>`
     : `
       <form method="POST" action="shop.php" style="display:inline;">
         <input type="hidden" name="add_to_cart" value="1">
@@ -386,7 +385,7 @@ function cardHTML(p, isList=false){
   return `
     <a href="product.php?id=${p.id}" class="card-link">
     <div class="card ${isList ? 'list-row' : ''}" data-id="${p.id}" data-cat="${p.category_id}" data-price="${p.price}" data-stars="${p.stars}">
-      <div class="card-img" style="position: relative;">
+      <div class="card-img">
         ${topBadge}
         <img src="${p.image}" alt="${p.name}">
       </div>
@@ -399,7 +398,6 @@ function cardHTML(p, isList=false){
       </div>
     </div>`;
 }
-
   function cartIcon(){
     return `<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
       <path d="M6 6h15l-1.5 9h-12L6 6z"></path><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle>
