@@ -229,6 +229,13 @@ p{
   color: #6b7280;
   font-size : 0.7rem;
 }
+
+.our-story {
+  background: #fff;
+  padding: 40px 20px;
+  margin-top: 1rem;
+}
+
 section .grid {
   display: flex;
   gap: 2rem;
@@ -271,6 +278,8 @@ section img {
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   transition: box-shadow 0.3s ease;
+  max-width: 350px;
+
 }
 
 .card:hover {
@@ -285,11 +294,12 @@ section img {
 .card p {
   font-size: 0.8rem;
   color: #6b7280;
+  padding: 1rem;
 }
 
 .value-bg {
   background: #f97316;
-  border-radius: 50%;
+  border-radius: 100%;
   width: 5rem;
   display: flex;
   align-items: center;
@@ -302,7 +312,7 @@ section img {
   height: 50px;
   align-items: center;
   padding-top: 8px;
-  margin-top:0.5rem;
+  margin-top:0.3rem;
 }
 
 /* ========== CTA Section ========== */
