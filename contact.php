@@ -1,6 +1,39 @@
 <?php
-
 session_start();
+require_once 'components/db.php'; // Ensure this path matches your project
+
+// Initialize variables for form and messages
+$name = $email = $phone = $inquiry_type = $subject = $message = '';
+$success = $error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get form data
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $phone = trim($_POST['phone'] ?? '');
+    $inquiry_type = trim($_POST['inquiry'] ?? '');
+    $subject = trim($_POST['subject'] ?? '');
+    $message = trim($_POST['message'] ?? '');
+
+    // Validation
+    if (empty($name) || empty($email) || empty($message)) {
+        $error = "Name, email, and message are required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Invalid email format.";
+    } else {
+        try {
+            // Prepare and execute insert query
+            $stmt = $pdo->prepare("INSERT INTO contacts (name, email, phone, inquiry_type, subject, message) VALUES (?, ?, ?, ?, ?, ?)");
+            $stmt->execute([$name, $email, $phone, $inquiry_type, $subject, $message]);
+
+            $success = "Thank you! Your message has been sent.";
+            // Clear form data
+            $name = $email = $phone = $inquiry_type = $subject = $message = '';
+        } catch (PDOException $e) {
+            $error = "Error saving message: " . $e->getMessage();
+        }
+    }
+}
 
 // Get cart count for header
 $cart_count = 0;
@@ -709,49 +742,48 @@ if (isset($_SESSION['cart'])) {
                 <div class="info-box">
                     <h2>Send us a Message</h2>
                     <p>Fill out the form below and we'll get back to you as soon as possible.</p>
-                    
-                    <form>
-                        <div class="form-group">
-                            <label for="name">Full Name *</label>
-                            <input type="text" id="name" class="form-control" placeholder="Your full name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="email">Email Address *</label>
-                            <input type="email" id="email" class="form-control" placeholder="your.email@example.com" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" class="form-control" placeholder="+27 XX XXX XXXX">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="inquiry">Inquiry Type</label>
-                            <select id="inquiry" class="form-control">
-                                <option value="">Select a category</option>
-                                <option value="general">General Inquiry</option>
-                                <option value="support">Technical Support</option>
-                                <option value="sales">Sales Question</option>
-                                <option value="warranty">Warranty Claim</option>
-                                <option value="feedback">Feedback</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="subject">Subject</label>
-                            <input type="text" id="subject" class="form-control" placeholder="Brief description of your inquiry">
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="message">Message *</label>
-                            <textarea id="message" class="form-control" placeholder="Please provide details about your inquiry..." required></textarea>
-                        </div>
-                        
-                        <div class="form-button-container">
-                            <button type="submit" class="btn btn-black">Send Message</button>
-                        </div>
-                    </form>
+                   <?php if ($success): ?>
+    <p class="success" style="color: green; font-weight: bold; text-align: center; margin-bottom: 1rem;"><?= htmlspecialchars($success) ?></p>
+<?php elseif ($error): ?>
+    <p class="error" style="color: red; font-weight: bold; text-align: center; margin-bottom: 1rem;"><?= htmlspecialchars($error) ?></p>
+<?php endif; ?> 
+
+<form method="POST" action="contact.php">
+    <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input type="text" id="name" name="name" class="form-control" placeholder="Your full name" value="<?= htmlspecialchars($name) ?>" required>
+    </div>
+    <div class="form-group">
+        <label for="email">Email Address *</label>
+        <input type="email" id="email" name="email" class="form-control" placeholder="your.email@example.com" value="<?= htmlspecialchars($email) ?>" required>
+    </div>
+    <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" class="form-control" placeholder="+27 XX XXX XXXX" value="<?= htmlspecialchars($phone) ?>">
+    </div>
+    <div class="form-group">
+        <label for="inquiry">Inquiry Type</label>
+        <select id="inquiry" name="inquiry" class="form-control">
+            <option value="">Select a category</option>
+            <option value="general" <?= $inquiry_type === 'general' ? 'selected' : '' ?>>General Inquiry</option>
+            <option value="support" <?= $inquiry_type === 'support' ? 'selected' : '' ?>>Technical Support</option>
+            <option value="sales" <?= $inquiry_type === 'sales' ? 'selected' : '' ?>>Sales Question</option>
+            <option value="warranty" <?= $inquiry_type === 'warranty' ? 'selected' : '' ?>>Warranty Claim</option>
+            <option value="feedback" <?= $inquiry_type === 'feedback' ? 'selected' : '' ?>>Feedback</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="subject" class="form-control" placeholder="Brief description of your inquiry" value="<?= htmlspecialchars($subject) ?>">
+    </div>
+    <div class="form-group">
+        <label for="message">Message *</label>
+        <textarea id="message" name="message" class="form-control" placeholder="Please provide details about your inquiry..." required><?= htmlspecialchars($message) ?></textarea>
+    </div>
+    <div class="form-button-container">
+        <button type="submit" class="btn btn-black">Send Message</button>
+    </div>
+</form>
                 </div>
                 
                 <div>
