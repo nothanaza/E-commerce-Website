@@ -2,31 +2,53 @@
 session_start();
 require_once 'components/db.php';
 
-$error = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = trim($_POST['password'] ?? '');
-
-    if ($email && $password) {
-        try {
-            $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE email = ?");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch();
-
-            if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                header("Location: account.php");
-                exit;
-            } else {
-                $error = "Invalid email or password.";
-            }
-        } catch (PDOException $e) {
-            $error = "An error occurred. Please try again.";
-        }
-    } else {
-        $error = "Please fill in all fields.";
+if (session_status() === PHP_SESSION_ACTIVE) {
+    if (isset($_SESSION['user_id'])) {
+        header("Location: user/my_account.php");
+        exit;
     }
+
+    $error = '';
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $email = trim($_POST['email'] ?? '');
+        $password = trim($_POST['password'] ?? '');
+
+        if ($email && $password) {
+            try {
+                $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE email = ?");
+                $stmt->execute([$email]);
+                $user = $stmt->fetch();
+
+                // Debug: Check if user is found
+                if ($user) {
+                    echo "<!-- User found: " . print_r($user, true) . " -->";
+                } else {
+                    echo "<!-- No user found for email: $email -->";
+                }
+
+                if ($user && password_verify($password, $user['password'])) {
+                    $_SESSION['user_id'] = $user['id'];
+                    $_SESSION['username'] = $user['username'];
+                    // Debug: Confirm session set
+                    echo "<!-- Session set: user_id = " . $_SESSION['user_id'] . ", username = " . $_SESSION['username'] . " -->";
+                    header("Location: account.php");
+                    exit;
+                } else {
+                    $error = "Invalid email or password.";
+                    // Debug: Password verification failed
+                    echo "<!-- Password verify failed for email: $email -->";
+                }
+            } catch (PDOException $e) {
+                $error = "An error occurred. Please try again: " . $e->getMessage();
+                // Debug: Database error
+                echo "<!-- Database error: " . $e->getMessage() . " -->";
+            }
+        } else {
+            $error = "Please fill in all fields.";
+        }
+    }
+} else {
+    die("Session failed to start.");
 }
 ?>
 

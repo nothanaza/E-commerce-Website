@@ -4,28 +4,38 @@ require_once 'components/db.php';
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim($_POST['username'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = trim($_POST['password'] ?? '');
+    $confirm_password = trim($_POST['confirm_password'] ?? '');
 
-    if ($email && $password) {
+    // Validation
+    if (empty($username) || empty($email) || empty($password) || empty($confirm_password)) {
+        $error = "All fields are required.";
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Invalid email format.";
+    } elseif ($password !== $confirm_password) {
+        $error = "Passwords do not match.";
+    } else {
         try {
-            $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE email = ?");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch();
-
-            if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                header("Location: account.php");
-                exit;
+            // Check if email or username already exists
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? OR username = ?");
+            $stmt->execute([$email, $username]);
+            if ($stmt->fetch()) {
+                $error = "Email or username already exists.";
             } else {
-                $error = "Invalid email or password.";
+                // Insert new user with hashed password
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
+                $stmt->execute([$username, $email, $hashed_password]);
+
+                // Redirect to sign in after successful registration
+                header("Location: signin.php");
+                exit;
             }
         } catch (PDOException $e) {
-            $error = "An error occurred. Please try again.";
+            $error = "Database error: " . $e->getMessage();
         }
-    } else {
-        $error = "Please fill in all fields.";
     }
 }
 ?>
@@ -152,4 +162,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         });
     </script>
 </body>
-</html>
+</html> 

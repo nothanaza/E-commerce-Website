@@ -1,32 +1,22 @@
 <?php
 session_start();
-require_once 'components/db.php';
+require_once '../components/db.php'; // Adjusted path to move up one directory
 
-$error = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = trim($_POST['email'] ?? '');
-    $password = trim($_POST['password'] ?? '');
+// ✅ Redirect if not logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../signin.php");
+    exit;
+}
 
-    if ($email && $password) {
-        try {
-            $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE email = ?");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch();
+// ✅ Fetch user details from DB
+$stmt = $pdo->prepare("SELECT username, email FROM users WHERE id = ?");
+$stmt->execute([$_SESSION['user_id']]);
+$user = $stmt->fetch();
 
-            if ($user && password_verify($password, $user['password'])) {
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                header("Location: account.php");
-                exit;
-            } else {
-                $error = "Invalid email or password.";
-            }
-        } catch (PDOException $e) {
-            $error = "An error occurred. Please try again.";
-        }
-    } else {
-        $error = "Please fill in all fields.";
-    }
+if (!$user) {
+    // If user not found, force logout
+    header("Location: ../logout.php");
+    exit;
 }
 ?>
 

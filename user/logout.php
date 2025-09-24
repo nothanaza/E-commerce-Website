@@ -1,7 +1,11 @@
-
 <?php
 session_start();
-session_destroy();
-header("Location: index.php");
+
+// Destroy the session to log the user out
+session_unset(); // Remove all session variables
+session_destroy(); // Destroy the session
+
+// Redirect to the home page
+header("Location: ../index.php");
 exit;
 ?>
