@@ -1,39 +1,82 @@
 <?php
 session_start();
-require_once 'components/db.php'; // Ensure this path matches your project
+require_once 'components/db.php';
+$mailConfig = require_once 'components/mail_config.php'; // load SMTP config
 
-// Initialize variables for form and messages
+// PHPMailer autoload (from Composer)
+require_once __DIR__ . '/vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 $name = $email = $phone = $inquiry_type = $subject = $message = '';
 $success = $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Get form data
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $phone = trim($_POST['phone'] ?? '');
     $inquiry_type = trim($_POST['inquiry'] ?? '');
-    $subject = trim($_POST['subject'] ?? '');
+    $subject = trim($_POST['subject'] ?? 'No Subject');
     $message = trim($_POST['message'] ?? '');
 
-    // Validation
     if (empty($name) || empty($email) || empty($message)) {
         $error = "Name, email, and message are required.";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $error = "Invalid email format.";
     } else {
         try {
-            // Prepare and execute insert query
+            // 1) Save to DB (your existing code)
             $stmt = $pdo->prepare("INSERT INTO contacts (name, email, phone, inquiry_type, subject, message) VALUES (?, ?, ?, ?, ?, ?)");
             $stmt->execute([$name, $email, $phone, $inquiry_type, $subject, $message]);
 
+            // 2) Send email with PHPMailer (SMTP)
+            $mail = new PHPMailer(true);
+
+            // SMTP configuration (from your config)
+            $mail->isSMTP();
+            $mail->Host       = $mailConfig['host'];
+            $mail->SMTPAuth   = true;
+            $mail->Username   = $mailConfig['username'];
+            $mail->Password   = $mailConfig['password'];
+            // choose encryption constant based on config
+            if (strtolower($mailConfig['secure']) === 'ssl') {
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // for port 465
+            } else {
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // for port 587
+            }
+            $mail->Port       = $mailConfig['port'];
+
+            // From / To / Reply-To
+            $mail->setFrom($mailConfig['from_email'], $mailConfig['from_name']);
+            $mail->addAddress($mailConfig['to_email']);        // where form messages go
+            $mail->addReplyTo($email, $name);                  // reply to visitor
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = "Contact form: " . $subject;
+            $mail->Body = "
+                <h2>New contact form submission</h2>
+                <p><strong>Name:</strong> " . htmlspecialchars($name) . "</p>
+                <p><strong>Email:</strong> " . htmlspecialchars($email) . "</p>
+                <p><strong>Phone:</strong> " . htmlspecialchars($phone) . "</p>
+                <p><strong>Inquiry:</strong> " . htmlspecialchars($inquiry_type) . "</p>
+                <p><strong>Subject:</strong> " . htmlspecialchars($subject) . "</p>
+                <p><strong>Message:</strong><br>" . nl2br(htmlspecialchars($message)) . "</p>
+            ";
+            $mail->AltBody = "Name: $name\nEmail: $email\nPhone: $phone\nInquiry: $inquiry_type\nSubject: $subject\nMessage:\n$message";
+
+            $mail->send();
             $success = "Thank you! Your message has been sent.";
-            // Clear form data
+            // clear form variables if desired
             $name = $email = $phone = $inquiry_type = $subject = $message = '';
-        } catch (PDOException $e) {
-            $error = "Error saving message: " . $e->getMessage();
+        } catch (Exception $e) {
+            // Log $e->getMessage() on server-side for debugging; show friendly message to user
+            $error = "Message saved but failed to send email. Mailer Error: " . $e->getMessage();
         }
     }
 }
+
 
 // Get cart count for header
 $cart_count = 0;
