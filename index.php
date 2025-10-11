@@ -73,6 +73,8 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Premium gaming hardware store featuring PCs, graphics cards, motherboards, and monitors.">
     <link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/controller.png" type="image/png">
+    <!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>The Tech Giants - Gaming Hardware Store</title>
     <style>
         body {
@@ -244,6 +246,59 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             display: block;
         }
 
+.features-section {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 40px;
+  padding: 60px 20px;
+  background-color: #ff6600;
+  flex-wrap: wrap;
+}
+
+.feature-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  padding: 40px 30px;
+  flex: 1 1 300px;
+  max-width: 380px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card .icon {
+  background-color: #ff6600;
+  color: #fff;
+  font-size: 28px;
+  border-radius: 12px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto 20px;
+}
+
+.feature-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+
         .categories {
             padding: 50px 20px;
             text-align: center;
@@ -281,7 +336,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 
         .category-box:hover {
             transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px #ff6600;
         }
 
         .category-icon {
@@ -737,6 +792,26 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                 </div>
             </div>
         </section>
+
+<section class="features-section">
+  <div class="feature-card">
+    <div class="icon"><i class="fas fa-bolt"></i></div>
+    <h3>High Performance</h3>
+    <p>Latest hardware for maximum gaming performance</p>
+  </div>
+
+  <div class="feature-card">
+    <div class="icon"><i class="fas fa-shield-alt"></i></div>
+    <h3>2 Year Warranty</h3>
+    <p>Comprehensive warranty on all gaming products</p>
+  </div>
+
+  <div class="feature-card">
+    <div class="icon"><i class="fas fa-truck-fast"></i></div>
+    <h3>Fast Shipping</h3>
+    <p>Free shipping on orders over R3500</p>
+  </div>
+</section>
 
         <!-- SHOP BY CATEGORY -->
         <section id="categories" class="categories">
