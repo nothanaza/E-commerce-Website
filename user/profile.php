@@ -77,82 +77,8 @@ $vip_status = $stats['total_spent'] > 500 || $years_member > 2 ? 'VIP' : 'Regula
             background: #f9f9f9;
             color: #222;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            padding: 20px 0;
         }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        header {
-            background: #fff;
-            border-bottom: 1px solid #ddd;
-            padding: 15px 0;
-            width: 100%;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            color: #ff6a00;
-            cursor: pointer;
-        }
-
-        .nav a {
-            text-decoration: none;
-            font-weight: 600;
-            margin: 0 10px;
-            font-size: 16px;
-            color: #333;
-            transition: color 0.3s;
-        }
-
-        .nav a:hover {
-            color: #ff6a00;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .account-link, .cart-link {
-            text-decoration: none;
-            color: #333;
-            margin-left: 10px;
-            transition: color 0.3s;
-        }
-
-        .account-link:hover, .cart-link:hover {
-            color: #ff6a00;
-        }
-
-        .cart-badge {
-            background: #ff6a00;
-            color: #fff;
-            padding: 3px 8px;
-            border-radius: 50%;
-            font-size: 12px;
-        }
-
-        main {
-            flex: 1 0 auto;
-            width: 100%;
-        }
-
         .profile-container {
             background: #fff;
             border-radius: 16px;
@@ -496,131 +422,54 @@ $vip_status = $stats['total_spent'] > 500 || $years_member > 2 ? 'VIP' : 'Regula
         }
     </style>
 </head>
+ <header class="header">
+    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+    <nav class="nav">
+      <a href="index.php">Home</a>
+      <a href="shop.php">Shop</a>
+      <a href="about.php">About Us</a>
+      <a href="contact.php">Contact</a>
+    </nav>
+    <div class="user-actions">
+      <a href="signin.php" class="account-link">👤 My Account</a>
+      <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= $cart_count ?></span></a>
+    </div>
+  </header>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-            <nav class="nav">
-                <a href="index.php">Home</a>
-                <a href="shop.php">Shop</a>
-                <a href="about.php">About Us</a>
-                <a href="contact.php">Contact</a>
-            </nav>
-            <div class="user-actions">
-                <a href="#" class="account-link">👤 My Account</a>
-                <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?></span></a>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-title">
+                <span>👤</span>
+                <h1>My Profile</h1>
+            </div>
+            <div class="vip-rating">
+                <?php echo $vip_status === 'VIP' ? 'VIP Gamer' : 'Gamer'; ?> ★ <?= number_format($rating, 1) ?> Rating
             </div>
         </div>
-    </header>
-
-    <main>
-        <div class="profile-container">
-            <div class="profile-header">
-                <div class="profile-title">
-                    <span>👤</span>
-                    <h1>My Profile</h1>
-                </div>
-                <div class="vip-rating">
-                    <?php echo $vip_status === 'VIP' ? 'VIP Gamer' : 'Gamer'; ?> ★ <?= number_format($rating, 1) ?> Rating
-                </div>
+        <div class="nav-tabs">
+            <button class="active">Profile Info</button>
+            <button>Order History</button>
+            <button>Wishlist</button>
+            <button>Settings</button>
+        </div>
+        <div class="section">
+            <div class="card personal-info">
+                <h2>Personal Information</h2>
+                <div class="info-item"><span>👤</span> <?= htmlspecialchars($user['username']) ?></div>
+                <div class="info-item"><span>📧</span> <?= htmlspecialchars($user['email']) ?></div>
+                <div class="info-item"><span>📍</span> <?= htmlspecialchars('Not Provided') // Address column missing ?></div>
+                <div class="info-item"><span>📅</span> <?= htmlspecialchars('Not Provided') // DOB column missing ?></div>
+                <div class="info-item"><span class="edit-btn">✏️ Edit</span></div>
             </div>
-            <div class="nav-tabs">
-                <button class="active">Profile Info</button>
-                <button>Order History</button>
-                <button>Wishlist</button>
-                <button>Settings</button>
-            </div>
-            <div class="section">
-                <div class="card personal-info">
-                    <h2>Personal Information</h2>
-                    <div class="info-item" data-field="username"><span>👤</span> <span class="field-value"><?= htmlspecialchars($user['username']) ?></span><input type="text" class="edit-field" value="<?= htmlspecialchars($user['username']) ?>" style="display: none;"></div>
-                    <div class="info-item" data-field="email"><span>📧</span> <span class="field-value"><?= htmlspecialchars($user['email']) ?></span><input type="email" class="edit-field" value="<?= htmlspecialchars($user['email']) ?>" style="display: none;"></div>
-                    <div class="info-item"><span>📍</span> <span class="field-value"><?= htmlspecialchars('Not Provided') ?></span></div>
-                    <div class="info-item"><span>📅</span> <span class="field-value"><?= htmlspecialchars('Not Provided') ?></span></div>
-                    <div class="info-item"><span class="edit-btn">✏️ Edit</span><span class="save-btn" style="display: none;">💾 Save</span></div>
-                </div>
-                <div class="card gaming-stats">
-                    <h2>Gaming Statistics</h2>
-                    <div class="stat-item"><span>R<?= number_format($stats['total_spent'], 2) ?></span><p>Total Spent</p></div>
-                    <div class="stat-item"><span><?= $stats['order_count'] ?></span><p>Orders</p></div>
-                    <div class="stat-item"><span><?= $years_member ?></span><p>Years Member</p></div>
-                    <div class="stat-item"><span class="vip-status"><?= $vip_status ?></span><p>VIP Status</p></div>
-                </div>
+            <div class="card gaming-stats">
+                <h2>Gaming Statistics</h2>
+                <div class="stat-item"><span>R<?= number_format($stats['total_spent'], 2) ?></span><p>Total Spent</p></div>
+                <div class="stat-item"><span><?= $stats['order_count'] ?></span><p>Orders</p></div>
+                <div class="stat-item"><span><?= $years_member ?></span><p>Years Member</p></div>
+                <div class="stat-item"><span class="vip-status"><?= $vip_status ?></span><p>VIP Status</p></div>
             </div>
         </div>
-    </main>
-
-    <footer>
-        <div class="container">
-            <div class="footer-top">
-                <div class="footer-col">
-                    <div class="footer-logo">
-                        <div class="logo-box">TG</div>
-                        <span class="brand-name">Tech Giants</span>
-                    </div>
-                    <p class="footer-description">
-                        South Africa's premier destination for gaming hardware and accessories. 
-                        We provide cutting-edge technology for serious gamers who demand the best performance.
-                    </p>
-                    <ul class="footer-contact">
-                        <li>📍 Pretoria, Gauteng</li>
-                        <li>📞 +27 21 123 4567</li>
-                        <li>✉️ info@techgiants.co.za</li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>About Us</h4>
-                    <ul>
-                        <li><a href="#">Our Story</a></li>
-                        <li><a href="#">Why Choose Us</a></li>
-                        <li><a href="#">Gaming Community</a></li>
-                        <li><a href="#">Expert Reviews</a></li>
-                        <li><a href="#">Careers</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#">Gaming PCs</a></li>
-                        <li><a href="#">Graphics Cards</a></li>
-                        <li><a href="#">Gaming Peripherals</a></li>
-                        <li><a href="#">Special Deals</a></li>
-                        <li><a href="#">Build Configurator</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Connect With Us</h4>
-                    <ul>
-                        <li>📸 @techgiants</li>
-                        <li>🌍 techgiants.co.za</li>
-                        <li>🎵 @techgiants</li>
-                    </ul>
-                    <ul class="footer-support">
-                        <li><a href="#">Customer Support</a></li>
-                        <li><a href="#">Warranty Claims</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-middle">
-                <p>© 2025 Tech Giants. All rights reserved.</p>
-                <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Shipping Info</a>
-                </div>
-                <p class="powered">Powered by <span>Gaming Excellence</span></p>
-            </div>
-            <div class="footer-newsletter">
-                <h3>Stay Updated with Tech Giants</h3>
-                <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Enter your email" required>
-                    <button type="submit">Subscribe</button>
-                </form>
-            </div>
-        </div>
-    </footer>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
