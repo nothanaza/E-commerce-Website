@@ -184,8 +184,9 @@ if (isset($_SESSION['cart'])) {
         </div>
     </section>
 
+
 <!-- SHOP BY CATEGORY SECTION -->
-<section class="categories" style="padding:50px 0">
+<section class="categories" style="padding:50px 20px">
   <div class="container">
     <h2 style="text-align:center;font-size:28px;font-weight:800;margin-bottom:10px">Shop by Category</h2>
     <p style="text-align:center;color:var(--sub);margin-bottom:30px">Find exactly what you're looking for</p>
@@ -215,6 +216,7 @@ if (isset($_SESSION['cart'])) {
     </div>
   </div>
 </section>
+
 
 <!-- Footer -->
   <footer class="site-footer">
