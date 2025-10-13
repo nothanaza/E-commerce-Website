@@ -93,7 +93,7 @@ if (isset($_SESSION['cart'])) {
 <section class="hero">
   <div class="container">
     <h1>Gaming Hardware Store</h1>
-    <p>Discover premium gaming equipment from top brands</p>
+    <p>Discover premium gaming equipment from the top brands</p>
     <div class="search-wrap">
       <!-- search icon -->
       <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none">
