@@ -74,7 +74,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     <meta name="description" content="Premium gaming hardware store featuring PCs, graphics cards, motherboards, and monitors.">
     <link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/controller.png" type="image/png">
     <!-- Font Awesome CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>The Tech Giants - Gaming Hardware Store</title>
     <style>
         body {
@@ -246,58 +246,57 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             display: block;
         }
 
-.features-section {
-  display: flex;
-  justify-content: center;
-  align-items: stretch;
-  gap: 40px;
-  padding: 60px 20px;
-  background-color: #ff6600;
-  flex-wrap: wrap;
-}
+        .features-section {
+            display: flex;
+            justify-content: center;
+            align-items: stretch;
+            gap: 40px;
+            padding: 60px 20px;
+            background-color: #ff6600;
+            flex-wrap: wrap;
+        }
 
-.feature-card {
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
-  text-align: center;
-  padding: 40px 30px;
-  flex: 1 1 300px;
-  max-width: 380px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
+        .feature-card {
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            padding: 40px 30px;
+            flex: 1 1 300px;
+            max-width: 380px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-.feature-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-}
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
 
-.feature-card .icon {
-  background-color: #ff6600;
-  color: #fff;
-  font-size: 28px;
-  border-radius: 12px;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 auto 20px;
-}
+        .feature-card .icon {
+            background-color: #ff6600;
+            color: #fff;
+            font-size: 28px;
+            border-radius: 12px;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+        }
 
-.feature-card h3 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #000;
-  margin-bottom: 10px;
-}
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 10px;
+        }
 
-.feature-card p {
-  color: #666;
-  font-size: 16px;
-  line-height: 1.5;
-}
-
+        .feature-card p {
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
 
         .categories {
             padding: 50px 20px;
@@ -758,20 +757,18 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 </head>
 <body>
     <header class="header">
-    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-     <nav class="nav">
-        <a href="index.php">Home</a>
-        <a href="shop.php">Shop</a>
-        <a href="about.php">About Us</a>
-        <a href="contact.php">Contact</a>
-    </nav>
-
-     <div class="user-actions">
-            <a href="signin.php" class="account-link">👤 My Account</a>
+        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+        <nav class="nav">
+            <a href="index.php">Home</a>
+            <a href="shop.php">Shop</a>
+            <a href="about.php">About Us</a>
+            <a href="contact.php">Contact</a>
+        </nav>
+        <div class="user-actions">
+            <a href="#" class="account-link">👤 My Account</a>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
-     </div>
+        </div>
     </header>
-
 
     <main>
         <!-- HERO -->
@@ -793,25 +790,23 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
         </section>
 
-<section class="features-section">
-  <div class="feature-card">
-    <div class="icon"><i class="fas fa-bolt"></i></div>
-    <h3>High Performance</h3>
-    <p>Latest hardware for maximum gaming performance</p>
-  </div>
-
-  <div class="feature-card">
-    <div class="icon"><i class="fas fa-shield-alt"></i></div>
-    <h3>2 Year Warranty</h3>
-    <p>Comprehensive warranty on all gaming products</p>
-  </div>
-
-  <div class="feature-card">
-    <div class="icon"><i class="fas fa-truck-fast"></i></div>
-    <h3>Fast Shipping</h3>
-    <p>Free shipping on orders over R3500</p>
-  </div>
-</section>
+        <section class="features-section">
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-bolt"></i></div>
+                <h3>High Performance</h3>
+                <p>Latest hardware for maximum gaming performance</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-shield-alt"></i></div>
+                <h3>2 Year Warranty</h3>
+                <p>Comprehensive warranty on all gaming products</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon"><i class="fas fa-truck-fast"></i></div>
+                <h3>Fast Shipping</h3>
+                <p>Free shipping on orders over R3500</p>
+            </div>
+        </section>
 
         <!-- SHOP BY CATEGORY -->
         <section id="categories" class="categories">
@@ -829,7 +824,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                 ];
                 foreach ($categories as $cat): ?>
                     <div class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>">
-                        <div class="category-icon"><img src="<?= $iconMap[$cat['id']] ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon"></div>
+                        <div class="category-icon"><img src="<?= $iconMap[$cat['id']] ?? 'https://img.icons8.com/ios-filled/50/ffffff/question-mark.png' ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon"></div>
                         <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
                         <div class="category-count">Products</div>
                     </div>
@@ -837,47 +832,44 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
         </section>
 
-<!-- FEATURED PRODUCTS -->
-<section class="featured-products-section">
-    <div class="section-header">
-        <h2 class="section-title">Featured Products</h2>
-        <a href="shop.php" class="view-all">View All Products →</a>
-    </div>
-    <div class="products-grid">
-        <?php 
-        // Limit to the first 4 products and debug
-        $limited_products = array_slice($products, 0, 4);
-        // Debug: Check the number of products
-        // Uncomment the next line to verify: echo count($limited_products); // Should output 4
-        foreach ($limited_products as $product): ?>
-            <div class="product-card">
-                <div class="product-image">
-                    <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://placehold.co/300x200/ff6a00/fff?text=Image+Error'">
-                    <?php if ($product['discount']): ?>
-                        <span class="discount-badge"><?= htmlspecialchars($product['discount']) ?></span>
-                    <?php endif; ?>
-                </div>
-                <div class="product-details">
-                    <h3><?= htmlspecialchars($product['name']) ?></h3>
-                    <p class="category"><?= htmlspecialchars($product['category_name']) ?></p>
-                    <p class="rating">★★★★☆ <span class="rating-count">(<?= $product['reviews'] ?>)</span></p>
-                    <p class="price">R<?= number_format($product['price'], 2) ?>
-                        <?php if ($product['old_price']): ?>
-                            <span class="original-price">R<?= number_format($product['old_price'], 2) ?></span>
-                        <?php endif; ?>
-                    </p>
-                    <form method="post" action="">
-                        <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']) ?>">
-                        <input type="hidden" name="product_name" value="<?= htmlspecialchars($product['name']) ?>">
-                        <input type="hidden" name="product_price" value="<?= htmlspecialchars($product['price']) ?>">
-                        <input type="hidden" name="image" value="<?= htmlspecialchars($product['image']) ?>">
-                        <button type="submit" name="add_to_cart" class="add-to-cart">🛒 Add to Cart</button>
-                    </form>
-                </div>
+        <!-- FEATURED PRODUCTS -->
+        <section class="featured-products-section">
+            <div class="section-header">
+                <h2 class="section-title">Featured Products</h2>
+                <a href="shop.php" class="view-all">View All Products →</a>
             </div>
-        <?php endforeach; ?>
-    </div>
-</section>
+            <div class="products-grid">
+                <?php 
+                $limited_products = array_slice($products, 0, 4);
+                foreach ($limited_products as $product): ?>
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://placehold.co/300x200/ff6a00/fff?text=Image+Error'">
+                            <?php if ($product['discount']): ?>
+                                <span class="discount-badge"><?= htmlspecialchars($product['discount']) ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="product-details">
+                            <h3><?= htmlspecialchars($product['name']) ?></h3>
+                            <p class="category"><?= htmlspecialchars($product['category_name']) ?></p>
+                            <p class="rating">★★★★☆ <span class="rating-count">(<?= $product['reviews'] ?>)</span></p>
+                            <p class="price">R<?= number_format($product['price'], 2) ?>
+                                <?php if ($product['old_price']): ?>
+                                    <span class="original-price">R<?= number_format($product['old_price'], 2) ?></span>
+                                <?php endif; ?>
+                            </p>
+                            <form method="post" action="">
+                                <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']) ?>">
+                                <input type="hidden" name="product_name" value="<?= htmlspecialchars($product['name']) ?>">
+                                <input type="hidden" name="product_price" value="<?= htmlspecialchars($product['price']) ?>">
+                                <input type="hidden" name="image" value="<?= htmlspecialchars($product['image']) ?>">
+                                <button type="submit" name="add_to_cart" class="add-to-cart">🛒 Add to Cart</button>
+                            </form>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </section>
 
         <!-- READY TO GAME CTA -->
         <section class="cta-section">
@@ -969,7 +961,11 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             });
         });
         document.querySelector('.account-link').addEventListener('click', () => {
-            window.location.href = 'signin.php';
+            <?php if (isset($_SESSION['user_id'])): ?>
+                window.location.href = 'user/profile.php';
+            <?php else: ?>
+                window.location.href = 'signin.php';
+            <?php endif; ?>
         });
         document.querySelector('.cart-link').addEventListener('click', () => {
             window.location.href = 'cart.php';
