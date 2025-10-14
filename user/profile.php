@@ -8,671 +8,311 @@ if (session_status() !== PHP_SESSION_ACTIVE || !isset($_SESSION['user_id'])) {
 // Adjusted path to point to the root components directory
 require_once '../components/db.php';
 
-// Debug: Check if PDO is set
-if (!isset($pdo) || !$pdo) {
-    die("Database connection failed. Check components/db.php.");
-}
-
-// Fetch user data (using only username and email)
+// Fetch user data
 $user_id = $_SESSION['user_id'];
-// var_dump($user_id); // Commented out as per your request
-$stmt = $pdo->prepare("SELECT username, email FROM users WHERE id = ?");
-try {
-    $stmt->execute([$user_id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    die("Query failed: " . $e->getMessage());
-}
+$stmt = $pdo->prepare("SELECT u.username, u.email, 
+    (SELECT COUNT(*) FROM orders WHERE user_id = u.id) AS total_orders,
+    (SELECT COUNT(*) FROM orders WHERE user_id = u.id AND status = 'pending') AS pending_orders,
+    (SELECT COUNT(*) FROM wishlist WHERE user_id = u.id) AS wishlist_items,
+    COALESCE(AVG(r.rating), 0) AS rating
+    FROM users u
+    LEFT JOIN reviews r ON u.id = r.user_id
+    WHERE u.id = ?
+    GROUP BY u.id");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch();
 
-// If no user data is found, set defaults
 if (!$user) {
-    $user = [
-        'username' => 'Unknown User',
-        'email' => 'no-email@techgiants.com'
-    ];
+    die("User not found.");
 }
-$_SESSION['user'] = $user;
 
-// Calculate gaming statistics (assuming orders table might be missing)
-$stmt = $pdo->prepare("SELECT SUM(total) as total_spent, COUNT(*) as order_count FROM orders WHERE user_id = ?");
-try {
-    $stmt->execute([$user_id]);
-    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $stats = ['total_spent' => 0, 'order_count' => 0];
-}
-$stats = $stats ?: ['total_spent' => 0, 'order_count' => 0];
-
-// Placeholder for cart count (define this based on your cart system)
-$cart_count = isset($_SESSION['cart_count']) ? $_SESSION['cart_count'] : 0;
-
-// Calculate membership years (using a default dob since it's missing)
-$dob = new DateTime('1995-06-15'); // Default DOB since column is missing
-$today = new DateTime();
-$years_member = $dob->diff($today)->y;
-
-// Determine VIP status and rating
-$rating = 5.0; // Hardcoded for now
-$vip_status = $stats['total_spent'] > 500 || $years_member > 2 ? 'VIP' : 'Regular';
+$user_name = htmlspecialchars($user['username']);
+$total_orders = (int)$user['total_orders'];
+$pending_orders = (int)$user['pending_orders'];
+$wishlist_items = (int)$user['wishlist_items'];
+$rating = floatval($user['rating']);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Manage your account and gaming preferences at Tech Giants.">
-    <link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/controller.png" type="image/png">
-    <title>Tech Giants - My Profile</title>
+    <title>My Account - Tech Giants</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-
-        * {
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background: #f9f9f9;
-            color: #222;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        header {
-            background: #fff;
-            border-bottom: 1px solid #ddd;
-            padding: 15px 0;
-            width: 100%;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        header .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: 700;
-            color: #ff6a00;
-            cursor: pointer;
-        }
-
-        .nav a {
-            text-decoration: none;
-            font-weight: 600;
-            margin: 0 10px;
-            font-size: 16px;
-            color: #333;
-            transition: color 0.3s;
-        }
-
-        .nav a:hover {
-            color: #ff6a00;
-        }
-
-        .user-actions {
-            display: flex;
-            align-items: center;
-        }
-
-        .account-link, .cart-link {
-            text-decoration: none;
-            color: #333;
-            margin-left: 10px;
-            transition: color 0.3s;
-        }
-
-        .account-link:hover, .cart-link:hover {
-            color: #ff6a00;
-        }
-
-        .cart-badge {
-            background: #ff6a00;
-            color: #fff;
-            padding: 3px 8px;
-            border-radius: 50%;
-            font-size: 12px;
-        }
-
-        main {
-            flex: 1 0 auto;
-            width: 100%;
-        }
-
-        .profile-container {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 100%;
-            max-width: 1200px;
-            margin: 20px auto;
-            text-align: center;
-        }
-
-        .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .profile-title {
-            display: flex;
-            align-items: center;
-        }
-
-        .profile-title h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin: 0 0 0 12px;
             color: #222;
         }
 
-        .vip-rating {
-            font-size: 18px;
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, #ffe7d1, #fff1e6);
+            padding: 20px 40px;
+            border-bottom: 2px solid #ff6600;
+        }
+        .account-header h1 {
+            font-size: 26px;
+            color: #222;
+            margin: 0;
+        }
+        .account-header h1 span {
             color: #ff6600;
-            font-weight: 600;
+            font-weight: 700;
         }
-
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .nav-tabs button {
-            background: #fff;
-            border: 2px solid #ddd;
-            padding: 12px 24px;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 16px;
-        }
-
-        .nav-tabs button.active {
+        .vip-badge {
             background: #ff6600;
             color: #fff;
-            border-color: #ff6600;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
         }
 
-        .nav-tabs button:hover {
-            background: #f9f9f9;
-            border-color: #ff6600;
+        .account-container {
+            display: flex;
+            gap: 20px;
+            margin: 30px;
         }
 
-        .section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin: 0 auto;
-        }
-
-        .card {
+        .sidebar {
+            width: 270px;
             background: #fff;
             border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            text-align: left;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 20px 0;
         }
-
-        .personal-info h2, .gaming-stats h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 20px;
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
             color: #222;
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
         }
-
-        .info-item, .stat-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .info-item span, .stat-item span {
+        .sidebar a i {
             margin-right: 12px;
-            font-size: 20px;
+            font-size: 18px;
         }
-
-        .edit-btn, .save-btn {
-            color: #ff6600;
-            cursor: pointer;
-            text-decoration: underline;
-            font-size: 16px;
-            border: none;
-            background: none;
-            padding: 0;
-        }
-
-        .save-btn {
-            margin-left: 10px;
-        }
-
-        .edit-mode .info-item input {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 5px;
-            font-size: 16px;
-            width: 200px;
-            margin-left: 10px;
-        }
-
-        .stat-item p {
-            margin: 0;
-            font-size: 16px;
-            color: #666;
-        }
-
-        .vip-status {
-            color: #ff6600;
-            font-weight: 700;
-            font-size: 16px;
-        }
-
-        footer {
-            background-color: #000;
-            color: #f3f4f6;
-            padding: 3rem 0;
-            width: 100%;
-        }
-
-        footer .container {
-            padding: 0 20px 2rem;
-        }
-
-        .footer-top {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        .footer-col h4 {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .footer-col ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .footer-col ul li {
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-col ul li a {
-            color: #d1d5db;
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .footer-col ul li a:hover {
-            color: #f97316;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .logo-box {
-            width: 2.5rem;
-            height: 2.5rem;
-            background: #f97316;
+        .sidebar a:hover, .sidebar a.active {
+            background: #ff6600;
             color: #fff;
-            font-weight: 700;
-            border-radius: 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 0.5rem;
+            border-radius: 0 25px 25px 0;
         }
-
-        .brand-name {
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-
-        .footer-description {
-            margin-bottom: 1rem;
-            color: #9ca3af;
-        }
-
-        .footer-contact li {
-            margin-bottom: 0.3rem;
-            color: #d1d5db;
-        }
-
-        .footer-middle {
-            border-top: 1px solid #374151;
-            padding: 1rem 0;
-            text-align: center;
-            font-size: 0.85rem;
-            color: #9ca3af;
-        }
-
-        .footer-links {
-            margin: 0.5rem 0;
-        }
-
-        .footer-links a {
-            margin: 0 0.75rem;
-            color: #9ca3af;
-            text-decoration: none;
-        }
-
-        .footer-links a:hover {
-            color: #f97316;
-        }
-
-        .powered {
-            margin-top: 0.5rem;
-        }
-
-        .powered span {
-            color: #f97316;
+        .logout {
+            color: #ff0000 !important;
             font-weight: 600;
         }
 
-        .footer-newsletter {
-            background: #111827;
-            color: #fff;
-            text-align: center;
-            padding: 2rem 0;
-            border-radius: 0.5rem 0.5rem 0 0;
-        }
-
-        .footer-newsletter h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-newsletter p {
-            color: #d1d5db;
-            margin-bottom: 1rem;
-        }
-
-        .newsletter-form {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .newsletter-form input {
-            padding: 0.75rem 1rem;
-            border-radius: 0.375rem;
-            border: 1px solid #374151;
-            background: #1f2937;
-            color: #f3f4f6;
+        .dashboard {
             flex: 1;
-            max-width: 250px;
         }
 
-        .newsletter-form button {
-            padding: 0.75rem 1.5rem;
-            background: #f97316;
-            color: #fff;
-            border: none;
-            border-radius: 0.375rem;
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .stat-card {
+            background: #fff;
+            flex: 1;
+            min-width: 200px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+        .stat-card i {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .stat-card:nth-child(1) i { color: #ff6600; }
+        .stat-card:nth-child(2) i { color: #007bff; }
+        .stat-card:nth-child(3) i { color: #ff0099; }
+        .stat-card:nth-child(4) i { color: #00b894; }
+        .stat-card h2 {
+            margin: 5px 0;
+            font-size: 22px;
+        }
+
+        .recent-orders {
+            margin-top: 40px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        .recent-orders h3 {
+            margin-bottom: 20px;
+        }
+        .order {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .order:last-child {
+            border-bottom: none;
+        }
+        .order img {
+            width: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        .order-info {
+            flex: 1;
+            margin-left: 15px;
+        }
+        .order-status {
             font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
         }
+        .order-status.delivered { color: #00b894; }
+        .order-status.in-transit { color: #007bff; }
 
-        .newsletter-form button:hover {
-            background: #ea580c;
+        .bottom-widgets {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            gap: 20px;
         }
-
-        @media (min-width: 768px) {
-            .footer-top {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .footer-middle {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                text-align: left;
-            }
-
-            .footer-links {
-                margin: 0;
-            }
-            .section {
-                grid-template-columns: 1fr 1fr;
-            }
+        .widget {
+            flex: 1;
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
+        .widget i {
+            font-size: 30px;
+            margin-right: 15px;
+        }
+        .wishlist i { color: #ff0099; background: #ffe5f2; border-radius: 50%; padding: 10px; }
+        .browse i { color: #ff6600; background: #fff2e5; border-radius: 50%; padding: 10px; }
 
         @media (max-width: 768px) {
-            .profile-container {
-                margin: 10px;
-                padding: 20px;
-            }
-            .section {
-                grid-template-columns: 1fr;
-            }
-            .nav-tabs {
+            .account-container {
                 flex-direction: column;
-                align-items: center;
+                margin: 20px;
             }
-            .nav-tabs button {
+            .sidebar {
                 width: 100%;
-                text-align: center;
             }
-            header {
-                padding: 10px 20px;
-            }
-            .nav {
-                display: none; /* Hide nav on mobile, add toggle if needed */
-            }
-            .user-actions {
+            .stats {
                 flex-direction: column;
-                gap: 10px;
+            }
+            .bottom-widgets {
+                flex-direction: column;
             }
         }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-            <nav class="nav">
-                <a href="index.php">Home</a>
-                <a href="shop.php">Shop</a>
-                <a href="about.php">About Us</a>
-                <a href="contact.php">Contact</a>
-            </nav>
-            <div class="user-actions">
-                <a href="#" class="account-link">👤 My Account</a>
-                <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?></span></a>
-            </div>
+    <div class="account-header">
+        <div>
+            <h1>Welcome back, <span><?php echo $user_name; ?>!</span></h1>
+            <p>Manage your account and track your orders</p>
         </div>
-    </header>
+        <div class="vip-badge"><i class="fa-solid fa-crown"></i> VIP Member</div>
+    </div>
 
-    <main>
-        <div class="profile-container">
-            <div class="profile-header">
-                <div class="profile-title">
-                    <span>👤</span>
-                    <h1>My Profile</h1>
-                </div>
-                <div class="vip-rating">
-                    <?php echo $vip_status === 'VIP' ? 'VIP Gamer' : 'Gamer'; ?> ★ <?= number_format($rating, 1) ?> Rating
-                </div>
-            </div>
-            <div class="nav-tabs">
-                <button class="active">Profile Info</button>
-                <button>Order History</button>
-                <button>Wishlist</button>
-                <button>Settings</button>
-            </div>
-            <div class="section">
-                <div class="card personal-info">
-                    <h2>Personal Information</h2>
-                    <div class="info-item" data-field="username"><span>👤</span> <span class="field-value"><?= htmlspecialchars($user['username']) ?></span><input type="text" class="edit-field" value="<?= htmlspecialchars($user['username']) ?>" style="display: none;"></div>
-                    <div class="info-item" data-field="email"><span>📧</span> <span class="field-value"><?= htmlspecialchars($user['email']) ?></span><input type="email" class="edit-field" value="<?= htmlspecialchars($user['email']) ?>" style="display: none;"></div>
-                    <div class="info-item"><span>📍</span> <span class="field-value"><?= htmlspecialchars('Not Provided') ?></span></div>
-                    <div class="info-item"><span>📅</span> <span class="field-value"><?= htmlspecialchars('Not Provided') ?></span></div>
-                    <div class="info-item"><span class="edit-btn">✏️ Edit</span><span class="save-btn" style="display: none;">💾 Save</span></div>
-                </div>
-                <div class="card gaming-stats">
-                    <h2>Gaming Statistics</h2>
-                    <div class="stat-item"><span>R<?= number_format($stats['total_spent'], 2) ?></span><p>Total Spent</p></div>
-                    <div class="stat-item"><span><?= $stats['order_count'] ?></span><p>Orders</p></div>
-                    <div class="stat-item"><span><?= $years_member ?></span><p>Years Member</p></div>
-                    <div class="stat-item"><span class="vip-status"><?= $vip_status ?></span><p>VIP Status</p></div>
-                </div>
-            </div>
+    <div class="account-container">
+        <div class="sidebar">
+            <a href="profile.php" class="active"><i class="fa-solid fa-user"></i> Account Overview</a>
+            <a href="orders.php"><i class="fa-solid fa-box"></i> My Orders</a>
+            <a href="wishlist.php"><i class="fa-solid fa-heart"></i> Wishlist</a>
+            <a href="profile_settings.php"><i class="fa-solid fa-gear"></i> Profile Settings</a>
+            <a href="addresses.php"><i class="fa-solid fa-location-dot"></i> Addresses</a>
+            <a href="logout.php" class="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
         </div>
-    </main>
 
-    <footer>
-        <div class="container">
-            <div class="footer-top">
-                <div class="footer-col">
-                    <div class="footer-logo">
-                        <div class="logo-box">TG</div>
-                        <span class="brand-name">Tech Giants</span>
+        <div class="dashboard">
+            <div class="stats">
+                <div class="stat-card">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <h2><?php echo $total_orders; ?></h2>
+                    <p>Total Orders</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-clock"></i>
+                    <h2><?php echo $pending_orders; ?></h2>
+                    <p>Pending</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-heart"></i>
+                    <h2><?php echo $wishlist_items; ?></h2>
+                    <p>Wishlist</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fa-solid fa-star"></i>
+                    <h2><?php echo number_format($rating, 1); ?></h2>
+                    <p>Rating</p>
+                </div>
+            </div>
+
+            <div class="recent-orders">
+                <h3>Recent Orders</h3>
+                <?php
+                $stmt = $pdo->prepare("SELECT o.id, o.order_date, o.total, o.status, p.name AS product_name, p.image AS product_image
+                    FROM orders o
+                    JOIN order_items oi ON o.id = oi.order_id
+                    JOIN products p ON oi.product_id = p.id
+                    WHERE o.user_id = ?
+                    ORDER BY o.order_date DESC
+                    LIMIT 2");
+                $stmt->execute([$user_id]);
+                $orders = $stmt->fetchAll();
+
+                if ($orders) {
+                    foreach ($orders as $order) {
+                        $statusClass = strtolower($order['status']) === 'delivered' ? 'delivered' : 'in-transit';
+                        echo "<div class='order'>";
+                        echo "<img src='" . htmlspecialchars($order['product_image'] ?? 'https://placehold.co/80x80/ff6a00/fff?text=Image') . "' alt='" . htmlspecialchars($order['product_name']) . "' onerror=\"this.src='https://placehold.co/80x80/ff6a00/fff?text=Image+Error'\">";
+                        echo "<div class='order-info'>";
+                        echo "<h4>ORD-" . str_pad($order['id'], 6, '0', STR_PAD_LEFT) . "</h4>";
+                        echo "<p>" . htmlspecialchars($order['product_name']) . "</p>";
+                        echo "<small>" . date('Y-m-d', strtotime($order['order_date'])) . "</small>";
+                        echo "</div>";
+                        echo "<div>";
+                        echo "<p class='order-status " . $statusClass . "'>" . ucfirst($order['status']) . "</p>";
+                        echo "<strong>R" . number_format($order['total'], 2) . "</strong>";
+                        echo "</div>";
+                        echo "</div>";
+                    }
+                } else {
+                    echo "<p>No recent orders found.</p>";
+                }
+                ?>
+            </div>
+
+            <div class="bottom-widgets">
+                <div class="widget wishlist">
+                    <i class="fa-solid fa-heart"></i>
+                    <div>
+                        <h3>Your Wishlist</h3>
+                        <p><?php echo $wishlist_items; ?> items saved</p>
                     </div>
-                    <p class="footer-description">
-                        South Africa's premier destination for gaming hardware and accessories. 
-                        We provide cutting-edge technology for serious gamers who demand the best performance.
-                    </p>
-                    <ul class="footer-contact">
-                        <li>📍 Pretoria, Gauteng</li>
-                        <li>📞 +27 21 123 4567</li>
-                        <li>✉️ info@techgiants.co.za</li>
-                    </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>About Us</h4>
-                    <ul>
-                        <li><a href="#">Our Story</a></li>
-                        <li><a href="#">Why Choose Us</a></li>
-                        <li><a href="#">Gaming Community</a></li>
-                        <li><a href="#">Expert Reviews</a></li>
-                        <li><a href="#">Careers</a></li>
-                    </ul>
+                <div class="widget browse">
+                    <i class="fa-solid fa-cube"></i>
+                    <div>
+                        <h3>Browse Products</h3>
+                        <p>Discover new gaming gear</p>
+                    </div>
                 </div>
-                <div class="footer-col">
-                    <h4>Quick Links</h4>
-                    <ul>
-                        <li><a href="#">Gaming PCs</a></li>
-                        <li><a href="#">Graphics Cards</a></li>
-                        <li><a href="#">Gaming Peripherals</a></li>
-                        <li><a href="#">Special Deals</a></li>
-                        <li><a href="#">Build Configurator</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Connect With Us</h4>
-                    <ul>
-                        <li>📸 @techgiants</li>
-                        <li>🌍 techgiants.co.za</li>
-                        <li>🎵 @techgiants</li>
-                    </ul>
-                    <ul class="footer-support">
-                        <li><a href="#">Customer Support</a></li>
-                        <li><a href="#">Warranty Claims</a></li>
-                        <li><a href="#">Return Policy</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-middle">
-                <p>© 2025 Tech Giants. All rights reserved.</p>
-                <div class="footer-links">
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Shipping Info</a>
-                </div>
-                <p class="powered">Powered by <span>Gaming Excellence</span></p>
-            </div>
-            <div class="footer-newsletter">
-                <h3>Stay Updated with Tech Giants</h3>
-                <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-                <form class="newsletter-form">
-                    <input type="email" placeholder="Enter your email" required>
-                    <button type="submit">Subscribe</button>
-                </form>
             </div>
         </div>
-    </footer>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const editBtn = document.querySelector('.edit-btn');
-            const saveBtn = document.querySelector('.save-btn');
-            const infoItems = document.querySelectorAll('.personal-info .info-item');
-            let isEditing = false;
-
-            editBtn.addEventListener('click', () => {
-                if (!isEditing) {
-                    isEditing = true;
-                    editBtn.style.display = 'none';
-                    saveBtn.style.display = 'inline';
-                    infoItems.forEach(item => {
-                        const fieldValue = item.querySelector('.field-value');
-                        const editField = item.querySelector('.edit-field');
-                        if (fieldValue && editField) {
-                            fieldValue.style.display = 'none';
-                            editField.style.display = 'inline';
-                        }
-                    });
-                    document.querySelector('.personal-info').classList.add('edit-mode');
-                }
-            });
-
-            saveBtn.addEventListener('click', () => {
-                if (isEditing) {
-                    isEditing = false;
-                    editBtn.style.display = 'inline';
-                    saveBtn.style.display = 'none';
-                    infoItems.forEach(item => {
-                        const fieldValue = item.querySelector('.field-value');
-                        const editField = item.querySelector('.edit-field');
-                        if (fieldValue && editField) {
-                            fieldValue.textContent = editField.value;
-                            fieldValue.style.display = 'inline';
-                            editField.style.display = 'none';
-                        }
-                    });
-                    document.querySelector('.personal-info').classList.remove('edit-mode');
-                    alert('Changes saved! (Note: This is a demo. Update the code to save to the database.)');
-                }
-            });
-        });
-
-        document.querySelectorAll('.nav-tabs button').forEach(button => {
-            button.addEventListener('click', () => {
-                document.querySelectorAll('.nav-tabs button').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                // Add logic to load content for each tab
-            });
-        });
-    </script>
+    </div>
 </body>
 </html>
