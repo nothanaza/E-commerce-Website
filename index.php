@@ -11,6 +11,10 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     $stmt = $pdo->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id");
     $products = $stmt->fetchAll() ?: [];
 
+    // Get special deal products (e.g., where discount exists)
+    $stmt = $pdo->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.discount IS NOT NULL LIMIT 2");
+    $special_deals = $stmt->fetchAll() ?: [];
+
     // Add to Cart
     if (isset($_POST['add_to_cart'])) {
         $product_id = $_POST['product_id'] ?? '';
@@ -252,7 +256,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             align-items: stretch;
             gap: 40px;
             padding: 60px 20px;
-            background-color: #ff6600;
+            background-color: #ffff;
             flex-wrap: wrap;
         }
 
@@ -296,6 +300,173 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             color: #666;
             font-size: 16px;
             line-height: 1.5;
+        }
+
+        .special-deals {
+            text-align: center;
+            padding: 50px 20px;
+            background: #fbf2edff;
+        }
+
+        .limited-offer {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .special-deals h2 {
+            font-size: 36px;
+            margin: 10px 0;
+        }
+
+        .special-deals h2 span {
+            color: #ff6600;
+        }
+
+        .special-deals p {
+            color: #555;
+            margin-bottom: 40px;
+            font-size: 17px;
+        }
+
+        .deals-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            padding: 0 20px;
+        }
+
+        .deal-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            width: 600px;
+            text-align: left;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .deal-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .deal-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+
+        .save-tag {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #d90429;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .deal-content {
+            padding: 20px;
+        }
+
+        .deal-content h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .deal-content p {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .price-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .new-price {
+            color: #ff6600;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .discount {
+            background: #ff6600;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-outline {
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .btn-outline:hover {
+            background: #f2f2f2;
+        }
+
+        .btn-primary {
+            background: #ff6600;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #e55b00;
+        }
+
+        .bottom-text {
+            margin-top: 40px;
+            font-size: 36px;
+            color: #444;
+        }
+
+        .bottom-text i {
+            color: #ff6600;
+            margin-right: 6px;
+        }
+
+        @media(max-width: 800px) {
+            .deal-card {
+                width: 100%;
+            }
         }
 
         .categories {
@@ -805,6 +976,48 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                 <div class="icon"><i class="fas fa-truck-fast"></i></div>
                 <h3>Fast Shipping</h3>
                 <p>Free shipping on orders over R3500</p>
+            </div>
+        </section>
+
+        <section class="special-deals">
+            <span class="limited-offer">Limited Time Offers</span>
+            <h2><span>Special Deals</span> This Week</h2>
+            <p>Don't miss out on amazing discounts on premium gaming hardware</p>
+
+            <div class="deals-container">
+                <?php foreach ($special_deals as $deal): ?>
+                    <div class="deal-card">
+                        <div class="save-tag">Save R<?= number_format($deal['old_price'] - $deal['price'], 2) ?></div>
+                        <img src="<?= htmlspecialchars($deal['image']) ?>" alt="<?= htmlspecialchars($deal['name']) ?>" onerror="this.src='https://placehold.co/600x350/ff6a00/fff?text=Image+Error'">
+                        <div class="deal-content">
+                            <h3><?= htmlspecialchars($deal['name']) ?></h3>
+                            <p><?= htmlspecialchars($deal['description'] ?? 'No description available') ?></p>
+                            <div class="price-section">
+                                <?php if ($deal['old_price']): ?>
+                                    <span class="old-price">R<?= number_format($deal['old_price'], 2) ?></span>
+                                <?php endif; ?>
+                                <span class="new-price">R<?= number_format($deal['price'], 2) ?></span>
+                                <?php if ($deal['discount']): ?>
+                                    <span class="discount"><?= htmlspecialchars($deal['discount']) ?></span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="btn-group">
+                                <a href="product.php?id=<?= htmlspecialchars($deal['id']) ?>" class="btn btn-outline"><i class="fa-solid fa-info-circle"></i> View Details</a>
+                                <form method="post" action="">
+                                    <input type="hidden" name="product_id" value="<?= htmlspecialchars($deal['id']) ?>">
+                                    <input type="hidden" name="product_name" value="<?= htmlspecialchars($deal['name']) ?>">
+                                    <input type="hidden" name="product_price" value="<?= htmlspecialchars($deal['price']) ?>">
+                                    <input type="hidden" name="image" value="<?= htmlspecialchars($deal['image']) ?>">
+                                    <button type="submit" name="add_to_cart" class="btn btn-primary"><i class="fa-solid fa-cart-shopping"></i> Add to Cart</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="bottom-text">
+                <i class="fa-solid fa-bell"></i> Hurry! These deals won't last long
             </div>
         </section>
 
