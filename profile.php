@@ -5,12 +5,14 @@ if (session_status() !== PHP_SESSION_ACTIVE || !isset($_SESSION['user_id'])) {
     exit;
 }
 
+// Explicitly define $user_id from session
+$user_id = $_SESSION['user_id'];
+
 // Adjusted path to point to the components directory within the E-commerce-Website folder
 require_once 'components/db.php';
 
 // Fetch user data
-$user_id = $_SESSION['user_id'];
-$stmt = $pdo->prepare("SELECT u.username, u.email, 
+$stmt = $pdo->prepare("SELECT u.username, u.email,
     (SELECT COUNT(*) FROM orders WHERE user_id = u.id) AS total_orders,
     (SELECT COUNT(*) FROM orders WHERE user_id = u.id AND status = 'pending') AS pending_orders,
     (SELECT COUNT(*) FROM wishlist WHERE user_id = u.id) AS wishlist_items,
@@ -27,15 +29,35 @@ if (!$user) {
 }
 
 $user_name = htmlspecialchars($user['username']);
+$email = htmlspecialchars($user['email']);
+$phone = htmlspecialchars($user['phone'] ?? '');
+$id_number = htmlspecialchars($user['id_number'] ?? '');
 $total_orders = (int)$user['total_orders'];
 $pending_orders = (int)$user['pending_orders'];
 $wishlist_items = (int)$user['wishlist_items'];
 $rating = floatval($user['rating']);
 
-// Get cart count (assuming session-based cart from index.php)
+// Get cart count
 $cart_count = 0;
 if (isset($_SESSION['cart'])) {
     $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
+}
+
+// Determine active section
+$section = isset($_GET['section']) ? $_GET['section'] : 'overview';
+$edit_mode = isset($_GET['edit']) && $_GET['edit'] === 'true';
+
+// Handle profile updates
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
+    $new_name = $_POST['name'];
+    $new_surname = $_POST['surname'];
+    $new_email = $_POST['email'];
+    $new_phone = $_POST['phone'];
+    $new_id_number = $_POST['id_number'];
+    $stmt = $pdo->prepare("UPDATE users SET username = ?, email = ?, phone = ?, id_number = ? WHERE id = ?");
+    $stmt->execute([$new_name, $new_email, $new_phone, $new_id_number, $user_id]);
+    header("Location: /E-commerce-Website/profile.php?section=profile_settings");
+    exit;
 }
 ?>
 
@@ -165,9 +187,11 @@ if (isset($_SESSION['cart'])) {
             font-size: 18px;
         }
         .sidebar a:hover, .sidebar a.active {
-            background: #f3e8e1ff;
+            background: #ff6600;
             color: #fff;
             border-radius: 0 25px 25px 0;
+            box-shadow: 0 2px 8px rgba(169, 98, 98, 0.1);
+            transform: translateX(5px);
         }
         .logout {
             color: #ff0000 !important;
@@ -206,27 +230,27 @@ if (isset($_SESSION['cart'])) {
             font-size: 22px;
         }
 
-        .recent-orders {
+        .section-content {
             margin-top: 40px;
             background: #fff;
             border-radius: 12px;
             padding: 25px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
-        .recent-orders h3 {
+        .section-content h3 {
             margin-bottom: 20px;
         }
-        .order {
+        .order-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 15px 0;
-            border-bottom: 1px solid #eee;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            background: #f9f9f9;
         }
-        .order:last-child {
-            border-bottom: none;
-        }
-        .order img {
+        .order-container img {
             width: 80px;
             border-radius: 8px;
             object-fit: cover;
@@ -240,6 +264,11 @@ if (isset($_SESSION['cart'])) {
         }
         .order-status.delivered { color: #00b894; }
         .order-status.in-transit { color: #007bff; }
+        .edit-icon {
+            cursor: pointer;
+            color: #ff6600;
+            font-size: 20px;
+        }
 
         .bottom-widgets {
             display: flex;
@@ -491,11 +520,10 @@ if (isset($_SESSION['cart'])) {
 
     <div class="account-container">
         <div class="sidebar">
-            <a href="/E-commerce-Website/profile.php" class="active"><i class="fa-solid fa-user"></i> Account Overview</a>
-            <a href="/E-commerce-Website/orders.php"><i class="fa-solid fa-box"></i> My Orders</a>
-            <a href="/E-commerce-Website/wishlist.php"><i class="fa-solid fa-heart"></i> Wishlist</a>
-            <a href="/E-commerce-Website/profile_settings.php"><i class="fa-solid fa-gear"></i> Profile Settings</a>
-            <a href="/E-commerce-Website/addresses.php"><i class="fa-solid fa-location-dot"></i> Addresses</a>
+            <a href="/E-commerce-Website/profile.php" class="<?php echo $section === 'overview' ? 'active' : ''; ?>"><i class="fa-solid fa-user"></i> Account Overview</a>
+            <a href="/E-commerce-Website/profile.php?section=orders" class="<?php echo $section === 'orders' ? 'active' : ''; ?>"><i class="fa-solid fa-box"></i> My Orders</a>
+            <a href="/E-commerce-Website/profile.php?section=wishlist" class="<?php echo $section === 'wishlist' ? 'active' : ''; ?>"><i class="fa-solid fa-heart"></i> Wishlist</a>
+            <a href="/E-commerce-Website/profile.php?section=profile_settings" class="<?php echo $section === 'profile_settings' ? 'active' : ''; ?>"><i class="fa-solid fa-gear"></i> Profile Settings</a>
             <a href="/E-commerce-Website/logout.php" class="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
         </div>
 
@@ -523,37 +551,121 @@ if (isset($_SESSION['cart'])) {
                 </div>
             </div>
 
-            <div class="recent-orders">
-                <h3>Recent Orders</h3>
+            <div class="section-content">
                 <?php
-                $stmt = $pdo->prepare("SELECT o.id, o.order_date, o.total, o.status, p.name AS product_name, p.image AS product_image
-                    FROM orders o
-                    JOIN order_items oi ON o.id = oi.order_id
-                    JOIN products p ON oi.product_id = p.id
-                    WHERE o.user_id = ?
-                    ORDER BY o.order_date DESC
-                    LIMIT 2");
-                $stmt->execute([$user_id]);
-                $orders = $stmt->fetchAll();
-
-                if ($orders) {
-                    foreach ($orders as $order) {
-                        $statusClass = strtolower($order['status']) === 'delivered' ? 'delivered' : 'in-transit';
-                        echo "<div class='order'>";
-                        echo "<img src='" . htmlspecialchars($order['product_image'] ?? 'https://placehold.co/80x80/ff6a00/fff?text=Image') . "' alt='" . htmlspecialchars($order['product_name']) . "' onerror=\"this.src='https://placehold.co/80x80/ff6a00/fff?text=Image+Error'\">";
-                        echo "<div class='order-info'>";
-                        echo "<h4>ORD-" . str_pad($order['id'], 6, '0', STR_PAD_LEFT) . "</h4>";
-                        echo "<p>" . htmlspecialchars($order['product_name']) . "</p>";
-                        echo "<small>" . date('Y-m-d', strtotime($order['order_date'])) . "</small>";
-                        echo "</div>";
-                        echo "<div>";
-                        echo "<p class='order-status " . $statusClass . "'>" . ucfirst($order['status']) . "</p>";
-                        echo "<strong>R" . number_format($order['total'], 2) . "</strong>";
-                        echo "</div>";
-                        echo "</div>";
+                if ($section === 'overview') {
+                    echo "<h3>Recent Orders</h3>";
+                    $stmt = $pdo->prepare("SELECT o.id, o.order_date, o.total, o.status, p.name AS product_name, p.image AS product_image
+                        FROM orders o
+                        JOIN order_items oi ON o.id = oi.order_id
+                        JOIN products p ON oi.product_id = p.id
+                        WHERE o.user_id = ?
+                        ORDER BY o.order_date DESC
+                        LIMIT 2");
+                    $stmt->execute([$user_id]);
+                    $orders = $stmt->fetchAll();
+                    if ($orders) {
+                        foreach ($orders as $order) {
+                            $statusClass = strtolower($order['status']) === 'delivered' ? 'delivered' : 'in-transit';
+                            echo "<div class='order-container'>";
+                            echo "<img src='" . htmlspecialchars($order['product_image'] ?? 'https://placehold.co/80x80/ff6a00/fff?text=Image') . "' alt='" . htmlspecialchars($order['product_name']) . "' onerror=\"this.src='https://placehold.co/80x80/ff6a00/fff?text=Image+Error'\">";
+                            echo "<div class='order-info'>";
+                            echo "<h4>ORD-" . str_pad($order['id'], 6, '0', STR_PAD_LEFT) . "</h4>";
+                            echo "<p>" . htmlspecialchars($order['product_name']) . "</p>";
+                            echo "<small>" . date('Y-m-d', strtotime($order['order_date'])) . "</small>";
+                            echo "</div>";
+                            echo "<div>";
+                            echo "<p class='order-status " . $statusClass . "'>" . ucfirst($order['status']) . "</p>";
+                            echo "<strong>R" . number_format($order['total'], 2) . "</strong>";
+                            echo "</div>";
+                            echo "</div>";
+                        }
+                    } else {
+                        echo "<p>No recent orders found.</p>";
                     }
-                } else {
-                    echo "<p>No recent orders found.</p>";
+                } elseif ($section === 'orders') {
+                    echo "<h3>Order History</h3>";
+                    $stmt = $pdo->prepare("SELECT o.id, o.order_date, o.total, o.status, p.name AS product_name, p.image AS product_image
+                        FROM orders o
+                        JOIN order_items oi ON o.id = oi.order_id
+                        JOIN products p ON oi.product_id = p.id
+                        WHERE o.user_id = ?
+                        ORDER BY o.order_date DESC");
+                    $stmt->execute([$user_id]);
+                    $orders = $stmt->fetchAll();
+                    if ($orders) {
+                        foreach ($orders as $order) {
+                            $statusClass = strtolower($order['status']) === 'delivered' ? 'delivered' : 'in-transit';
+                            echo "<div class='order-container'>";
+                            echo "<img src='" . htmlspecialchars($order['product_image'] ?? 'https://placehold.co/80x80/ff6a00/fff?text=Image') . "' alt='" . htmlspecialchars($order['product_name']) . "' onerror=\"this.src='https://placehold.co/80x80/ff6a00/fff?text=Image+Error'\">";
+                            echo "<div class='order-info'>";
+                            echo "<h4>ORD-" . str_pad($order['id'], 6, '0', STR_PAD_LEFT) . "</h4>";
+                            echo "<p>" . htmlspecialchars($order['product_name']) . "</p>";
+                            echo "<small>" . date('Y-m-d', strtotime($order['order_date'])) . "</small>";
+                            echo "</div>";
+                            echo "<div>";
+                            echo "<p class='order-status " . $statusClass . "'>" . ucfirst($order['status']) . "</p>";
+                            echo "<strong>R" . number_format($order['total'], 2) . "</strong>";
+                            echo "</div>";
+                            echo "</div>";
+                        }
+                    } else {
+                        echo "<p>No order history found.</p>";
+                    }
+                } elseif ($section === 'wishlist') {
+                    echo "<h3>My Wishlist</h3>";
+                    $stmt = $pdo->prepare("SELECT p.name, p.image, p.price FROM wishlist w JOIN products p ON w.product_id = p.id WHERE w.user_id = ?");
+                    $stmt->execute([$user_id]);
+                    $wishlist = $stmt->fetchAll();
+                    if ($wishlist) {
+                        foreach ($wishlist as $item) {
+                            echo "<div class='order-container'>";
+                            echo "<img src='" . htmlspecialchars($item['image'] ?? 'https://placehold.co/80x80/ff6a00/fff?text=Image') . "' alt='" . htmlspecialchars($item['name']) . "' onerror=\"this.src='https://placehold.co/80x80/ff6a00/fff?text=Image+Error'\">";
+                            echo "<div class='order-info'>";
+                            echo "<h4>" . htmlspecialchars($item['name']) . "</h4>";
+                            echo "<p>Price: R" . number_format($item['price'], 2) . "</p>";
+                            echo "</div>";
+                            echo "</div>";
+                        }
+                    } else {
+                        echo "<p>Your wishlist is empty.</p>";
+                    }
+                } elseif ($section === 'profile_settings') {
+                    echo "<h3>Profile Settings</h3>";
+                    if ($edit_mode) {
+                        echo "<form method='post' action='/E-commerce-Website/profile.php?section=profile_settings'>";
+                        echo "<div class='mb-4'>";
+                        echo "<label class='block text-sm font-medium mb-1'>Name</label>";
+                        echo "<input type='text' name='name' value='" . htmlspecialchars($user_name) . "' class='w-full p-2 border rounded' required>";
+                        echo "</div>";
+                        echo "<div class='mb-4'>";
+                        echo "<label class='block text-sm font-medium mb-1'>Surname</label>";
+                        echo "<input type='text' name='surname' value='' class='w-full p-2 border rounded' required>";
+                        echo "</div>";
+                        echo "<div class='mb-4'>";
+                        echo "<label class='block text-sm font-medium mb-1'>Email</label>";
+                        echo "<input type='email' name='email' value='" . $email . "' class='w-full p-2 border rounded' required>";
+                        echo "</div>";
+                        echo "<div class='mb-4'>";
+                        echo "<label class='block text-sm font-medium mb-1'>Phone Number</label>";
+                        echo "<input type='tel' name='phone' value='" . $phone . "' class='w-full p-2 border rounded'>";
+                        echo "</div>";
+                        echo "<div class='mb-4'>";
+                        echo "<label class='block text-sm font-medium mb-1'>Identification Number</label>";
+                        echo "<input type='text' name='id_number' value='" . $id_number . "' class='w-full p-2 border rounded'>";
+                        echo "</div>";
+                        echo "<button type='submit' name='save_profile' class='bg-ff6600 text-white p-2 rounded'>Save Changes</button>";
+                        echo "</form>";
+                    } else {
+                        echo "<div class='mb-4'>";
+                        echo "<p><strong>Name:</strong> " . $user_name . "</p>";
+                        echo "<p><strong>Surname:</strong> N/A</p>";
+                        echo "<p><strong>Email:</strong> " . $email . "</p>";
+                        echo "<p><strong>Phone Number:</strong> " . ($phone ?: 'N/A') . "</p>";
+                        echo "<p><strong>Identification Number:</strong> " . ($id_number ?: 'N/A') . "</p>";
+                        echo "</div>";
+                        echo "<a href='/E-commerce-Website/profile.php?section=profile_settings&edit=true' class='edit-icon'><i class='fa-solid fa-edit'></i></a>";
+                    }
                 }
                 ?>
             </div>
@@ -654,7 +766,7 @@ if (isset($_SESSION['cart'])) {
         document.querySelectorAll('.nav a').forEach(a => {
             a.addEventListener('click', () => {
                 const page = a.getAttribute('href');
-                console.log('Navigating to:', page); // Debug log
+                console.log('Navigating to:', page);
                 window.location.href = page;
             });
         });
@@ -665,9 +777,10 @@ if (isset($_SESSION['cart'])) {
             window.location.href = '/E-commerce-Website/cart.php';
         });
         document.querySelectorAll('.sidebar a').forEach(a => {
-            a.addEventListener('click', () => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
                 const page = a.getAttribute('href');
-                console.log('Sidebar navigating to:', page); // Debug log
+                console.log('Sidebar navigating to:', page);
                 if (page !== '/E-commerce-Website/logout.php') {
                     window.location.href = page;
                 } else {
@@ -700,4 +813,4 @@ if (isset($_SESSION['cart'])) {
         });
     </script>
 </body>
-</html>
+</html>                                                                                                                                                                                                                                                                                                                                                                                    
