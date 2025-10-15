@@ -1175,7 +1175,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
         });
         document.querySelector('.account-link').addEventListener('click', () => {
             <?php if (isset($_SESSION['user_id'])): ?>
-                window.location.href = 'user/profile.php';
+                window.location.href = 'profile.php';
             <?php else: ?>
                 window.location.href = 'signin.php';
             <?php endif; ?>
