@@ -442,7 +442,183 @@ if (isset($_SESSION['cart'])) {
     align-items: center;
   }
 }
- 
+   /*Footer Styles*/
+        .site-footer {
+            background-color: #000;
+            color: #f3f4f6;
+            padding-top: 3rem;
+            font-size: 0.875rem;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 0 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-col h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-col ul li a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .footer-col ul li a:hover {
+            color: #f97316;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .logo-box {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: #f97316;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+        }
+
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .footer-description {
+            margin-bottom: 1rem;
+            color: #9ca3af;
+        }
+
+        .footer-contact li {
+            margin-bottom: 0.3rem;
+            color: #d1d5db;
+        }
+
+        .footer-middle {
+            border-top: 1px solid #374151;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin: 0 5rem 0 5rem;
+        }
+
+        .footer-links {
+            margin: 0.5rem 0;
+        }
+
+        .footer-links a {
+            margin: 0 0.75rem;
+            color: #9ca3af;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #f97316;
+        }
+
+        .powered {
+            margin-top: 0.5rem;
+        }
+
+        .powered span {
+            color: #f97316;
+            font-weight: 600;
+        }
+
+     .footer-newsletter {
+    background: #111827;
+    color: #fff;
+    text-align: center;
+    padding: 2rem 1rem 2rem;
+    margin: 2rem auto 0 auto; /* Center horizontally */
+    border-radius: 0.5rem 0.5rem 0 0;
+    max-width: 1000px; /* Optional: make it narrower for better centering */
+}
+
+        .footer-newsletter h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-newsletter p {
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .newsletter-form input {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #374151;
+            background: #1f2937;
+            color: #f3f4f6;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .newsletter-form button {
+            padding: 0.75rem 1.5rem;
+            background: #f97316;
+            color: #fff;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .newsletter-form button:hover {
+            background: #ea580c;
+        }
+
+        @media (min-width: 768px) {
+            .footer-top {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .footer-middle {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
+
+            .footer-links {
+                margin: 0;
+            }
+        }
 </style>
 </head>
 <body>
@@ -658,6 +834,77 @@ if (isset($_SESSION['cart'])) {
     </div>
   </div>
 </section>
+
+ <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-top">
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <div class="logo-box">TG</div>
+                    <span class="brand-name">Tech Giants</span>
+                </div>
+                <p class="footer-description">
+                    South Africa's premier destination for gaming hardware and accessories. 
+                    We provide cutting-edge technology for serious gamers who demand the best performance.
+                </p>
+                <ul class="footer-contact">
+                    <li>📍 Pretoria, Gauteng</li>
+                    <li>📞 +27 21 123 4567</li>
+                    <li>✉️ info@techgiants.co.za</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="about.php">Why Choose Us</a></li>
+                    <li><a href="shop.php">Shop</a></li>
+                    <li><a href="contact.php">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="gaming-pcs.php">Gaming PCs</a></li>
+                    <li><a href="graphic-cards.php">Graphics Cards</a></li>
+                    <li><a href="audio.php">Audio</a></li>
+                    <li><a href="monitors.php">Monitors</a></li>
+                    <li><a href="motherboards.php">Motherboards</a></li>
+                    <li><a href="peripherals.php">Peripherals</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Connect With Us</h4>
+                <ul>
+                    <li>📸 @techgiants</li>
+                    <li>🌍 techgiants.co.za</li>
+                    <li>🎵 @techgiants</li>
+                </ul>
+                <ul class="footer-support">
+                    <li><a href="#">Customer Support</a></li>
+                    <li><a href="#">Warranty Claims</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-middle">
+            <p>© 2024 Tech Giants. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Shipping Info</a>
+            </div>
+            <p class="powered">Powered by <span>Gaming Excellence</span></p>
+        </div>
+        <div class="footer-newsletter">
+            <h3>Stay Updated with Tech Giants</h3>
+            <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </footer>
 
 <script>
 /* optional micro interaction: subtle scale in addition to hover lift */
