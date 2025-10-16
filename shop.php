@@ -184,7 +184,6 @@ if (isset($_SESSION['cart'])) {
         </div>
     </section>
 
-
 <!-- SHOP BY CATEGORY SECTION -->
 <section class="categories" style="padding:50px 20px">
   <div class="container">
@@ -200,22 +199,32 @@ if (isset($_SESSION['cart'])) {
           "peripherals"    => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
           "audio"          => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
         ];
-        // Get all categories except "All Categories" (if applicable)
+
         $realCats = array_slice($categories, 0, 6);
         foreach ($realCats as $cat):
-          $count = count(array_filter($products, fn($p) => $p['category_id'] === $cat['id']));
       ?>
-        <div class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>" style="background:#fff;border:1px solid #eceef2;border-radius:16px;text-align:center;padding:30px 20px;transition:transform 0.25s,box-shadow 0.25s;box-shadow:0 2px 6px rgba(0,0,0,0.05);cursor:pointer;">
-          <div class="category-icon" style="background:#ff6600;border-radius:50%;width:60px;height:60px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
-            <img src="<?= $iconMap[$cat['id']] ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon" style="width:26px;height:26px;">
+        <a href="<?= htmlspecialchars($cat['id']) ?>.php" 
+           class="category-box" 
+           style="background:#fff;border:1px solid #eceef2;border-radius:16px;text-align:center;padding:30px 20px;
+                  transition:transform 0.25s,box-shadow 0.25s;box-shadow:0 2px 6px rgba(0,0,0,0.05);
+                  cursor:pointer;text-decoration:none;color:inherit;">
+          <div class="category-icon" style="background:#ff6600;border-radius:50%;width:60px;height:60px;
+                                            margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
+            <img src="<?= $iconMap[$cat['id']] ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon" 
+                 style="width:26px;height:26px;">
           </div>
-          <div class="category-name" style="font-weight:600;color:#222;font-size:16px;margin-bottom:4px;"><?= htmlspecialchars($cat['name']) ?></div>
-          <div class="category-count" style="font-size:13px;color:#666;"><?= $count ?> items</div>
-        </div>
+          <div class="category-name" style="font-weight:600;color:#222;font-size:16px;margin-bottom:4px;">
+            <?= htmlspecialchars($cat['name']) ?>
+          </div>
+          <div class="category-count" style="font-size:13px;color:#666;">items</div>
+        </a>
       <?php endforeach; ?>
     </div>
   </div>
 </section>
+
+
+
 
 
 <!-- Footer -->
@@ -468,15 +477,6 @@ function cardHTML(p, isList=false){
     btnGrid.classList.remove('active');
     render();
   });
-// Handle category card clicks
-document.querySelectorAll(".category-box").forEach(box => {
-  box.addEventListener("click", () => {
-    const cat = box.getAttribute("data-cat");
-    fCat.value = cat;   // set dropdown to same category
-    render();           // re-render products
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // optional: scroll up
-  });
-});
 
 // Set default category to "all" on page load
 document.addEventListener('DOMContentLoaded', () => {

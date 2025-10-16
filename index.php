@@ -1021,29 +1021,35 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
         </section>
 
-        <!-- SHOP BY CATEGORY -->
-        <section id="categories" class="categories">
-            <h2>Shop by Category</h2>
-            <p>Find exactly what you're looking for</p>
-            <div class="category-grid">
-                <?php
-                $iconMap = [
-                    "gaming-pcs" => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
-                    "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
-                    "motherboards" => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
-                    "monitors" => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
-                    "peripherals" => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
-                    "audio" => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
-                ];
-                foreach ($categories as $cat): ?>
-                    <div class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>">
-                        <div class="category-icon"><img src="<?= $iconMap[$cat['id']] ?? 'https://img.icons8.com/ios-filled/50/ffffff/question-mark.png' ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon"></div>
-                        <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
-                        <div class="category-count">Products</div>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </section>
+<section id="categories" class="categories">
+    <h2>Shop by Category</h2>
+    <p>Find exactly what you're looking for</p>
+    <div class="category-grid">
+        <?php
+        $iconMap = [
+            "gaming-pcs" => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
+            "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
+            "motherboards" => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
+            "monitors" => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
+            "peripherals" => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
+            "audio" => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
+        ];
+
+        foreach ($categories as $cat): 
+            $pageLink = $cat['id'] . ".php"; // link directly to the matching page
+        ?>
+            <a href="<?= htmlspecialchars($pageLink) ?>" class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>">
+                <div class="category-icon">
+                    <img src="<?= $iconMap[$cat['id']] ?? 'https://img.icons8.com/ios-filled/50/ffffff/question-mark.png' ?>" 
+                         alt="<?= htmlspecialchars($cat['name']) ?> Icon">
+                </div>
+                <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
+                <div class="category-count">Products</div>
+            </a>
+        <?php endforeach; ?>
+    </div>
+</section>
+
 
         <!-- FEATURED PRODUCTS -->
         <section class="featured-products-section">
@@ -1175,7 +1181,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
         });
         document.querySelector('.account-link').addEventListener('click', () => {
             <?php if (isset($_SESSION['user_id'])): ?>
-                window.location.href = 'user/profile.php';
+                window.location.href = 'profile.php';
             <?php else: ?>
                 window.location.href = 'signin.php';
             <?php endif; ?>
