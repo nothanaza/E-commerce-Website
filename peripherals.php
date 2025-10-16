@@ -100,6 +100,16 @@ if (isset($_SESSION['cart'])) {
   margin: 0 auto;
 }
 
+ .peripherals {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 .container h1{
     text-align: center;
     color:white;
@@ -468,6 +478,7 @@ if (isset($_SESSION['cart'])) {
 <!-- HERO -->
 <section class="hero">
   <div class="container">
+     <span class="peripherals">Premium Gaming Gear</span>
     <h1>Gaming Peripherals</h1>
     <p>Complete your gaming setup with premium peripherals designed for competitive gaming</p>
     </div>

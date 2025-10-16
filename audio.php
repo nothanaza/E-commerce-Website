@@ -216,7 +216,16 @@ if (isset($_SESSION['cart'])) {
   .feature-sub { font-size: 13px; }
 }
 
-
+        .audio {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 /* Layout for the product section */
 
     .product-section {
@@ -465,6 +474,7 @@ if (isset($_SESSION['cart'])) {
 <!-- HERO -->
 <section class="hero">
   <div class="container">
+     <span class="audio">Premium Gaming Audio</span>
     <h1>Gaming Audio</h1>
     <p>Immerse yourself in crystal-clear gaming audio with premium headsets, microphones, and speakers</p>
     </div>

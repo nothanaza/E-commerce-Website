@@ -100,6 +100,18 @@ if (isset($_SESSION['cart'])) {
   margin: 0 auto;
 }
 
+ .cards {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+
 .container h1{
     text-align: center;
     color:white;
@@ -465,6 +477,7 @@ if (isset($_SESSION['cart'])) {
 <!-- HERO -->
 <section class="hero">
   <div class="container">
+     <span class="cards">Premium Graphic Cards</span>
     <h1>Graphics Cards</h1>
     <p>Power your gaming experience with cutting-edge graphics cards from NVIDIA and AMD</p>
     </div>

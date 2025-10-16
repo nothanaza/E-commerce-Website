@@ -100,6 +100,16 @@ if (isset($_SESSION['cart'])) {
   margin: 0 auto;
 }
 
+ .cards {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 .container h1{
     text-align: center;
     color:white;
@@ -216,6 +226,16 @@ if (isset($_SESSION['cart'])) {
   .feature-sub { font-size: 13px; }
 }
 
+ .motherboards {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 
 /* Layout for the product section */
 
@@ -465,6 +485,7 @@ if (isset($_SESSION['cart'])) {
 <!-- HERO -->
 <section class="hero">
   <div class="container">
+    <span class="monitors">High-Performance Displays</span>
     <h1>Gaming Monitors</h1>
     <p>Experience gaming like never before with high refresh rate displays and stunning visuals</p>
     </div>
