@@ -895,11 +895,10 @@ if (isset($_SESSION['cart'])) {
     <div class="footer-col">
       <h4>Quick Links</h4>
       <ul>
-        <li><a href="#">Our Story</a></li>
-        <li><a href="#">Why Choose Us</a></li>
-        <li><a href="#">Gaming Community</a></li>
-        <li><a href="#">Expert Reviews</a></li>
-        <li><a href="#">Careers</a></li>
+        <li><a href="index.php">Home</a></li>
+        <li><a href="about.php">Why Choose Us</a></li>
+        <li><a href="shop.php">Shop</a></li>
+         <li><a href="contact.php">Contact Us</a></li>
       </ul>
     </div>
 
@@ -907,12 +906,13 @@ if (isset($_SESSION['cart'])) {
     <div class="footer-col">
       <h4>Categories</h4>
       <ul>
-        <li><a href="#">Gaming PCs</a></li>
-        <li><a href="#">Graphics Cards</a></li>
-        <li><a href="#">Gaming Peripherals</a></li>
-        <li><a href="#">Special Deals</a></li>
-        <li><a href="#">Build Configurator</a></li>
-      </ul>
+            <li><a href="gaming-pcs.php">Gaming PCs</a></li>
+            <li><a href="graphic-cards.php">Graphics Cards</a></li>
+             <li><a href="audio.php">Audio</a></li>
+            <li><a href="monitors.php">Monitors</a></li>
+            <li><a href="motherboards.php">Motherboards</a></li>
+             <li><a href="peripherals.php">Peripherals</a></li>
+       </ul>
     </div>
 
     <!-- Column 4: Connect -->
