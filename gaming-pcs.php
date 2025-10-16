@@ -216,6 +216,16 @@ if (isset($_SESSION['cart'])) {
   .feature-sub { font-size: 13px; }
 }
 
+ .pcs {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
 
 /* Layout for the product section */
 
@@ -590,6 +600,7 @@ if (isset($_SESSION['cart'])) {
 <!-- HERO -->
 <section class="hero">
   <div class="container">
+    <span class="pcs">Premium Gaming PCs</span>
     <h1>Ultimate Gaming PCs</h1>
     <p>Pre-built gaming computers designed for maximum performance. From entry-level to enthusiast builds.</p>
     </div>
@@ -637,7 +648,6 @@ if (isset($_SESSION['cart'])) {
 <section class="product-section">
     <h2>Our Gaming PC Collection</h2>
     <p class="tagline">Handpicked systems built with premium components for the best gaming experience</p>
-
     <div class="products-grid">
 
       <!-- Product 1 -->

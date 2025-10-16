@@ -100,6 +100,17 @@ if (isset($_SESSION['cart'])) {
   margin: 0 auto;
 }
 
+ .motherboards {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
 .container h1{
     text-align: center;
     color:white;
@@ -643,6 +654,7 @@ if (isset($_SESSION['cart'])) {
 <!-- HERO -->
 <section class="hero">
   <div class="container">
+    <span class="motherboards">High-Performance Motherboards</span>
     <h1>Gaming Motherboards</h1>
     <p>The foundation of your gaming PC - high-performance motherboards for Intel and AMD</p>
     </div>
