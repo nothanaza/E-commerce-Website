@@ -193,7 +193,7 @@ $cart_count = array_sum(array_column($cart_items, 'quantity'));
 
     <!-- Column 2: About -->
     <div class="footer-col">
-      <h4>About Us</h4>
+      <h4>Quick Links</h4>
       <ul>
         <li><a href="#">Our Story</a></li>
         <li><a href="#">Why Choose Us</a></li>
@@ -205,7 +205,7 @@ $cart_count = array_sum(array_column($cart_items, 'quantity'));
 
     <!-- Column 3: Quick Links -->
     <div class="footer-col">
-      <h4>Quick Links</h4>
+      <h4>Categories</h4>
       <ul>
         <li><a href="#">Gaming PCs</a></li>
         <li><a href="#">Graphics Cards</a></li>
