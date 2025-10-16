@@ -854,15 +854,15 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             font-weight: 600;
         }
 
-        .footer-newsletter {
-            background: #111827;
-            color: #fff;
-            text-align: center;
-            padding: 2rem 1rem;
-            margin: 2rem 0 0 5rem;
-            border-radius: 0.5rem 0.5rem 0 0;
-            max-width: 1200px;
-        }
+     .footer-newsletter {
+    background: #111827;
+    color: #fff;
+    text-align: center;
+    padding: 2rem 1rem 2rem;
+    margin: 2rem auto 0 auto; /* Center horizontally */
+    border-radius: 0.5rem 0.5rem 0 0;
+    max-width: 1000px; /* Optional: make it narrower for better centering */
+}
 
         .footer-newsletter h3 {
             font-size: 1.25rem;
@@ -1111,7 +1111,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>About Us</h4>
+                <h4>Quick Links</h4>
                 <ul>
                     <li><a href="#">Our Story</a></li>
                     <li><a href="#">Why Choose Us</a></li>
@@ -1121,7 +1121,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Quick Links</h4>
+                <h4>Categories</h4>
                 <ul>
                     <li><a href="#">Gaming PCs</a></li>
                     <li><a href="#">Graphics Cards</a></li>
