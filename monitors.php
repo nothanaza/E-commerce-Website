@@ -738,7 +738,7 @@ if (isset($_SESSION['cart'])) {
           </div>
 
           <form method="POST" action="shop.php">
-            <input type="hidden" name="id" value="1">
+            <input type="hidden" name="id" value="4">
             <input type="hidden" name="name" value="TechGiant Gaming PC Elite">
             <input type="hidden" name="price" value="R44,999.99">
             <input type="hidden" name="image" value="your-image.jpg">
@@ -776,7 +776,7 @@ if (isset($_SESSION['cart'])) {
           </div>
 
           <form method="POST" action="shop.php">
-            <input type="hidden" name="id" value="2">
+            <input type="hidden" name="id" value="4">
             <input type="hidden" name="name" value="TechGiant Gaming PC Ultra">
             <input type="hidden" name="price" value="R59,999.99">
             <input type="hidden" name="image" value="your-image2.jpg">
@@ -813,7 +813,7 @@ if (isset($_SESSION['cart'])) {
           </div>
 
           <form method="POST" action="shop.php">
-            <input type="hidden" name="id" value="3">
+            <input type="hidden" name="id" value="4">
             <input type="hidden" name="name" value="TechGiant Gaming PC Titan">
             <input type="hidden" name="price" value="R74,999.99">
             <input type="hidden" name="image" value="your-image3.jpg">
