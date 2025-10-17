@@ -9,6 +9,15 @@ require_once __DIR__ . '/vendor/autoload.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+// Session timeout (30 minutes inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) { // 30 minutes
+    session_destroy();
+    header("Location: /E-commerce-Website/index.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
+// Process form submission
 $name = $email = $phone = $inquiry_type = $subject = $message = '';
 $success = $error = '';
 
@@ -77,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
 // Get cart count for header
 $cart_count = 0;
 if (isset($_SESSION['cart'])) {
@@ -121,7 +129,6 @@ if (isset($_SESSION['cart'])) {
             line-height: 1.6;
         }
         
-         
         .header {
             background: #fff;
             border-bottom: 1px solid #ddd;
@@ -142,18 +149,17 @@ if (isset($_SESSION['cart'])) {
         }
 
         .nav a {
-  text-decoration: none;
-  font-weight: bold;
-  margin: 0 10px;
-  font-size: 16px;
-  color: #333;
-  transition: color 0.3s;
-}
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+            font-size: 16px;
+            color: #333;
+            transition: color 0.3s;
+        }
 
-.nav a:hover {
-  color: #ff6a00;
-}
-
+        .nav a:hover {
+            color: #ff6a00;
+        }
 
         .user-actions {
             display: flex;
@@ -207,7 +213,6 @@ if (isset($_SESSION['cart'])) {
             }
         }
         
-
         .hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -232,7 +237,6 @@ if (isset($_SESSION['cart'])) {
             margin-top: -0.2rem;
             color: #333;
         }
-        
         
         .btn {
             padding: 12px 24px;
@@ -305,7 +309,6 @@ if (isset($_SESSION['cart'])) {
             color: white;
         }
         
-    
         .card {
             background: white;
             padding: 2rem;
@@ -360,7 +363,6 @@ if (isset($_SESSION['cart'])) {
         .email i { color: #e56b08ff; }
         .hours i { color: #9561e2; }
         
-        
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -388,7 +390,6 @@ if (isset($_SESSION['cart'])) {
             text-align: center;
         }
         
-    
         .hero {
             background: linear-gradient(to right, var(--black), #222);
             color: white;
@@ -419,7 +420,6 @@ if (isset($_SESSION['cart'])) {
             text-align: center;
             padding: 2rem;
         }
-        
         
         .newsletter {
             background: var(--black);
@@ -485,7 +485,6 @@ if (isset($_SESSION['cart'])) {
             background: #cc5a06;
         }
         
-    
         .social-links, .footer-social {
             list-style: none;
             padding: 0;
@@ -529,209 +528,205 @@ if (isset($_SESSION['cart'])) {
             border-radius: 3px;
         }
         
-    
-    /*Footer Styles*/
-/* ================= FOOTER ================= */
-.site-footer {
-  background-color: #000;
-  color: #f3f4f6;
-  padding-top: 3rem;
-  font-size: 0.875rem;
-}
+        /*Footer Styles*/
+        .site-footer {
+            background-color: #000;
+            color: #f3f4f6;
+            padding-top: 3rem;
+            font-size: 0.875rem;
+        }
 
-/* Top section: 4 columns */
-.footer-top {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  padding: 0 1rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            padding: 0 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-.footer-col h4 {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
+        .footer-col h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
 
-.footer-col ul {
-  list-style: none;
-  padding: 0;
-}
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+        }
 
-.footer-col ul li {
-  margin-bottom: 0.5rem;
-}
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
 
-.footer-col ul li a {
-  color: #d1d5db;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
+        .footer-col ul li a {
+            color: #d1d5db;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
 
-.footer-col ul li a:hover {
-  color: #f97316;
-}
+        .footer-col ul li a:hover {
+            color: #f97316;
+        }
 
-/* Logo */
-.footer-logo {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
 
-.logo-box {
-  width: 2.5rem;
-  height: 2.5rem;
-  background: #f97316;
-  color: #fff;
-  font-weight: 700;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0.5rem;
-}
+        .logo-box {
+            width: 2.5rem;
+            height: 2.5rem;
+            background: #f97316;
+            color: #fff;
+            font-weight: 700;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.5rem;
+        }
 
-.brand-name {
-  font-weight: 700;
-  font-size: 1.2rem;
-}
+        .brand-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
 
-.footer-description {
-  margin-bottom: 1rem;
-  color: #9ca3af;
-}
+        .footer-description {
+            margin-bottom: 1rem;
+            color: #9ca3af;
+        }
 
-.footer-contact li {
-  margin-bottom: 0.3rem;
-  color: #d1d5db;
-}
+        .footer-contact li {
+            margin-bottom: 0.3rem;
+            color: #d1d5db;
+        }
 
-/* Middle row */
-.footer-middle {
-  border-top: 1px solid #374151;
-  padding: 1rem;
-  text-align: center;
-  font-size: 0.85rem;
-  color: #9ca3af;
-  margin: 0 5rem 0 5rem;
-}
+        .footer-middle {
+            border-top: 1px solid #374151;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #9ca3af;
+            margin: 0 5rem 0 5rem;
+        }
 
-.footer-links {
-  margin: 0.5rem 0;
-}
+        .footer-links {
+            margin: 0.5rem 0;
+        }
 
-.footer-links a {
-  margin: 0 0.75rem;
-  color: #9ca3af;
-  text-decoration: none;
-}
+        .footer-links a {
+            margin: 0 0.75rem;
+            color: #9ca3af;
+            text-decoration: none;
+        }
 
-.footer-links a:hover {
-  color: #f97316;
-}
+        .footer-links a:hover {
+            color: #f97316;
+        }
 
-.powered {
-  margin-top: 0.5rem;
-}
+        .powered {
+            margin-top: 0.5rem;
+        }
 
-.powered span {
-  color: #f97316;
-  font-weight: 600;
-}
+        .powered span {
+            color: #f97316;
+            font-weight: 600;
+        }
 
-/* Newsletter */
-.footer-newsletter {
-    background: #111827;
-    color: #fff;
-    text-align: center;
-    padding: 2rem 1rem 2rem;
-    margin: 2rem auto 0 auto; /* Center horizontally */
-    border-radius: 0.5rem 0.5rem 0 0;
-    max-width: 1000px; /* Optional: make it narrower for better centering */
-}
+        .footer-newsletter {
+            background: #111827;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 1rem 2rem;
+            margin: 2rem auto 0 auto;
+            border-radius: 0.5rem 0.5rem 0 0;
+            max-width: 1000px;
+        }
 
-.footer-newsletter h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
-}
+        .footer-newsletter h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
 
-.footer-newsletter p {
-  color: #d1d5db;
-  margin-bottom: 1rem;
-}
+        .footer-newsletter p {
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
 
-.newsletter-form {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
 
-.newsletter-form input {
-  padding: 0.75rem 1rem;
-  border-radius: 0.375rem;
-  border: 1px solid #374151;
-  background: #1f2937;
-  color: #f3f4f6;
-  flex: 1;
-  max-width: 250px;
-}
+        .newsletter-form input {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            border: 1px solid #374151;
+            background: #1f2937;
+            color: #f3f4f6;
+            flex: 1;
+            max-width: 250px;
+        }
 
-.newsletter-form button {
-  padding: 0.75rem 1.5rem;
-  background: #f97316;
-  color: #fff;
-  border: none;
-  border-radius: 0.375rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+        .newsletter-form button {
+            padding: 0.75rem 1.5rem;
+            background: #f97316;
+            color: #fff;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
-.newsletter-form button:hover {
-  background: #ea580c;
-}
+        .newsletter-form button:hover {
+            background: #ea580c;
+        }
 
-/* Responsive */
-@media (min-width: 768px) {
-  .footer-top {
-    grid-template-columns: repeat(4, 1fr);
-  }
+        @media (min-width: 768px) {
+            .footer-top {
+                grid-template-columns: repeat(4, 1fr);
+            }
 
-  .footer-middle {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    text-align: left;
-  }
+            .footer-middle {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: left;
+            }
 
-  .footer-links {
-    margin: 0;
-  }
-}
-
+            .footer-links {
+                margin: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
-     <!-- Header -->
-     <header class="header">
-    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
-     <nav class="nav">
-        <a href="index.php">Home</a>
-        <a href="shop.php">Shop</a>
-        <a href="about.php">About Us</a>
-        <a href="contact.php">Contact</a>
-    </nav>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+        <nav class="nav">
+            <a href="index.php">Home</a>
+            <a href="shop.php">Shop</a>
+            <a href="about.php">About Us</a>
+            <a href="contact.php">Contact</a>
+        </nav>
 
-     <div class="user-actions">
-            <a href="signin.php" class="account-link">👤 My Account</a>
+        <div class="user-actions">
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="profile.php" class="account-link">👤 <?= htmlspecialchars($_SESSION['username']) ?></a>
+            <?php else: ?>
+                <a href="signin.php" class="account-link">👤 My Account</a>
+            <?php endif; ?>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
-     </div>
+        </div>
     </header>
 
     <section class="hero section">
@@ -785,48 +780,48 @@ if (isset($_SESSION['cart'])) {
                 <div class="info-box">
                     <h2>Send us a Message</h2>
                     <p>Fill out the form below and we'll get back to you as soon as possible.</p>
-                   <?php if ($success): ?>
-    <p class="success" style="color: green; font-weight: bold; text-align: center; margin-bottom: 1rem;"><?= htmlspecialchars($success) ?></p>
-<?php elseif ($error): ?>
-    <p class="error" style="color: red; font-weight: bold; text-align: center; margin-bottom: 1rem;"><?= htmlspecialchars($error) ?></p>
-<?php endif; ?> 
+                    <?php if ($success): ?>
+                        <p class="success" style="color: green; font-weight: bold; text-align: center; margin-bottom: 1rem;"><?= htmlspecialchars($success) ?></p>
+                    <?php elseif ($error): ?>
+                        <p class="error" style="color: red; font-weight: bold; text-align: center; margin-bottom: 1rem;"><?= htmlspecialchars($error) ?></p>
+                    <?php endif; ?>
 
-<form method="POST" action="contact.php">
-    <div class="form-group">
-        <label for="name">Full Name *</label>
-        <input type="text" id="name" name="name" class="form-control" placeholder="Your full name" value="<?= htmlspecialchars($name) ?>" required>
-    </div>
-    <div class="form-group">
-        <label for="email">Email Address *</label>
-        <input type="email" id="email" name="email" class="form-control" placeholder="your.email@example.com" value="<?= htmlspecialchars($email) ?>" required>
-    </div>
-    <div class="form-group">
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" name="phone" class="form-control" placeholder="+27 XX XXX XXXX" value="<?= htmlspecialchars($phone) ?>">
-    </div>
-    <div class="form-group">
-        <label for="inquiry">Inquiry Type</label>
-        <select id="inquiry" name="inquiry" class="form-control">
-            <option value="">Select a category</option>
-            <option value="general" <?= $inquiry_type === 'general' ? 'selected' : '' ?>>General Inquiry</option>
-            <option value="support" <?= $inquiry_type === 'support' ? 'selected' : '' ?>>Technical Support</option>
-            <option value="sales" <?= $inquiry_type === 'sales' ? 'selected' : '' ?>>Sales Question</option>
-            <option value="warranty" <?= $inquiry_type === 'warranty' ? 'selected' : '' ?>>Warranty Claim</option>
-            <option value="feedback" <?= $inquiry_type === 'feedback' ? 'selected' : '' ?>>Feedback</option>
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="subject">Subject</label>
-        <input type="text" id="subject" name="subject" class="form-control" placeholder="Brief description of your inquiry" value="<?= htmlspecialchars($subject) ?>">
-    </div>
-    <div class="form-group">
-        <label for="message">Message *</label>
-        <textarea id="message" name="message" class="form-control" placeholder="Please provide details about your inquiry..." required><?= htmlspecialchars($message) ?></textarea>
-    </div>
-    <div class="form-button-container">
-        <button type="submit" class="btn btn-black">Send Message</button>
-    </div>
-</form>
+                    <form method="POST" action="contact.php">
+                        <div class="form-group">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" class="form-control" placeholder="Your full name" value="<?= htmlspecialchars($name) ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" class="form-control" placeholder="your.email@example.com" value="<?= htmlspecialchars($email) ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone" name="phone" class="form-control" placeholder="+27 XX XXX XXXX" value="<?= htmlspecialchars($phone) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="inquiry">Inquiry Type</label>
+                            <select id="inquiry" name="inquiry" class="form-control">
+                                <option value="">Select a category</option>
+                                <option value="general" <?= $inquiry_type === 'general' ? 'selected' : '' ?>>General Inquiry</option>
+                                <option value="support" <?= $inquiry_type === 'support' ? 'selected' : '' ?>>Technical Support</option>
+                                <option value="sales" <?= $inquiry_type === 'sales' ? 'selected' : '' ?>>Sales Question</option>
+                                <option value="warranty" <?= $inquiry_type === 'warranty' ? 'selected' : '' ?>>Warranty Claim</option>
+                                <option value="feedback" <?= $inquiry_type === 'feedback' ? 'selected' : '' ?>>Feedback</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" class="form-control" placeholder="Brief description of your inquiry" value="<?= htmlspecialchars($subject) ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message *</label>
+                            <textarea id="message" name="message" class="form-control" placeholder="Please provide details about your inquiry..." required><?= htmlspecialchars($message) ?></textarea>
+                        </div>
+                        <div class="form-button-container">
+                            <button type="submit" class="btn btn-black">Send Message</button>
+                        </div>
+                    </form>
                 </div>
                 
                 <div>
@@ -872,86 +867,85 @@ if (isset($_SESSION['cart'])) {
     </section>
     
     <!-- Footer -->
-  <footer class="site-footer">
-  <div class="footer-top">
-    <!-- Column 1: Logo + Info -->
-    <div class="footer-col">
-      <div class="footer-logo">
-        <div class="logo-box">TG</div>
-        <span class="brand-name">Tech Giants</span>
-      </div>
-      <p class="footer-description">
-        South Africa's premier destination for gaming hardware and accessories. 
-        We provide cutting-edge technology for serious gamers who demand the best performance.
-      </p>
-      <ul class="footer-contact">
-        <li>📍 Pretoria, Gauteng</li>
-        <li>📞 +27 21 123 4567</li>
-        <li>✉️ info@techgiants.co.za</li>
-      </ul>
-    </div>
+    <footer class="site-footer">
+        <div class="footer-top">
+            <!-- Column 1: Logo + Info -->
+            <div class="footer-col">
+                <div class="footer-logo">
+                    <div class="logo-box">TG</div>
+                    <span class="brand-name">Tech Giants</span>
+                </div>
+                <p class="footer-description">
+                    South Africa's premier destination for gaming hardware and accessories. 
+                    We provide cutting-edge technology for serious gamers who demand the best performance.
+                </p>
+                <ul class="footer-contact">
+                    <li>📍 Pretoria, Gauteng</li>
+                    <li>📞 +27 21 123 4567</li>
+                    <li>✉️ info@techgiants.co.za</li>
+                </ul>
+            </div>
 
-    <!-- Column 2: About -->
-    <div class="footer-col">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="index.php">Home</a></li>
-        <li><a href="about.php">Why Choose Us</a></li>
-        <li><a href="shop.php">Shop</a></li>
-         <li><a href="contact.php">Contact Us</a></li>
-      </ul>
-    </div>
+            <!-- Column 2: About -->
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="about.php">Why Choose Us</a></li>
+                    <li><a href="shop.php">Shop</a></li>
+                    <li><a href="contact.php">Contact Us</a></li>
+                </ul>
+            </div>
 
-    <!-- Column 3: Quick Links -->
-    <div class="footer-col">
-      <h4>Categories</h4>
-      <ul>
-            <li><a href="gaming-pcs.php">Gaming PCs</a></li>
-            <li><a href="graphic-cards.php">Graphics Cards</a></li>
-             <li><a href="audio.php">Audio</a></li>
-            <li><a href="monitors.php">Monitors</a></li>
-            <li><a href="motherboards.php">Motherboards</a></li>
-             <li><a href="peripherals.php">Peripherals</a></li>
-       </ul>
-    </div>
+            <!-- Column 3: Quick Links -->
+            <div class="footer-col">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="gaming-pcs.php">Gaming PCs</a></li>
+                    <li><a href="graphic-cards.php">Graphics Cards</a></li>
+                    <li><a href="audio.php">Audio</a></li>
+                    <li><a href="monitors.php">Monitors</a></li>
+                    <li><a href="motherboards.php">Motherboards</a></li>
+                    <li><a href="peripherals.php">Peripherals</a></li>
+                </ul>
+            </div>
 
-    <!-- Column 4: Connect -->
-    <div class="footer-col">
-      <h4>Connect With Us</h4>
-      <ul>
-        <li>📸 @techgiants</li>
-        <li>🌍 techgiants.co.za</li>
-        <li>🎵 @techgiants</li>
-      </ul>
-      <ul class="footer-support">
-        <li><a href="#">Customer Support</a></li>
-        <li><a href="#">Warranty Claims</a></li>
-        <li><a href="#">Return Policy</a></li>
-      </ul>
-    </div>
-  </div>
+            <!-- Column 4: Connect -->
+            <div class="footer-col">
+                <h4>Connect With Us</h4>
+                <ul>
+                    <li>📸 @techgiants</li>
+                    <li>🌍 techgiants.co.za</li>
+                    <li>🎵 @techgiants</li>
+                </ul>
+                <ul class="footer-support">
+                    <li><a href="#">Customer Support</a></li>
+                    <li><a href="#">Warranty Claims</a></li>
+                    <li><a href="#">Return Policy</a></li>
+                </ul>
+            </div>
+        </div>
 
-  <!-- Middle Row -->
-  <div class="footer-middle">
-    <p>© 2024 Tech Giants. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="#">Privacy Policy</a>
-      <a href="#">Terms of Service</a>
-      <a href="#">Shipping Info</a>
-    </div>
-    <p class="powered">Powered by <span>Gaming Excellence</span></p>
-  </div>
+        <!-- Middle Row -->
+        <div class="footer-middle">
+            <p>© 2024 Tech Giants. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Shipping Info</a>
+            </div>
+            <p class="powered">Powered by <span>Gaming Excellence</span></p>
+        </div>
 
-  <!-- Newsletter -->
-  <div class="footer-newsletter">
-    <h3>Stay Updated with Tech Giants</h3>
-    <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-    <form class="newsletter-form">
-      <input type="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe</button>
-    </form>
-  </div>
-</footer>
-
+        <!-- Newsletter -->
+        <div class="footer-newsletter">
+            <h3>Stay Updated with Tech Giants</h3>
+            <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </footer>
 </body>
 </html>
