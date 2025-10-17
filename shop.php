@@ -1,5 +1,14 @@
 <?php
 session_start();
+
+// Session timeout (30 minutes inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) { // 30 minutes
+    session_destroy();
+    header("Location: /E-commerce-Website/index.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
 require_once 'components/db.php';
 
 // Get categories
@@ -25,35 +34,43 @@ if (isset($_POST['add_to_cart'])) {
         $product_exists = $stmt->fetch();
 
         if ($product_exists && $product_exists['in_stock']) {
-            $session_id = session_id();
-            try {
-                // Insert or update cart item in database
-                $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, ?) 
-                                     ON DUPLICATE KEY UPDATE quantity = quantity + ?");
-                $stmt->execute([$session_id, $product_id, $quantity, $quantity]);
+            if (isset($_SESSION['user_id'])) {
+                $session_id = session_id();
+                try {
+                    // Insert or update cart item in database
+                    $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, ?) 
+                                         ON DUPLICATE KEY UPDATE quantity = quantity + ?");
+                    $stmt->execute([$session_id, $product_id, $quantity, $quantity]);
 
-                // Sync session data
-                if (!isset($_SESSION['cart'])) {
-                    $_SESSION['cart'] = [];
+                    // Sync session data
+                    if (!isset($_SESSION['cart'])) {
+                        $_SESSION['cart'] = [];
+                    }
+                    if (isset($_SESSION['cart'][$product_id])) {
+                        $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+                    } else {
+                        $_SESSION['cart'][$product_id] = [
+                            'id' => $product_id,
+                            'name' => $product_name,
+                            'price' => 'R ' . number_format($product_price, 2),
+                            'image' => $product_image,
+                            'quantity' => $quantity
+                        ];
+                    }
+                    // Redirect with anchor to maintain position
+                    $referer = $_SERVER['HTTP_REFERER'] ?? '/E-commerce-Website/shop.php';
+                    $anchor = strpos($referer, '#') !== false ? parse_url($referer, PHP_URL_FRAGMENT) : 'product-' . $product_id;
+                    header("Location: /E-commerce-Website/shop.php#" . $anchor);
+                    exit;
+                } catch (PDOException $e) {
+                    die("Database error: " . $e->getMessage());
                 }
-                if (isset($_SESSION['cart'][$product_id])) {
-                    $_SESSION['cart'][$product_id]['quantity'] += $quantity;
-                } else {
-                    $_SESSION['cart'][$product_id] = [
-                        'id' => $product_id,
-                        'name' => $product_name,
-                        'price' => 'R ' . number_format($product_price, 2),
-                        'image' => $product_image,
-                        'quantity' => $quantity
-                    ];
-                }
-            } catch (PDOException $e) {
-                die("Database error: " . $e->getMessage());
+            } else {
+                header("Location: /E-commerce-Website/signin.php");
+                exit;
             }
         }
     }
-    header("Location: shop.php");
-    exit;
 }
 
 // Get cart count
@@ -84,7 +101,11 @@ if (isset($_SESSION['cart'])) {
     </nav>
 
      <div class="user-actions">
-            <a href="signin.php" class="account-link">👤 My Account</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="profile.php" class="account-link">👤 <?= htmlspecialchars($_SESSION['username']) ?></a>
+            <?php else: ?>
+                <a href="signin.php" class="account-link">👤 My Account</a>
+            <?php endif; ?>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
      </div>
     </header>
@@ -223,10 +244,6 @@ if (isset($_SESSION['cart'])) {
   </div>
 </section>
 
-
-
-
-
 <!-- Footer -->
   <footer class="site-footer">
   <div class="footer-top">
@@ -329,86 +346,82 @@ if (isset($_SESSION['cart'])) {
 
   function starSvg(){
     return `<svg width="18" height="18" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#d1d5db"/>
+      <path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#fbbf24"/>
     </svg>`;
   }
-
  
   function renderStars(stars){
-  const fullStars = Math.floor(stars);
-  const halfStar = stars % 1 >= 0.5 ? 1 : 0;
-  const emptyStars = 5 - fullStars - halfStar;
-  let html = '';
-  for(let i=0; i<fullStars; i++) html += starSvg();
-  if(halfStar) html += starSvgHalf();
-  for(let i=0; i<emptyStars; i++) html += starSvgEmpty();
-  return `<div class="stars">${html}</div>`;
-}
+    const fullStars = Math.floor(stars);
+    const halfStar = stars % 1 >= 0.5 ? 1 : 0;
+    const emptyStars = 5 - fullStars - halfStar;
+    let html = '';
+    for(let i=0; i<fullStars; i++) html += starSvg();
+    if(halfStar) html += starSvgHalf();
+    for(let i=0; i<emptyStars; i++) html += starSvgEmpty();
+    return `<div class="stars">${html}</div>`;
+  }
 
-function starSvg(){
-  return `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#fbbf24"/></svg>`;
-}
-function starSvgHalf(){
-  return `<svg width="18" height="18" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stop-color="#fbbf24"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="url(#half)"/></svg>`;
-}
-function starSvgEmpty(){
-  return `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#d1d5db"/></svg>`;
-}
+  function starSvgHalf(){
+    return `<svg width="18" height="18" viewBox="0 0 20 20"><defs><linearGradient id="half"><stop offset="50%" stop-color="#fbbf24"/><stop offset="50%" stop-color="#d1d5db"/></linearGradient></defs><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="url(#half)"/></svg>`;
+  }
+  function starSvgEmpty(){
+    return `<svg width="18" height="18" viewBox="0 0 20 20"><path d="M10 1.5l2.6 5.27 5.82.84-4.21 4.1.99 5.78L10 14.98l-5.2 2.73.99-5.78L1.58 7.61l5.82-.84L10 1.5z" fill="#d1d5db"/></svg>`;
+  }
 
-function cardHTML(p, isList=false){
-  const sale = p.old_price && p.price < p.old_price;
-  const cat = p.category_name;
-  const out = !p.in_stock;
+  function cardHTML(p, isList=false){
+    const sale = p.old_price && p.price < p.old_price;
+    const cat = p.category_name;
+    const out = !p.in_stock;
 
-  // Debug: Uncomment to verify
-  // console.log("Product ID: " + p.id + ", In Stock: " + p.in_stock + ", Out: " + out);
+    // Debug: Uncomment to verify
+    // console.log("Product ID: " + p.id + ", In Stock: " + p.in_stock + ", Out: " + out);
 
-  const topBadge = out
-    ? `<div class="badge out">Out of Stock</div>`
-    : (p.discount ? `<div class="badge">${p.discount}</div>` : ``);
+    const topBadge = out
+      ? `<div class="badge out">Out of Stock</div>`
+      : (p.discount ? `<div class="badge">${p.discount}</div>` : ``);
 
-  const rating = `
-    <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
-     ${renderStars(p.stars)}
-    <span class="reviews">(${p.reviews})</span> 
-    </div>`;
+    const rating = `
+      <div style="display:flex;align-items:center;gap:8px;margin-top:2px">
+       ${renderStars(p.stars)}
+      <span class="reviews">(${p.reviews})</span> 
+      </div>`;
 
-  const price = `
-    <div class="price-wrap">
-      <div class="price">${fmtRand(p.price)}</div>
-      ${sale ? `<div class="old">${fmtRand(p.old_price)}</div>` : ``}
-    </div>`;
+    const price = `
+      <div class="price-wrap">
+        <div class="price">${fmtRand(p.price)}</div>
+        ${sale ? `<div class="old">${fmtRand(p.old_price)}</div>` : ``}
+      </div>`;
 
-  const btn = out
-    ? `<button class="btn out-of-stock" disabled>${cartIcon()} Out of Stock</button>`
-    : `
-      <form method="POST" action="shop.php" style="display:inline;">
-        <input type="hidden" name="add_to_cart" value="1">
-        <input type="hidden" name="id" value="${p.id}">
-        <input type="hidden" name="name" value="${p.name}">
-        <input type="hidden" name="price" value="${fmtRand(p.price)}">
-        <input type="hidden" name="image" value="${p.image}">
-        <input type="hidden" name="quantity" value="1">
-        <button type="submit" class="btn">${cartIcon()} Add to Cart</button>
-      </form>
-    `;
+    const btn = out
+      ? `<button class="btn out-of-stock" disabled>${cartIcon()} Out of Stock</button>`
+      : `
+        <form method="POST" action="shop.php" style="display:inline;">
+          <input type="hidden" name="add_to_cart" value="1">
+          <input type="hidden" name="id" value="${p.id}">
+          <input type="hidden" name="name" value="${p.name}">
+          <input type="hidden" name="price" value="${fmtRand(p.price)}">
+          <input type="hidden" name="image" value="${p.image}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="btn">${cartIcon()} Add to Cart</button>
+        </form>
+      `;
 
-  return `
-    <a href="product.php?id=${p.id}" class="card-link">
-    <div class="card ${isList ? 'list-row' : ''}" data-id="${p.id}" data-cat="${p.category_id}" data-price="${p.price}" data-stars="${p.stars}">
-      <div class="card-img">
-        ${topBadge}
-        <img src="${p.image}" alt="${p.name}">
-      </div>
-      <div class="card-body">
-        <h3 class="name">${p.name}</h3>
-        <div class="cat">${cat}</div>
-        ${rating}
-        ${price}
-        <div class="actions">${btn}</div>
-      </div>
-    </div>`;
-}
+    return `
+      <a href="product.php?id=${p.id}" class="card-link">
+      <div class="card ${isList ? 'list-row' : ''}" id="product-${p.id}" data-id="${p.id}" data-cat="${p.category_id}" data-price="${p.price}" data-stars="${p.stars}">
+        <div class="card-img">
+          ${topBadge}
+          <img src="${p.image}" alt="${p.name}">
+        </div>
+        <div class="card-body">
+          <h3 class="name">${p.name}</h3>
+          <div class="cat">${cat}</div>
+          ${rating}
+          ${price}
+          <div class="actions">${btn}</div>
+        </div>
+      </div>`;
+  }
   function cartIcon(){
     return `<svg width="18" height="18" viewBox="0 0 24 24" fill="#fff">
       <path d="M6 6h15l-1.5 9h-12L6 6z"></path><circle cx="9" cy="20" r="1.5"></circle><circle cx="18" cy="20" r="1.5"></circle>
@@ -495,9 +508,9 @@ tailwind.config = {
       }
     }
  
-    document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
+    document.querySelector('.newsletter-form')?.addEventListener('submit', function(e) {
       e.preventDefault();
-      const email = document.getElementById('email')?.value;
+      const email = this.querySelector('input').value;
       const message = document.getElementById('message') || document.createElement('p');
       message.id = 'message';
       this.appendChild(message);
@@ -508,10 +521,10 @@ tailwind.config = {
       } else {
         message.textContent = "✅ Thank you for subscribing!";
         message.className = "text-green-500 text-sm mt-2";
-        document.getElementById('email').value = "";
+        this.querySelector('input').value = "";
       }
     });
 
 </script>
-</body> 
+</body>
 </html>
