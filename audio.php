@@ -100,6 +100,18 @@ if (isset($_SESSION['cart'])) {
   margin: 0 auto;
 }
 
+ .cards {
+            display: inline-block;
+            background: #ff6600;
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+
 .container h1{
     text-align: center;
     color:white;
@@ -216,16 +228,7 @@ if (isset($_SESSION['cart'])) {
   .feature-sub { font-size: 13px; }
 }
 
-        .audio {
-            display: inline-block;
-            background: #ff6600;
-            color: #fff;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
+
 /* Layout for the product section */
 
     .product-section {
@@ -444,13 +447,6 @@ if (isset($_SESSION['cart'])) {
   left: 0;
 }
 
-/* ===== Responsive ===== */
-@media (max-width: 900px) {
-  .guide-cards {
-    flex-direction: column;
-    align-items: center;
-  }
-}
   /*Footer Styles*/
         .site-footer {
             background-color: #000;
@@ -628,6 +624,14 @@ if (isset($_SESSION['cart'])) {
                 margin: 0;
             }
         }
+
+/* ===== Responsive ===== */
+@media (max-width: 900px) {
+  .guide-cards {
+    flex-direction: column;
+    align-items: center;
+  }
+}
  
 </style>
 </head>
@@ -651,7 +655,7 @@ if (isset($_SESSION['cart'])) {
 <!-- HERO -->
 <section class="hero">
   <div class="container">
-     <span class="audio">Premium Gaming Audio</span>
+     <span class="cards">Premium Gaming Audio</span>
     <h1>Gaming Audio</h1>
     <p>Immerse yourself in crystal-clear gaming audio with premium headsets, microphones, and speakers</p>
     </div>
@@ -698,19 +702,19 @@ if (isset($_SESSION['cart'])) {
 
 <section class="product-section">
     <h2>Premium Audio Equipment</h2>
-    <p class="tagline"> Headsets, microphones, and speakers engineered for professional gaming and streaming</p>
+    <p class="tagline">Headsets, microphones, and speakers engineered for professional gaming and streaming</p>
 
     <div class="products-grid">
 
       <!-- Product 1 -->
       <div class="product-card">
         <div class="product-image">
-          <img src="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="Audio ">
-       <span class="discount-badge">Out of stock</span>
+          <img src="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="Audio">
+       
         </div>
 
         <div class="product-info">
-          <h3 class="product-title"> Gaming Headset Pro</h3>
+          <h3 class="product-title">Gaming Headset Pro</h3>
           <p class="category">audio</p>
 
           <div class="rating">
@@ -723,15 +727,15 @@ if (isset($_SESSION['cart'])) {
           </div>
 
           <div class="price">
-            <span class="current">R1,999.99</span>
+            <span class="current">R1,899.99</span>
             
           </div>
 
           <form method="POST" action="shop.php">
-            <input type="hidden" name="id" value="1">
+            <input type="hidden" name="id" value="5">
             <input type="hidden" name="name" value="TechGiant Gaming PC Elite">
             <input type="hidden" name="price" value="R44,999.99">
-            <input type="hidden" name="image" value="your-image.jpg">
+            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080">
             <input type="hidden" name="quantity" value="1">
             <button type="submit" name="add_to_cart" class="add-to-cart">
               <i class="fas fa-shopping-cart"></i> Add to Cart
@@ -744,7 +748,7 @@ if (isset($_SESSION['cart'])) {
       <div class="product-card">
         <div class="product-image">
           <img src="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="Audio">
-         <span class="discount-badge">-14%</span>
+          <span class="discount-badge">-14%</span>
         </div>
 
         <div class="product-info">
@@ -762,14 +766,14 @@ if (isset($_SESSION['cart'])) {
 
           <div class="price">
             <span class="current">R2,999.99</span>
-         <span class="old">R3,599.99</span>
+            <span class="old">R3,499.99</span>
           </div>
 
           <form method="POST" action="shop.php">
-            <input type="hidden" name="id" value="2">
+            <input type="hidden" name="id" value="5">
             <input type="hidden" name="name" value="TechGiant Gaming PC Ultra">
             <input type="hidden" name="price" value="R59,999.99">
-            <input type="hidden" name="image" value="your-image2.jpg">
+            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080">
             <input type="hidden" name="quantity" value="1">
             <button type="submit" name="add_to_cart" class="add-to-cart">
               <i class="fas fa-shopping-cart"></i> Add to Cart
@@ -781,12 +785,12 @@ if (isset($_SESSION['cart'])) {
       <!-- Product 3 -->
       <div class="product-card">
         <div class="product-image">
-          <img src="https://images.unsplash.com/photo-1696710240292-05aad88b94b8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBtb25pdG9yJTIwc2V0dXB8ZW58MXx8fHwxNzU3MDE3NjE0fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="Gaming Monitors">
-        
+          <img src="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="Audio">
+          
         </div>
 
         <div class="product-info">
-          <h3 class="product-title">TechGinat Studio Streaming Mic</h3>
+          <h3 class="product-title">TechGiant Studio Streaming Mic</h3>
           <p class="category">audio</p>
 
           <div class="rating">
@@ -795,18 +799,19 @@ if (isset($_SESSION['cart'])) {
               <i class="fas fa-star"></i><i class="fas fa-star"></i>
               <i class="fas fa-star"></i>
             </span>
-            <span class="reviews">(245)</span>
+            <span class="reviews">(234)</span>
           </div>
 
           <div class="price">
             <span class="current">R3,499.99</span>
+        
           </div>
 
           <form method="POST" action="shop.php">
-            <input type="hidden" name="id" value="3">
-            <input type="hidden" name="name" value="TechGiant Gaming PC Titan">
-            <input type="hidden" name="price" value="R74,999.99">
-            <input type="hidden" name="image" value="your-image3.jpg">
+            <input type="hidden" name="id" value="5">
+            <input type="hidden" name="name" value="Gaming Headset Pro">
+            <input type="hidden" name="price" value="R3,499.99">
+            <input type="hidden" name="image" value="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080">
             <input type="hidden" name="quantity" value="1">
             <button type="submit" name="add_to_cart" class="add-to-cart">
               <i class="fas fa-shopping-cart"></i> Add to Cart
@@ -819,34 +824,33 @@ if (isset($_SESSION['cart'])) {
   </section>
 
 <section class="guide-section">
-  <h2>Gaming Monitor Buying Guide</h2>
+  <h2>Gaming Audio Buying Guide</h2>
 
   <div class="guide-cards">
     <!-- Left Card -->
     <div class="guide-card">
-      <h3>Resolution & Performance</h3>
+      <h3>Headsets</h3>
       <ul>
-        <li>1080p: Best for competitive gaming (240Hz+)</li>
-        <li>1440p: Sweet spot for most gamers</li>
-        <li> 4K: Ultimate visual quality (high-end GPU needed)</li>
-        <li> Ultrawide: Immersive gaming experience</li>
+        <li>7.1 surround sound for immersive gaming</li>
+        <li>Noise-canceling microphones for clear comms</li>
+        <li>Comfortable for long gaming sessions</li>
+        <li>Wireless options for cable-free gaming</li>
       </ul>
     </div>
 
     <!-- Right Card -->
     <div class="guide-card">
-      <h3>Key Features</h3>
+      <h3>Microphones & Speakers</h3>
       <ul>
-        <li>High refresh rate for smooth gameplay</li>
-        <li> Low response time (1ms ideal)</li>
-        <li>G-Sync/FreeSync for no screen tearing</li>
-        <li>HDR for enhanced color & contrast</li>
+        <li>Studio-quality mics for streaming</li>
+        <li>Low latency for real-time communication</li>
+        <li>RGB speakers for aesthetic setups</li>
+        <li>Multi-platform compatibility</li>
       </ul>
     </div>
   </div>
 </section>
-
-<!-- Footer -->
+ <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-top">
             <div class="footer-col">
