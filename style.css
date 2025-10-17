@@ -355,7 +355,7 @@
 .category-box:hover {
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 4px 12px #ff6600;
-}
+}z
 
 .category-icon {
     background: #ff6600;
@@ -536,6 +536,8 @@
   margin: 6px 0;
   color: #333;
 }
+
+
 
 /* === Cart Section === */
 .cart-form { margin-top: 15px; }
