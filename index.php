@@ -1021,35 +1021,34 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
         </section>
 
-<section id="categories" class="categories">
-    <h2>Shop by Category</h2>
-    <p>Find exactly what you're looking for</p>
-    <div class="category-grid">
-        <?php
-        $iconMap = [
-            "gaming-pcs" => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
-            "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
-            "motherboards" => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
-            "monitors" => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
-            "peripherals" => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
-            "audio" => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
-        ];
+        <section id="categories" class="categories">
+            <h2>Shop by Category</h2>
+            <p>Find exactly what you're looking for</p>
+            <div class="category-grid">
+                <?php
+                $iconMap = [
+                    "gaming-pcs" => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
+                    "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
+                    "motherboards" => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
+                    "monitors" => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
+                    "peripherals" => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
+                    "audio" => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
+                ];
 
-        foreach ($categories as $cat): 
-            $pageLink = $cat['id'] . ".php"; // link directly to the matching page
-        ?>
-            <a href="<?= htmlspecialchars($pageLink) ?>" class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>">
-                <div class="category-icon">
-                    <img src="<?= $iconMap[$cat['id']] ?? 'https://img.icons8.com/ios-filled/50/ffffff/question-mark.png' ?>" 
-                         alt="<?= htmlspecialchars($cat['name']) ?> Icon">
-                </div>
-                <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
-                <div class="category-count">Products</div>
-            </a>
-        <?php endforeach; ?>
-    </div>
-</section>
-
+                foreach ($categories as $cat): 
+                    $pageLink = "shop.php?category=" . htmlspecialchars($cat['id']);
+                ?>
+                    <a href="<?= $pageLink ?>" class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>">
+                        <div class="category-icon">
+                            <img src="<?= $iconMap[$cat['id']] ?? 'https://img.icons8.com/ios-filled/50/ffffff/question-mark.png' ?>" 
+                                 alt="<?= htmlspecialchars($cat['name']) ?> Icon">
+                        </div>
+                        <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
+                        <div class="category-count">Products</div>
+                    </a>
+                <?php endforeach; ?>
+            </div>
+        </section>
 
         <!-- FEATURED PRODUCTS -->
         <section class="featured-products-section">
@@ -1128,12 +1127,12 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             <div class="footer-col">
                 <h4>Categories</h4>
                 <ul>
-                    <li><a href="gaming-pcs.php">Gaming PCs</a></li>
-                    <li><a href="graphic-cards.php">Graphics Cards</a></li>
-                    <li><a href="audio.php">Audio</a></li>
-                    <li><a href="monitors.php">Monitors</a></li>
-                    <li><a href="motherboards.php">Motherboards</a></li>
-                    <li><a href="peripherals.php">Peripherals</a></li>
+                    <li><a href="shop.php?category=gaming-pcs">Gaming PCs</a></li>
+                    <li><a href="shop.php?category=graphics-cards">Graphics Cards</a></li>
+                    <li><a href="shop.php?category=audio">Audio</a></li>
+                    <li><a href="shop.php?category=monitors">Monitors</a></li>
+                    <li><a href="shop.php?category=motherboards">Motherboards</a></li>
+                    <li><a href="shop.php?category=peripherals">Peripherals</a></li>
                 </ul>
             </div>
             <div class="footer-col">
