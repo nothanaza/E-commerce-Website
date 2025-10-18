@@ -1,5 +1,14 @@
 <?php
 session_start();
+
+// Session timeout (30 minutes inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) { // 30 minutes
+    session_destroy();
+    header("Location: /E-commerce-Website/index.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
 require_once 'components/db.php';
 
 // Get product ID from URL
@@ -96,20 +105,25 @@ unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
 </head>
 <body>
 
-<!-- Header -->
-<header class="header">
-    <div class="logo" onclick="window.location.href='/E-commerce-Website-main/E-commerce-Website/index.php'">Tech Giants</div>
-    <nav class="nav">
-        <a href="/E-commerce-Website-main/E-commerce-Website/index.php">Home</a>
-        <a href="/E-commerce-Website-main/E-commerce-Website/shop.php">Shop</a>
-        <a href="/E-commerce-Website-main/E-commerce-Website/about.php">About Us</a>
-        <a href="/E-commerce-Website-main/E-commerce-Website/contact.php">Contact</a>
+ <!-- Header -->
+    <header class="header">
+    <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
+     <nav class="nav">
+        <a href="index.php">Home</a>
+        <a href="shop.php">Shop</a>
+        <a href="about.php">About Us</a>
+        <a href="contact.php">Contact</a>
     </nav>
-    <div class="user-actions">
-        <a href="/E-commerce-Website-main/E-commerce-Website/signin.php" class="account-link">👤 My Account</a>
-        <a href="/E-commerce-Website-main/E-commerce-Website/cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
-    </div>
-</header>
+
+     <div class="user-actions">
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="profile.php" class="account-link">👤 <?= htmlspecialchars($_SESSION['username']) ?></a>
+            <?php else: ?>
+                <a href="signin.php" class="account-link">👤 My Account</a>
+            <?php endif; ?>
+            <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
+     </div>
+    </header>
 
 <div class="container" style="padding:40px 0">
   <?php if ($product): ?>
