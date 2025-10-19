@@ -1032,34 +1032,39 @@ if (isset($_SESSION['cart'])) {
             </div>
         </section>
 
-        <section id="categories" class="categories">
-            <h2>Shop by Category</h2>
-            <p>Find exactly what you're looking for</p>
-            <div class="category-grid">
-                <?php
-                $iconMap = [
-                    "gaming-pcs" => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
-                    "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
-                    "motherboards" => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
-                    "monitors" => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
-                    "peripherals" => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
-                    "audio" => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
-                ];
+        <section class="categories" style="padding:50px 20px">
+  <div class="container">
+    <h2>Shop by Category</h2>
+    <p >Find exactly what you're looking for</p>
+    <div class="category-grid" >
+      <?php
+        $iconMap = [
+          "gaming-pcs"     => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
+          "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
+          "motherboards"   => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
+          "monitors"       => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
+          "peripherals"    => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
+          "audio"          => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
+        ];
 
-                foreach ($categories as $cat): 
-                    $pageLink = "shop.php?category=" . htmlspecialchars($cat['id']);
-                ?>
-                    <a href="<?= $pageLink ?>" class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>">
-                        <div class="category-icon">
-                            <img src="<?= $iconMap[$cat['id']] ?? 'https://img.icons8.com/ios-filled/50/ffffff/question-mark.png' ?>" 
-                                 alt="<?= htmlspecialchars($cat['name']) ?> Icon">
-                        </div>
-                        <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
-                        <div class="category-count">Products</div>
-                    </a>
-                <?php endforeach; ?>
-            </div>
-        </section>
+        $realCats = array_slice($categories, 0, 6);
+        foreach ($realCats as $cat):
+      ?>
+        <a href="<?= htmlspecialchars($cat['id']) ?>.php" 
+           class="category-box" >
+          <div class="category-icon" >
+            <img src="<?= $iconMap[$cat['id']] ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon" 
+                 >
+          </div>
+          <div class="category-name" >
+            <?= htmlspecialchars($cat['name']) ?>
+          </div>
+          <div class="category-count" >items</div>
+        </a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
 
         <section class="featured-products-section">
             <div class="section-header">
