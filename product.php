@@ -69,7 +69,7 @@ if (isset($_POST['add_to_cart'])) {
     } else {
         $_SESSION['cart_message'] = "No product selected for cart.";
     }
-    header("Location: /E-commerce-Website-main/E-commerce-Website/product.php?id=$product_id");
+    header("Location: /E-commerce-Website/product.php?id=$product_id");
     exit;
 }
 
@@ -127,7 +127,7 @@ unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
 
 <div class="container" style="padding:40px 0">
   <?php if ($product): ?>
-    <a href="/E-commerce-Website-main/E-commerce-Website/shop.php" class="back-link">← Back to Shop</a>
+    <a href="/E-commerce-Website/shop.php" class="back-link">← Back to Shop</a>
     <?php if ($wishlist_message): ?>
       <p class="wishlist-message <?= strpos($wishlist_message, 'error') !== false ? 'text-red-500' : 'text-green-500' ?> text-sm mb-4">
         <?= htmlspecialchars($wishlist_message) ?>
@@ -194,7 +194,7 @@ unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
         </div>
         <!-- Quantity + Add to Cart -->
         <?php if ($product['in_stock']): ?>
-          <form method="POST" action="/E-commerce-Website-main/E-commerce-Website/product.php?id=<?= htmlspecialchars($product['id']) ?>" class="cart-form">
+          <form method="POST" action="/E-commerce-Website/product.php?id=<?= htmlspecialchars($product['id']) ?>" class="cart-form">
             <label for="qty">Quantity:</label>
             <div class="qty-control">
               <button type="button" class="qty-bt" onclick="changeQty(-1)">-</button>
@@ -215,15 +215,15 @@ unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
           </form>
           <!-- Wishlist Form -->
           <?php if (isset($_SESSION['user_id'])): ?>
-            <form method="POST" action="/E-commerce-Website-main/E-commerce-Website/<?= $is_in_wishlist ? 'remove_from_wishlist.php' : 'add_to_wishlist.php' ?>" class="wishlist-form" style="display:inline;">
+            <form method="POST" action="/E-commerce-Website/<?= $is_in_wishlist ? 'remove_from_wishlist.php' : 'add_to_wishlist.php' ?>" class="wishlist-form" style="display:inline;">
               <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']) ?>">
-              <input type="hidden" name="redirect_url" value="/E-commerce-Website-main/E-commerce-Website/product.php?id=<?= htmlspecialchars($product['id']) ?>">
+              <input type="hidden" name="redirect_url" value="E-commerce-Website/product.php?id=<?= htmlspecialchars($product['id']) ?>">
               <button type="submit" class="bt icon wishlist-btn" title="<?= $is_in_wishlist ? 'Remove from Wishlist' : 'Add to Wishlist' ?>">
                 <?= $is_in_wishlist ? '♥' : '♡' ?>
               </button>
             </form>
           <?php else: ?>
-            <a href="/E-commerce-Website-main/E-commerce-Website/signin.php" class="bt icon" title="Sign in to add to Wishlist">♡</a>
+            <a href="/E-commerce-Website/signin.php" class="bt icon" title="Sign in to add to Wishlist">♡</a>
           <?php endif; ?>
           <p class="stock-info in">🟢 In Stock - Ready to Ship</p>
         <?php else: ?>
@@ -233,7 +233,7 @@ unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
     </div>
   <?php else: ?>
     <h2>Product not found ❌</h2>
-    <p><a href="/E-commerce-Website-main/E-commerce-Website/shop.php">← Back to shop</a></p>
+    <p><a href="/E-commerce-Website/shop.php">← Back to shop</a></p>
   <?php endif; ?>
 </div>
 <!-- Tabs Section -->
@@ -296,21 +296,21 @@ unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
     <div class="footer-col">
       <h4>Quick links</h4>
       <ul>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/index.php">Home</a></li>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/about.php">Why Choose Us</a></li>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/shop.php">Shop</a></li>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/contact.php">Contact Us</a></li>
+        <li><a href="/E-commerce-Website/index.php">Home</a></li>
+        <li><a href="/E-commerce-Website/about.php">Why Choose Us</a></li>
+        <li><a href="E-commerce-Website/shop.php">Shop</a></li>
+        <li><a href="/E-commerce-Website/contact.php">Contact Us</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Categories</h4>
       <ul>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/gaming-pcs.php">Gaming PCs</a></li>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/graphic-cards.php">Graphics Cards</a></li>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/audio.php">Audio</a></li>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/monitors.php">Monitors</a></li>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/motherboards.php">Motherboards</a></li>
-        <li><a href="/E-commerce-Website-main/E-commerce-Website/peripherals.php">Peripherals</a></li>
+        <li><a href="/E-commerce-Website/gaming-pcs.php">Gaming PCs</a></li>
+        <li><a href="/E-commerce-Website/graphics-cards.php">Graphics Cards</a></li>
+        <li><a href="E-commerce-Website/audio.php">Audio</a></li>
+        <li><a href="/E-commerce-Website/monitors.php">Monitors</a></li>
+        <li><a href="/E-commerce-Website/motherboards.php">Motherboards</a></li>
+        <li><a href="/E-commerce-Website/peripherals.php">Peripherals</a></li>
       </ul>
     </div>
     <div class="footer-col">

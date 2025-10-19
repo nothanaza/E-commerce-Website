@@ -774,7 +774,7 @@ if (isset($_SESSION['cart'])) {
                 <h4>Categories</h4>
                 <ul>
                     <li><a href="/E-commerce-Website/gaming-pcs.php">Gaming PCs</a></li>
-                    <li><a href="/E-commerce-Website/graphic-cards.php">Graphics Cards</a></li>
+                    <li><a href="/E-commerce-Website/graphics-cards.php">Graphics Cards</a></li>
                     <li><a href="/E-commerce-Website/audio.php">Audio</a></li>
                     <li><a href="/E-commerce-Website/monitors.php">Monitors</a></li>
                     <li><a href="/E-commerce-Website/motherboards.php">Motherboards</a></li>

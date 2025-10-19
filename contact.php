@@ -902,7 +902,7 @@ if (isset($_SESSION['cart'])) {
                 <h4>Categories</h4>
                 <ul>
                     <li><a href="gaming-pcs.php">Gaming PCs</a></li>
-                    <li><a href="graphic-cards.php">Graphics Cards</a></li>
+                    <li><a href="graphics-cards.php">Graphics Cards</a></li>
                     <li><a href="audio.php">Audio</a></li>
                     <li><a href="monitors.php">Monitors</a></li>
                     <li><a href="motherboards.php">Motherboards</a></li>
