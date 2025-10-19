@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (session_status() !== PHP_SESSION_ACTIVE || !isset($_SESSION['user_id'])) {
-    header("Location: /E-commerce-Website-main/E-commerce-Website/signin.php");
+    header("Location: /E-commerce-Website/signin.php");
     exit;
 }
 
@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_from_wishlist'
             echo "<p>Error removing item from wishlist: " . htmlspecialchars($e->getMessage()) . "</p>";
         }
     }
-    header("Location: /E-commerce-Website-main/E-commerce-Website/profile.php?section=wishlist");
+    header("Location: /E-commerce-Website/profile.php?section=wishlist");
     exit;
 }
 
@@ -637,7 +637,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
         <div class="sidebar">
             <a href="/E-commerce-Website/profile.php" class="<?php echo $section === 'overview' ? 'active' : ''; ?>"><i class="fa-solid fa-user"></i> Account Overview</a>
             <a href="/E-commerce-Website/profile.php?section=orders" class="<?php echo $section === 'orders' ? 'active' : ''; ?>"><i class="fa-solid fa-box"></i> My Orders</a>
-            <a href="/E-commerce-Website-main/E-commerce-Website/profile.php?section=wishlist" class="<?php echo $section === 'wishlist' ? 'active' : ''; ?>"><i class="fa-solid fa-heart"></i> Wishlist</a>
+            <a href="/E-commerce-Website/profile.php?section=wishlist" class="<?php echo $section === 'wishlist' ? 'active' : ''; ?>"><i class="fa-solid fa-heart"></i> Wishlist</a>
             <a href="/E-commerce-Website/profile.php?section=profile_settings" class="<?php echo $section === 'profile_settings' ? 'active' : ''; ?>"><i class="fa-solid fa-gear"></i> Profile Settings</a>
             <a href="/E-commerce-Website/user/logout.php" class="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
         </div>
@@ -742,7 +742,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
             foreach ($wishlist as $item) {
                 echo "<div class='product-card'>";
                 echo "<div class='product-image'>";
-                echo "<a href='/E-commerce-Website-main/E-commerce-Website/product.php?id=" . htmlspecialchars($item['id']) . "'>";
+                echo "<a href='/E-commerce-Website/product.php?id=" . htmlspecialchars($item['id']) . "'>";
                 echo "<img src='" . htmlspecialchars($item['image'] ?? 'https://placehold.co/350x200/ff6a00/fff?text=Image') . "' alt='" . htmlspecialchars($item['name']) . "' onerror=\"this.src='https://placehold.co/350x200/ff6a00/fff?text=Image+Error'\">";
                 echo "</a>";
                 echo "</div>";
@@ -752,7 +752,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
                 echo "<div class='price'>";
                 echo "<span class='current'>R" . number_format($item['price'], 2) . "</span>";
                 echo "</div>";
-                echo "<form method='POST' action='/E-commerce-Website-main/E-commerce-Website/profile.php?section=wishlist'>";
+                echo "<form method='POST' action='/E-commerce-Website/profile.php?section=wishlist'>";
                 echo "<input type='hidden' name='product_id' value='" . htmlspecialchars($item['id']) . "'>";
                 echo "<button type='submit' name='remove_from_wishlist' class='remove-from-wishlist'>";
                 echo "<i class='fas fa-trash'></i> Remove";
@@ -763,7 +763,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
             }
             echo "</div>";
         } else {
-            echo "<p>Your wishlist is empty. <a href='/E-commerce-Website-main/E-commerce-Website/shop.php' class='text-ff6600 hover:underline'>Browse products to add some!</a></p>";
+            echo "<p>Your wishlist is empty. <a href='/E-commerce-Website/shop.php' class='text-ff6600 hover:underline'>Browse products to add some!</a></p>";
         }
     } catch (PDOException $e) {
         echo "<p>Error loading wishlist: " . htmlspecialchars($e->getMessage()) . "</p>";

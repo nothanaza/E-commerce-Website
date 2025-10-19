@@ -11,13 +11,13 @@ error_log("remove_from_wishlist.php accessed at " . date('Y-m-d H:i:s'));
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['wishlist_message'] = "Please log in to manage your wishlist.";
-    header("Location: /E-commerce-Website-main/E-commerce-Website/signin.php");
+    header("Location: /E-commerce-Website/signin.php");
     exit;
 }
 
 $user_id = $_SESSION['user_id'];
 $product_id = $_POST['product_id'] ?? null;
-$redirect_url = $_POST['redirect_url'] ?? '/E-commerce-Website-main/E-commerce-Website/product.php?id=' . $product_id;
+$redirect_url = $_POST['redirect_url'] ?? '/E-commerce-Website/product.php?id=' . $product_id;
 
 if (!$product_id) {
     $_SESSION['wishlist_message'] = "No product selected.";

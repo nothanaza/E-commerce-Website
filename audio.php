@@ -52,7 +52,7 @@ if (isset($_POST['add_to_cart'])) {
             }
         }
     }
-    header("Location: /E-commerce-Website-main/E-commerce-Website/audio.php");
+    header("Location: /E-commerce-Website/audio.php");
     exit;
 }
 
@@ -69,7 +69,7 @@ if (isset($_SESSION['cart'])) {
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Gaming Hardware Store - Audio</title>
-<link rel="stylesheet" href="/E-commerce-Website-main/E-commerce-Website/style.css"/>
+<link rel="stylesheet" href="/E-commerce-Website/style.css"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <script src="https://kit.fontawesome.com/a2e0f1f6c2.js" crossorigin="anonymous"></script>
@@ -608,16 +608,16 @@ if (isset($_SESSION['cart'])) {
 <body>
     <!-- Header -->
     <header class="header">
-        <div class="logo" onclick="window.location.href='/E-commerce-Website-main/E-commerce-Website/index.php'">Tech Giants</div>
+        <div class="logo" onclick="window.location.href='/E-commerce-Website/index.php'">Tech Giants</div>
         <nav class="nav">
-            <a href="/E-commerce-Website-main/E-commerce-Website/index.php">Home</a>
-            <a href="/E-commerce-Website-main/E-commerce-Website/shop.php">Shop</a>
-            <a href="/E-commerce-Website-main/E-commerce-Website/about.php">About Us</a>
-            <a href="/E-commerce-Website-main/E-commerce-Website/contact.php">Contact</a>
+            <a href="/E-commerce-Website/index.php">Home</a>
+            <a href="/E-commerce-Website/shop.php">Shop</a>
+            <a href="/E-commerce-Website/about.php">About Us</a>
+            <a href="/E-commerce-Website/contact.php">Contact</a>
         </nav>
         <div class="user-actions">
-            <a href="/E-commerce-Website-main/E-commerce-Website/signin.php" class="account-link">👤 My Account</a>
-            <a href="/E-commerce-Website-main/E-commerce-Website/cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
+            <a href="/E-commerce-Website/signin.php" class="account-link">👤 My Account</a>
+            <a href="/E-commerce-Website/cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
         </div>
     </header>
 
@@ -674,7 +674,7 @@ if (isset($_SESSION['cart'])) {
             <!-- Product 1 -->
             <div class="product-card">
                 <div class="product-image">
-                    <a href="/E-commerce-Website-main/E-commerce-Website/product.php?id=6">
+                    <a href="/E-commerce-Website/product.php?id=6">
                         <img src="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="Gaming Headset Pro">
                     </a>
                 </div>
@@ -692,7 +692,7 @@ if (isset($_SESSION['cart'])) {
                     <div class="price">
                         <span class="current">R1,899.99</span>
                     </div>
-                    <form method="POST" action="/E-commerce-Website-main/E-commerce-Website/audio.php">
+                    <form method="POST" action="/E-commerce-Website/audio.php">
                         <input type="hidden" name="id" value="6">
                         <input type="hidden" name="name" value="Gaming Headset Pro">
                         <input type="hidden" name="price" value="R1,899.99">
@@ -707,7 +707,7 @@ if (isset($_SESSION['cart'])) {
             <!-- Product 2 -->
             <div class="product-card">
                 <div class="product-image">
-                    <a href="/E-commerce-Website-main/E-commerce-Website/product.php?id=6">
+                    <a href="/E-commerce-Website/product.php?id=6">
                         <img src="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="TechGiant Wireless Pro Headset">
                     </a>
                     <span class="discount-badge">-14%</span>
@@ -727,7 +727,7 @@ if (isset($_SESSION['cart'])) {
                         <span class="current">R2,999.99</span>
                         <span class="old">R3,499.99</span>
                     </div>
-                    <form method="POST" action="/E-commerce-Website-main/E-commerce-Website/audio.php">
+                    <form method="POST" action="/E-commerce-Website/audio.php">
                         <input type="hidden" name="id" value="6">
                         <input type="hidden" name="name" value="TechGiant Wireless Pro Headset">
                         <input type="hidden" name="price" value="R2,999.99">
@@ -742,7 +742,7 @@ if (isset($_SESSION['cart'])) {
             <!-- Product 3 -->
             <div class="product-card">
                 <div class="product-image">
-                    <a href="/E-commerce-Website-main/E-commerce-Website/product.php?id=6">
+                    <a href="/E-commerce-Website/product.php?id=6">
                         <img src="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080" alt="TechGiant Studio Streaming Mic">
                     </a>
                 </div>
@@ -760,7 +760,7 @@ if (isset($_SESSION['cart'])) {
                     <div class="price">
                         <span class="current">R3,499.99</span>
                     </div>
-                    <form method="POST" action="/E-commerce-Website-main/E-commerce-Website/audio.php">
+                    <form method="POST" action="/E-commerce-Website/audio.php">
                         <input type="hidden" name="id" value="6">
                         <input type="hidden" name="name" value="TechGiant Studio Streaming Mic">
                         <input type="hidden" name="price" value="R3,499.99">
@@ -821,21 +821,21 @@ if (isset($_SESSION['cart'])) {
             <div class="footer-col">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/index.php">Home</a></li>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/about.php">Why Choose Us</a></li>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/shop.php">Shop</a></li>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/contact.php">Contact Us</a></li>
+                    <li><a href="/E-commerce-Website/index.php">Home</a></li>
+                    <li><a href="/E-commerce-Website/about.php">Why Choose Us</a></li>
+                    <li><a href="/E-commerce-Website/shop.php">Shop</a></li>
+                    <li><a href="/E-commerce-Website/contact.php">Contact Us</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Categories</h4>
                 <ul>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/gaming-pcs.php">Gaming PCs</a></li>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/graphic-cards.php">Graphics Cards</a></li>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/audio.php">Audio</a></li>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/monitors.php">Monitors</a></li>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/motherboards.php">Motherboards</a></li>
-                    <li><a href="/E-commerce-Website-main/E-commerce-Website/peripherals.php">Peripherals</a></li>
+                    <li><a href="/E-commerce-Website/gaming-pcs.php">Gaming PCs</a></li>
+                    <li><a href="/E-commerce-Website/graphic-cards.php">Graphics Cards</a></li>
+                    <li><a href="/E-commerce-Website/audio.php">Audio</a></li>
+                    <li><a href="/E-commerce-Website/monitors.php">Monitors</a></li>
+                    <li><a href="/E-commerce-Website/motherboards.php">Motherboards</a></li>
+                    <li><a href="/E-commerce-Website/peripherals.php">Peripherals</a></li>
                 </ul>
             </div>
             <div class="footer-col">
