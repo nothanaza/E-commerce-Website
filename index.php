@@ -1140,12 +1140,12 @@ if (isset($_SESSION['cart'])) {
             <div class="footer-col">
                 <h4>Categories</h4>
                 <ul>
-                    <li><a href="shop.php?category=gaming-pcs">Gaming PCs</a></li>
-                    <li><a href="shop.php?category=graphics-cards">Graphics Cards</a></li>
-                    <li><a href="shop.php?category=audio">Audio</a></li>
-                    <li><a href="shop.php?category=monitors">Monitors</a></li>
-                    <li><a href="shop.php?category=motherboards">Motherboards</a></li>
-                    <li><a href="shop.php?category=peripherals">Peripherals</a></li>
+                    <li><a href="gaming-pcs.php">Gaming PCs</a></li>
+                    <li><a href="graphics-cards.php">Graphics Cards</a></li>
+                    <li><a href="audio.php">Audio</a></li>
+                    <li><a href="monitors.php">Monitors</a></li>
+                    <li><a href="motherboards.php">Motherboards</a></li>
+                    <li><a href="peripherals.php">Peripherals</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -1171,14 +1171,7 @@ if (isset($_SESSION['cart'])) {
             </div>
             <p class="powered">Powered by <span>Gaming Excellence</span></p>
         </div>
-        <div class="footer-newsletter">
-            <h3>Stay Updated with Tech Giants</h3>
-            <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </div>
+    
     </footer>
 
     <script>

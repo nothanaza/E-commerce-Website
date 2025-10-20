@@ -305,13 +305,13 @@ unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
     <div class="footer-col">
       <h4>Categories</h4>
       <ul>
-        <li><a href="/E-commerce-Website/gaming-pcs.php">Gaming PCs</a></li>
-        <li><a href="/E-commerce-Website/graphics-cards.php">Graphics Cards</a></li>
-        <li><a href="E-commerce-Website/audio.php">Audio</a></li>
-        <li><a href="/E-commerce-Website/monitors.php">Monitors</a></li>
-        <li><a href="/E-commerce-Website/motherboards.php">Motherboards</a></li>
-        <li><a href="/E-commerce-Website/peripherals.php">Peripherals</a></li>
-      </ul>
+            <li><a href="gaming-pcs.php">Gaming PCs</a></li>
+            <li><a href="graphics-cards.php">Graphics Cards</a></li>
+             <li><a href="audio.php">Audio</a></li>
+            <li><a href="monitors.php">Monitors</a></li>
+            <li><a href="motherboards.php">Motherboards</a></li>
+             <li><a href="peripherals.php">Peripherals</a></li>
+       </ul>
     </div>
     <div class="footer-col">
       <h4>Connect With Us</h4>
@@ -336,14 +336,7 @@ unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
     </div>
     <p class="powered">Powered by <span>Gaming Excellence</span></p>
   </div>
-  <div class="footer-newsletter">
-    <h3>Stay Updated with Tech Giants</h3>
-    <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-    <form class="newsletter-form">
-      <input type="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe</button>
-    </form>
-  </div>
+
 </footer>
 
 <script>
