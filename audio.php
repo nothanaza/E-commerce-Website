@@ -693,7 +693,7 @@ if (isset($_SESSION['cart'])) {
                         <span class="current">R1,899.99</span>
                     </div>
                     <form method="POST" action="/E-commerce-Website/audio.php">
-                        <input type="hidden" name="id" value="6">
+                        <input type="hidden" name="id" value="5">
                         <input type="hidden" name="name" value="Gaming Headset Pro">
                         <input type="hidden" name="price" value="R1,899.99">
                         <input type="hidden" name="image" value="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080">
@@ -728,7 +728,7 @@ if (isset($_SESSION['cart'])) {
                         <span class="old">R3,499.99</span>
                     </div>
                     <form method="POST" action="/E-commerce-Website/audio.php">
-                        <input type="hidden" name="id" value="6">
+                        <input type="hidden" name="id" value="5">
                         <input type="hidden" name="name" value="TechGiant Wireless Pro Headset">
                         <input type="hidden" name="price" value="R2,999.99">
                         <input type="hidden" name="image" value="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080">
@@ -761,7 +761,7 @@ if (isset($_SESSION['cart'])) {
                         <span class="current">R3,499.99</span>
                     </div>
                     <form method="POST" action="/E-commerce-Website/audio.php">
-                        <input type="hidden" name="id" value="6">
+                        <input type="hidden" name="id" value="5">
                         <input type="hidden" name="name" value="TechGiant Studio Streaming Mic">
                         <input type="hidden" name="price" value="R3,499.99">
                         <input type="hidden" name="image" value="https://images.unsplash.com/photo-1616081118924-20e97edd3b3d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnYW1pbmclMjBoZWFkc2V0JTIwYXVkaW98ZW58MXx8fHwxNzU3MDE3NjE1fDA&ixlib=rb-4.1.0&q=80&w=1080">

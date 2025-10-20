@@ -52,7 +52,7 @@ if (isset($_POST['add_to_cart'])) {
             }
         }
     }
-    header("Location: /E-commerce-Website/graphic-cards.php");
+    header("Location: /E-commerce-Website/graphics-cards.php");
     exit;
 }
 
@@ -685,7 +685,7 @@ if (isset($_SESSION['cart'])) {
                 </div>
                 <div class="product-info">
                     <h3 class="product-title">RTX 4080 Super Graphics Card</h3>
-                    <p class="category">graphic-cards</p>
+                    <p class="category">graphics-cards</p>
                     <div class="rating">
                         <span class="stars">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -697,7 +697,7 @@ if (isset($_SESSION['cart'])) {
                     <div class="price">
                         <span class="current">R21,999.99</span>
                     </div>
-                    <form method="POST" action="/E-commerce-Website/graphic-cards.php">
+                    <form method="POST" action="/E-commerce-Website/graphics-cards.php">
                         <input type="hidden" name="id" value="2">
                         <input type="hidden" name="name" value="RTX 4080 Super Graphics Card">
                         <input type="hidden" name="price" value="R21,999.99">
@@ -719,7 +719,7 @@ if (isset($_SESSION['cart'])) {
                 </div>
                 <div class="product-info">
                     <h3 class="product-title">RTX 4090 Gaming X Trio</h3>
-                    <p class="category">graphic-cards</p>
+                    <p class="category">graphics-cards</p>
                     <div class="rating">
                         <span class="stars">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -732,7 +732,7 @@ if (isset($_SESSION['cart'])) {
                         <span class="current">R29,999.99</span>
                         <span class="old">R32,999.99</span>
                     </div>
-                    <form method="POST" action="/E-commerce-Website/graphic-cards.php">
+                    <form method="POST" action="/E-commerce-Website/graphics-cards.php">
                         <input type="hidden" name="id" value="2">
                         <input type="hidden" name="name" value="RTX 4090 Gaming X Trio">
                         <input type="hidden" name="price" value="R29,999.99">
@@ -753,7 +753,7 @@ if (isset($_SESSION['cart'])) {
                 </div>
                 <div class="product-info">
                     <h3 class="product-title">RTX 4070 Dual OC</h3>
-                    <p class="category">graphic-cards</p>
+                    <p class="category">graphics-cards</p>
                     <div class="rating">
                         <span class="stars">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i>
@@ -765,7 +765,7 @@ if (isset($_SESSION['cart'])) {
                     <div class="price">
                         <span class="current">R16,999.99</span>
                     </div>
-                    <form method="POST" action="/E-commerce-Website/graphic-cards.php">
+                    <form method="POST" action="/E-commerce-Website/graphics-cards.php">
                         <input type="hidden" name="id" value="2">
                         <input type="hidden" name="name" value="RTX 4070 Dual OC">
                         <input type="hidden" name="price" value="R16,999.99">
