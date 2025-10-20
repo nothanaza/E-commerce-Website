@@ -11,6 +11,21 @@ $user_id = $_SESSION['user_id'];
 // Adjusted path to point to the components directory within the E-commerce-Website folder
 require_once 'components/db.php';
 
+// Handle wishlist removal
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_from_wishlist'])) {
+    $product_id = $_POST['product_id'] ?? '';
+    if ($product_id) {
+        try {
+            $stmt = $pdo->prepare("DELETE FROM wishlist WHERE user_id = ? AND product_id = ?");
+            $stmt->execute([$user_id, $product_id]);
+        } catch (PDOException $e) {
+            echo "<p>Error removing item from wishlist: " . htmlspecialchars($e->getMessage()) . "</p>";
+        }
+    }
+    header("Location: /E-commerce-Website/profile.php?section=wishlist");
+    exit;
+}
+
 // Fetch user data
 $stmt = $pdo->prepare("SELECT u.username, u.email,
     (SELECT COUNT(*) FROM orders WHERE user_id = u.id) AS total_orders,
@@ -493,6 +508,106 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
                 margin: 10px 0;
             }
         }
+
+
+               /* Product Grid Styles (from peripherals.php) */
+        .products-grid {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            align-items: stretch;
+            gap: 24px;
+            flex-wrap: wrap;
+            padding-bottom: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            flex: 0 0 350px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 8px 18px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .product-image {
+            position: relative;
+        }
+
+        .product-image a {
+            display: block;
+            cursor: pointer;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .product-info {
+            padding: 18px 20px 22px;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 6px;
+        }
+
+        .category {
+            font-size: 13px;
+            color: #6b7280;
+            margin: 0 0 10px;
+        }
+
+        .price {
+            margin-bottom: 16px;
+        }
+
+        .price .current {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111;
+            margin-right: 10px;
+        }
+
+        .remove-from-wishlist {
+            width: 100%;
+            background: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 12px 0;
+            font-weight: 600;
+            font-size: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .remove-from-wishlist:hover {
+            background: #cc0000;
+        }
+
+        .remove-from-wishlist i {
+            margin-right: 8px;
+        }
+
+        @media (max-width: 1100px) {
+            .products-grid {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -524,7 +639,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
             <a href="/E-commerce-Website/profile.php?section=orders" class="<?php echo $section === 'orders' ? 'active' : ''; ?>"><i class="fa-solid fa-box"></i> My Orders</a>
             <a href="/E-commerce-Website/profile.php?section=wishlist" class="<?php echo $section === 'wishlist' ? 'active' : ''; ?>"><i class="fa-solid fa-heart"></i> Wishlist</a>
             <a href="/E-commerce-Website/profile.php?section=profile_settings" class="<?php echo $section === 'profile_settings' ? 'active' : ''; ?>"><i class="fa-solid fa-gear"></i> Profile Settings</a>
-            <a href="/E-commerce-Website/logout.php" class="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
+            <a href="/E-commerce-Website/user/logout.php" class="logout"><i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out</a>
         </div>
 
         <div class="dashboard">
@@ -612,62 +727,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
                     } else {
                         echo "<p>No order history found.</p>";
                     }
-                } elseif ($section === 'wishlist') {
-                    echo "<h3>My Wishlist</h3>";
-                    $stmt = $pdo->prepare("SELECT p.name, p.image, p.price FROM wishlist w JOIN products p ON w.product_id = p.id WHERE w.user_id = ?");
-                    $stmt->execute([$user_id]);
-                    $wishlist = $stmt->fetchAll();
-                    if ($wishlist) {
-                        foreach ($wishlist as $item) {
-                            echo "<div class='order-container'>";
-                            echo "<img src='" . htmlspecialchars($item['image'] ?? 'https://placehold.co/80x80/ff6a00/fff?text=Image') . "' alt='" . htmlspecialchars($item['name']) . "' onerror=\"this.src='https://placehold.co/80x80/ff6a00/fff?text=Image+Error'\">";
-                            echo "<div class='order-info'>";
-                            echo "<h4>" . htmlspecialchars($item['name']) . "</h4>";
-                            echo "<p>Price: R" . number_format($item['price'], 2) . "</p>";
-                            echo "</div>";
-                            echo "</div>";
-                        }
-                    } else {
-                        echo "<p>Your wishlist is empty.</p>";
-                    }
-                } elseif ($section === 'profile_settings') {
-                    echo "<h3>Profile Settings</h3>";
-                    if ($edit_mode) {
-                        echo "<form method='post' action='/E-commerce-Website/profile.php?section=profile_settings'>";
-                        echo "<div class='mb-4'>";
-                        echo "<label class='block text-sm font-medium mb-1'>Name</label>";
-                        echo "<input type='text' name='name' value='" . htmlspecialchars($user_name) . "' class='w-full p-2 border rounded' required>";
-                        echo "</div>";
-                        echo "<div class='mb-4'>";
-                        echo "<label class='block text-sm font-medium mb-1'>Surname</label>";
-                        echo "<input type='text' name='surname' value='' class='w-full p-2 border rounded' required>";
-                        echo "</div>";
-                        echo "<div class='mb-4'>";
-                        echo "<label class='block text-sm font-medium mb-1'>Email</label>";
-                        echo "<input type='email' name='email' value='" . $email . "' class='w-full p-2 border rounded' required>";
-                        echo "</div>";
-                        echo "<div class='mb-4'>";
-                        echo "<label class='block text-sm font-medium mb-1'>Phone Number</label>";
-                        echo "<input type='tel' name='phone' value='" . $phone . "' class='w-full p-2 border rounded'>";
-                        echo "</div>";
-                        echo "<div class='mb-4'>";
-                        echo "<label class='block text-sm font-medium mb-1'>Identification Number</label>";
-                        echo "<input type='text' name='id_number' value='" . $id_number . "' class='w-full p-2 border rounded'>";
-                        echo "</div>";
-                        echo "<button type='submit' name='save_profile' class='bg-ff6600 text-white p-2 rounded'>Save Changes</button>";
-                        echo "</form>";
-                    } else {
-                        echo "<div class='mb-4'>";
-                        echo "<p><strong>Name:</strong> " . $user_name . "</p>";
-                        echo "<p><strong>Surname:</strong> N/A</p>";
-                        echo "<p><strong>Email:</strong> " . $email . "</p>";
-                        echo "<p><strong>Phone Number:</strong> " . ($phone ?: 'N/A') . "</p>";
-                        echo "<p><strong>Identification Number:</strong> " . ($id_number ?: 'N/A') . "</p>";
-                        echo "</div>";
-                        echo "<a href='/E-commerce-Website/profile.php?section=profile_settings&edit=true' class='edit-icon'><i class='fa-solid fa-edit'></i></a>";
-                    }
-                }
-                ?>
+                }if ($section === 'wishlist') {
+    echo "<h3>My Wishlist</h3>";
+    try {
+        $stmt = $pdo->prepare("SELECT p.id, p.name, p.image, p.price, c.name AS category_name
+            FROM wishlist w
+            JOIN products p ON w.product_id = p.id
+            JOIN categories c ON p.category_id = c.id
+            WHERE w.user_id = ?");
+        $stmt->execute([$user_id]);
+        $wishlist = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        if ($wishlist) {
+            echo "<div class='products-grid'>";
+            foreach ($wishlist as $item) {
+                echo "<div class='product-card'>";
+                echo "<div class='product-image'>";
+                echo "<a href='/E-commerce-Website/product.php?id=" . htmlspecialchars($item['id']) . "'>";
+                echo "<img src='" . htmlspecialchars($item['image'] ?? 'https://placehold.co/350x200/ff6a00/fff?text=Image') . "' alt='" . htmlspecialchars($item['name']) . "' onerror=\"this.src='https://placehold.co/350x200/ff6a00/fff?text=Image+Error'\">";
+                echo "</a>";
+                echo "</div>";
+                echo "<div class='product-info'>";
+                echo "<h3 class='product-title'>" . htmlspecialchars($item['name']) . "</h3>";
+                echo "<p class='category'>" . htmlspecialchars($item['category_name']) . "</p>";
+                echo "<div class='price'>";
+                echo "<span class='current'>R" . number_format($item['price'], 2) . "</span>";
+                echo "</div>";
+                echo "<form method='POST' action='/E-commerce-Website/profile.php?section=wishlist'>";
+                echo "<input type='hidden' name='product_id' value='" . htmlspecialchars($item['id']) . "'>";
+                echo "<button type='submit' name='remove_from_wishlist' class='remove-from-wishlist'>";
+                echo "<i class='fas fa-trash'></i> Remove";
+                echo "</button>";
+                echo "</form>";
+                echo "</div>";
+                echo "</div>";
+            }
+            echo "</div>";
+        } else {
+            echo "<p>Your wishlist is empty. <a href='/E-commerce-Website/shop.php' class='text-ff6600 hover:underline'>Browse products to add some!</a></p>";
+        }
+    } catch (PDOException $e) {
+        echo "<p>Error loading wishlist: " . htmlspecialchars($e->getMessage()) . "</p>";
+    }
+}
+?>
             </div>
 
             <div class="bottom-widgets">
@@ -774,7 +876,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_profile'])) {
                 e.preventDefault();
                 const page = a.getAttribute('href');
                 console.log('Sidebar navigating to:', page);
-                if (page !== '/E-commerce-Website/logout.php') {
+                if (page !== '/E-commerce-Website/user/logout.php') {
                     window.location.href = page;
                 } else {
                     if (confirm('Are you sure you want to log out?')) {

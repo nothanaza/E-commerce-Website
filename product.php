@@ -1,5 +1,14 @@
 <?php
 session_start();
+
+// Session timeout (30 minutes inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) { // 30 minutes
+    session_destroy();
+    header("Location: /E-commerce-Website/index.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
 require_once 'components/db.php';
 
 // Get product ID from URL
@@ -49,13 +58,27 @@ if (isset($_POST['add_to_cart'])) {
                         'quantity' => $quantity
                     ];
                 }
+                $_SESSION['cart_message'] = "Product added to cart!";
             } catch (PDOException $e) {
-                die("Database error: " . $e->getMessage());
+                $_SESSION['cart_message'] = "Error adding to cart: " . $e->getMessage();
+                error_log("Cart error: " . $e->getMessage() . " | File: " . __FILE__ . " | Line: " . __LINE__);
             }
+        } else {
+            $_SESSION['cart_message'] = "Product is out of stock or not found.";
         }
+    } else {
+        $_SESSION['cart_message'] = "No product selected for cart.";
     }
-    header("Location: product.php?id=$product_id");
+    header("Location: /E-commerce-Website/product.php?id=$product_id");
     exit;
+}
+
+// Check if product is in wishlist
+$is_in_wishlist = false;
+if ($id && isset($_SESSION['user_id'])) {
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM wishlist WHERE user_id = ? AND product_id = ?");
+    $stmt->execute([$_SESSION['user_id'], $id]);
+    $is_in_wishlist = $stmt->fetchColumn() > 0;
 }
 
 // Get cart count
@@ -63,6 +86,11 @@ $cart_count = 0;
 if (isset($_SESSION['cart'])) {
     $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
 }
+
+// Display messages
+$wishlist_message = isset($_SESSION['wishlist_message']) ? $_SESSION['wishlist_message'] : '';
+$cart_message = isset($_SESSION['cart_message']) ? $_SESSION['cart_message'] : '';
+unset($_SESSION['wishlist_message'], $_SESSION['cart_message']);
 ?>
 
 <!doctype html>
@@ -77,7 +105,7 @@ if (isset($_SESSION['cart'])) {
 </head>
 <body>
 
-<!-- Header -->
+ <!-- Header -->
     <header class="header">
     <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
      <nav class="nav">
@@ -88,116 +116,124 @@ if (isset($_SESSION['cart'])) {
     </nav>
 
      <div class="user-actions">
-            <a href="signin.php" class="account-link">👤 My Account</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="profile.php" class="account-link">👤 <?= htmlspecialchars($_SESSION['username']) ?></a>
+            <?php else: ?>
+                <a href="signin.php" class="account-link">👤 My Account</a>
+            <?php endif; ?>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
      </div>
     </header>
 
 <div class="container" style="padding:40px 0">
   <?php if ($product): ?>
-    <a href="shop.php" class="back-link">← Back to Shop</a>
-
-    
-      <div class="product-detail">
-
-  <!-- LEFT: Image + Thumbnails -->
-  <div class="product-detail-img">
-    <img id="main-img" src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
-    <?php if (!$product['in_stock']): ?>
-      <div class="badge out">Out of Stock</div>
-    <?php elseif ($product['discount']): ?>
-      <div class="badge"><?= htmlspecialchars($product['discount']) ?></div>
+    <a href="/E-commerce-Website/shop.php" class="back-link">← Back to Shop</a>
+    <?php if ($wishlist_message): ?>
+      <p class="wishlist-message <?= strpos($wishlist_message, 'error') !== false ? 'text-red-500' : 'text-green-500' ?> text-sm mb-4">
+        <?= htmlspecialchars($wishlist_message) ?>
+      </p>
     <?php endif; ?>
-
-    <!-- Thumbnails -->
-    <div class="thumbs">
-      <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 1" onclick="swapImage(this)">
-      <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 2" onclick="swapImage(this)">
-      <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 3" onclick="swapImage(this)">
-    </div>
-  </div>
-
-  <!-- RIGHT: Product Info -->
-  <div class="product-detail-info">
-    <h1><?= htmlspecialchars($product['name']) ?></h1>
-    <div class="cat"><?= htmlspecialchars($product['category_name']) ?></div>
-
-    <!-- Rating -->
-    <div class="rating">
-      <?= str_repeat("⭐", floor($product['stars'])) ?>
-      <?php if ($product['stars'] - floor($product['stars']) >= 0.5): ?>⭐<?php endif; ?>
-      <span class="reviews">(<?= $product['reviews'] ?> reviews)</span>
-    </div>
-
-    <!-- Price -->
-    <div class="price-wrap" style="display:flex;align-items:center;gap:16px;">
-      <div class="price" id="total-price" data-unit="<?= $product['price'] ?>">
-  R<?= number_format($product['price'], 2) ?>
-</div>
-      <?php if ($product['old_price']): ?>
-        <div class="old">R<?= number_format($product['old_price'], 2) ?></div>
-        <div class="badge save">Save <?= htmlspecialchars($product['discount']) ?></div>
-      <?php endif; ?>
-    </div>
-
-    <!-- Short Description -->
-    <p class="short-desc">
-      Ultimate gaming performance with the latest hardware. 
-      Built for serious gamers who demand the best performance in AAA titles and competitive gaming.
-    </p>
-
-    <!-- Key Features -->
-    <div class="features">
-      <h3>Key Features</h3>
-      <ul>
-        <li>Latest Intel Core i9 processor</li>
-        <li>RTX 4080 Graphics Card</li>
-        <li>32GB DDR5 RAM</li>
-        <li>1TB NVMe SSD</li>
-        <li>Liquid cooling system</li>
-        <li>RGB lighting</li>
-        <li>Pre-installed Windows 11</li>
-      </ul>
-    </div>
-
-    <!-- Quantity + Add to Cart -->
-    <?php if ($product['in_stock']): ?>
-      <form method="POST" action="product.php?id=<?= htmlspecialchars($product['id']) ?>" class="cart-form">
-        <label for="qty">Quantity:</label>
-        <div class="qty-control">
-          <button type="button" class="qty-bt" onclick="changeQty(-1)">-</button>
-          <input type="number" id="qty" name="quantity" value="1" min="1">
-          <button type="button" class="qty-bt" onclick="changeQty(1)">+</button>
-        </div>
-
-        <input type="hidden" name="add_to_cart" value="1">
-        <input type="hidden" name="id" value="<?= htmlspecialchars($product['id']) ?>">
-        <input type="hidden" name="name" value="<?= htmlspecialchars($product['name']) ?>">
-        <input type="hidden" name="price" value="<?= $product['price'] ?>">
-        <input type="hidden" name="image" value="<?= htmlspecialchars($product['image']) ?>">
-
-        <div class="cart-actions">
-          <button type="submit" class="bt primary">
-  🛒 Add to Cart - <span id="button-price">R<?= number_format($product['price'], 2) ?></span>
-</button>
-
-          <button type="button" class="bt icon">♡</button>
-          <button type="button" class="bt icon">⤴</button>
-        </div>
-      </form>
-
-      <p class="stock-info in">🟢 In Stock - Ready to Ship</p>
-    <?php else: ?>
-      <button class="bt disabled" disabled>Out of Stock</button>
+    <?php if ($cart_message): ?>
+      <p class="cart-message <?= strpos($cart_message, 'error') !== false ? 'text-red-500' : 'text-green-500' ?> text-sm mb-4">
+        <?= htmlspecialchars($cart_message) ?>
+      </p>
     <?php endif; ?>
-  </div>
-</div>
-
-
-
+    <div class="product-detail">
+      <!-- LEFT: Image + Thumbnails -->
+      <div class="product-detail-img">
+        <img id="main-img" src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>">
+        <?php if (!$product['in_stock']): ?>
+          <div class="badge out">Out of Stock</div>
+        <?php elseif ($product['discount']): ?>
+          <div class="badge"><?= htmlspecialchars($product['discount']) ?></div>
+        <?php endif; ?>
+        <!-- Thumbnails -->
+        <div class="thumbs">
+          <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 1" onclick="swapImage(this)">
+          <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 2" onclick="swapImage(this)">
+          <img src="<?= htmlspecialchars($product['image']) ?>" alt="thumb 3" onclick="swapImage(this)">
+        </div>
+      </div>
+      <!-- RIGHT: Product Info -->
+      <div class="product-detail-info">
+        <h1><?= htmlspecialchars($product['name']) ?></h1>
+        <div class="cat"><?= htmlspecialchars($product['category_name']) ?></div>
+        <!-- Rating -->
+        <div class="rating">
+          <?= str_repeat("⭐", floor($product['stars'])) ?>
+          <?php if ($product['stars'] - floor($product['stars']) >= 0.5): ?>⭐<?php endif; ?>
+          <span class="reviews">(<?= $product['reviews'] ?> reviews)</span>
+        </div>
+        <!-- Price -->
+        <div class="price-wrap" style="display:flex;align-items:center;gap:16px;">
+          <div class="price" id="total-price" data-unit="<?= $product['price'] ?>">
+            R<?= number_format($product['price'], 2) ?>
+          </div>
+          <?php if ($product['old_price']): ?>
+            <div class="old">R<?= number_format($product['old_price'], 2) ?></div>
+            <div class="badge save">Save <?= htmlspecialchars($product['discount']) ?></div>
+          <?php endif; ?>
+        </div>
+        <!-- Short Description -->
+        <p class="short-desc">
+          Ultimate gaming performance with the latest hardware. 
+          Built for serious gamers who demand the best performance in AAA titles and competitive gaming.
+        </p>
+        <!-- Key Features -->
+        <div class="features">
+          <h3>Key Features</h3>
+          <ul>
+            <li>Latest Intel Core i9 processor</li>
+            <li>RTX 4080 Graphics Card</li>
+            <li>32GB DDR5 RAM</li>
+            <li>1TB NVMe SSD</li>
+            <li>Liquid cooling system</li>
+            <li>RGB lighting</li>
+            <li>Pre-installed Windows 11</li>
+          </ul>
+        </div>
+        <!-- Quantity + Add to Cart -->
+        <?php if ($product['in_stock']): ?>
+          <form method="POST" action="/E-commerce-Website/product.php?id=<?= htmlspecialchars($product['id']) ?>" class="cart-form">
+            <label for="qty">Quantity:</label>
+            <div class="qty-control">
+              <button type="button" class="qty-bt" onclick="changeQty(-1)">-</button>
+              <input type="number" id="qty" name="quantity" value="1" min="1">
+              <button type="button" class="qty-bt" onclick="changeQty(1)">+</button>
+            </div>
+            <input type="hidden" name="add_to_cart" value="1">
+            <input type="hidden" name="id" value="<?= htmlspecialchars($product['id']) ?>">
+            <input type="hidden" name="name" value="<?= htmlspecialchars($product['name']) ?>">
+            <input type="hidden" name="price" value="<?= $product['price'] ?>">
+            <input type="hidden" name="image" value="<?= htmlspecialchars($product['image']) ?>">
+            <div class="cart-actions">
+              <button type="submit" class="bt primary">
+                🛒 Add to Cart - <span id="button-price">R<?= number_format($product['price'], 2) ?></span>
+              </button>
+              <button type="button" class="bt icon">⤴</button>
+            </div>
+          </form>
+          <!-- Wishlist Form -->
+          <?php if (isset($_SESSION['user_id'])): ?>
+            <form method="POST" action="/E-commerce-Website/<?= $is_in_wishlist ? 'remove_from_wishlist.php' : 'add_to_wishlist.php' ?>" class="wishlist-form" style="display:inline;">
+              <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']) ?>">
+              <input type="hidden" name="redirect_url" value="E-commerce-Website/product.php?id=<?= htmlspecialchars($product['id']) ?>">
+              <button type="submit" class="bt icon wishlist-btn" title="<?= $is_in_wishlist ? 'Remove from Wishlist' : 'Add to Wishlist' ?>">
+                <?= $is_in_wishlist ? '♥' : '♡' ?>
+              </button>
+            </form>
+          <?php else: ?>
+            <a href="/E-commerce-Website/signin.php" class="bt icon" title="Sign in to add to Wishlist">♡</a>
+          <?php endif; ?>
+          <p class="stock-info in">🟢 In Stock - Ready to Ship</p>
+        <?php else: ?>
+          <button class="bt disabled" disabled>Out of Stock</button>
+        <?php endif; ?>
+      </div>
+    </div>
   <?php else: ?>
     <h2>Product not found ❌</h2>
-    <p><a href="shop.php">← Back to shop</a></p>
+    <p><a href="/E-commerce-Website/shop.php">← Back to shop</a></p>
   <?php endif; ?>
 </div>
 <!-- Tabs Section -->
@@ -207,9 +243,7 @@ if (isset($_SESSION['cart'])) {
     <button class="tab-btn" onclick="openTab(event, 'tab-features')">Features</button>
     <button class="tab-btn" onclick="openTab(event, 'tab-reviews')">Reviews</button>
   </div>
-
   <div class="tab-panels">
-
     <!-- Specifications -->
     <div class="tab-panel active" id="tab-specs">
       <div class="spec-grid">
@@ -221,7 +255,6 @@ if (isset($_SESSION['cart'])) {
         <div><strong>Compatibility:</strong><span>Windows, Mac, Linux</span></div>
       </div>
     </div>
-
     <!-- Features -->
     <div class="tab-panel" id="tab-features">
       <h4>Product Features</h4>
@@ -234,21 +267,17 @@ if (isset($_SESSION['cart'])) {
         <li>Gaming Software Included</li>
       </ul>
     </div>
-
     <!-- Reviews -->
     <div class="tab-panel" id="tab-reviews">
       <p>⭐ This product is amazing! – by GamerX</p>
       <p>⭐⭐⭐ Solid performance, worth the price. – by ElitePlayer</p>
       <p>⭐⭐⭐⭐⭐ Absolutely love it! – by StreamQueen</p>
     </div>
-
   </div>
 </div>
-
 <!-- Footer -->
-  <footer class="site-footer">
+<footer class="site-footer">
   <div class="footer-top">
-    <!-- Column 1: Logo + Info -->
     <div class="footer-col">
       <div class="footer-logo">
         <div class="logo-box">TG</div>
@@ -264,19 +293,15 @@ if (isset($_SESSION['cart'])) {
         <li>✉️ info@techgiants.co.za</li>
       </ul>
     </div>
-
-    <!-- Column 2: About -->
     <div class="footer-col">
       <h4>Quick links</h4>
       <ul>
-        <li><a href="index.php">Home</a></li>
-        <li><a href="about.php">Why Choose Us</a></li>
-        <li><a href="shop.php">Shop</a></li>
-         <li><a href="contact.php">Contact Us</a></li>
+        <li><a href="/E-commerce-Website/index.php">Home</a></li>
+        <li><a href="/E-commerce-Website/about.php">Why Choose Us</a></li>
+        <li><a href="E-commerce-Website/shop.php">Shop</a></li>
+        <li><a href="/E-commerce-Website/contact.php">Contact Us</a></li>
       </ul>
     </div>
-
-    <!-- Column 3: Quick Links -->
     <div class="footer-col">
       <h4>Categories</h4>
       <ul>
@@ -288,8 +313,6 @@ if (isset($_SESSION['cart'])) {
              <li><a href="peripherals.php">Peripherals</a></li>
        </ul>
     </div>
-
-    <!-- Column 4: Connect -->
     <div class="footer-col">
       <h4>Connect With Us</h4>
       <ul>
@@ -304,8 +327,6 @@ if (isset($_SESSION['cart'])) {
       </ul>
     </div>
   </div>
-
-  <!-- Middle Row -->
   <div class="footer-middle">
     <p>© 2024 Tech Giants. All rights reserved.</p>
     <div class="footer-links">
@@ -320,17 +341,11 @@ if (isset($_SESSION['cart'])) {
 
 <script>
 function openTab(evt, tabId) {
-  // Hide all panels
   document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
-  
-  // Remove active from all buttons
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-
-  // Show selected panel and button
   document.getElementById(tabId).classList.add('active');
   evt.currentTarget.classList.add('active');
 }
-
 
 function changeQty(change) {
   const qtyInput = document.getElementById('qty');
@@ -338,22 +353,17 @@ function changeQty(change) {
   qty += change;
   if (qty < 1) qty = 1;
   qtyInput.value = qty;
-
   updatePrice(qty);  
 }
 
 function updatePrice(qty) {
   const priceEl = document.getElementById('total-price');
   const buttonPriceEl = document.getElementById('button-price'); 
-
   if (!priceEl || !buttonPriceEl) return;
-
   const unit = parseFloat(priceEl.dataset.unit);
   if (isNaN(unit)) return;
-
   const total = unit * qty;
   const formatted = "R" + total.toFixed(2);
-
   priceEl.textContent = formatted;
   buttonPriceEl.textContent = formatted;
 }
@@ -363,36 +373,41 @@ function swapImage(element) {
   mainImg.src = element.src;
 }
 
+// Prevent double form submission for wishlist
+document.querySelector('.wishlist-form')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const button = this.querySelector('.wishlist-btn');
+  button.disabled = true;
+  button.textContent = '⌛';
+  this.submit();
+});
+
 tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            secondary: "#ff6a00", // green
-            "secondary-foreground": "#000"
-          }
-        }
+  theme: {
+    extend: {
+      colors: {
+        secondary: "#ff6a00",
+        "secondary-foreground": "#000"
       }
     }
- 
-    document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const email = document.getElementById('email')?.value;
-      const message = document.getElementById('message') || document.createElement('p');
-      message.id = 'message';
-      this.appendChild(message);
+  }
+}
 
-      if (!email || !email.includes('@')) {
-        message.textContent = "❌ Please enter a valid email.";
-        message.className = "text-red-500 text-sm mt-2";
-      } else {
-        message.textContent = "✅ Thank you for subscribing!";
-        message.className = "text-green-500 text-sm mt-2";
-        document.getElementById('email').value = "";
-      }
-    });
-
+document.getElementById('newsletterForm')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const email = document.getElementById('email')?.value;
+  const message = document.getElementById('message') || document.createElement('p');
+  message.id = 'message';
+  this.appendChild(message);
+  if (!email || !email.includes('@')) {
+    message.textContent = "❌ Please enter a valid email.";
+    message.className = "text-red-500 text-sm mt-2";
+  } else {
+    message.textContent = "✅ Thank you for subscribing!";
+    message.className = "text-green-500 text-sm mt-2";
+    document.getElementById('email').value = "";
+  }
+});
 </script>
-
-
 </body>
 </html>

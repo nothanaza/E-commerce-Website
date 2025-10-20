@@ -1,11 +1,9 @@
 <?php
 session_start();
-
-// Destroy the session to log the user out
-session_unset(); // Remove all session variables
-session_destroy(); // Destroy the session
-
-// Redirect to the home page
-header("Location: ../index.php");
+echo "<pre>"; var_dump($_SESSION); echo "</pre>";
+session_unset();
+session_destroy();
+echo "<pre>"; var_dump(session_status(), session_id()); echo "</pre>";
+header("Location: /E-commerce-Website/index.php");
 exit;
 ?>

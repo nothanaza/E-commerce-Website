@@ -1,42 +1,49 @@
 <?php
 session_start();
-if (session_status() === PHP_SESSION_ACTIVE) {
-    require_once 'components/db.php';
 
-    // Get categories
-    $stmt = $pdo->query("SELECT * FROM categories");
-    $categories = $stmt->fetchAll() ?: [];
+// Session timeout (30 minutes inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) { // 30 minutes
+    session_destroy();
+    header("Location: /E-commerce-Website/index.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
 
-    // Get products
-    $stmt = $pdo->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id");
-    $products = $stmt->fetchAll() ?: [];
+// No sign-in check for browsing; only restrict cart actions
+require_once 'components/db.php';
 
-    // Get special deal products (e.g., where discount exists)
-    $stmt = $pdo->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.discount IS NOT NULL LIMIT 2");
-    $special_deals = $stmt->fetchAll() ?: [];
+// Get categories
+$stmt = $pdo->query("SELECT * FROM categories");
+$categories = $stmt->fetchAll() ?: [];
 
-    // Add to Cart
-    if (isset($_POST['add_to_cart'])) {
-        $product_id = $_POST['product_id'] ?? '';
-        $product_name = $_POST['product_name'] ?? '';
-        $product_price = isset($_POST['product_price']) ? floatval($_POST['product_price']) : 0;
-        $product_image = $_POST['image'] ?? '';
+// Get products
+$stmt = $pdo->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id");
+$products = $stmt->fetchAll() ?: [];
 
-        if ($product_id) {
-            // Check if product exists in database
-            $stmt = $pdo->prepare("SELECT id FROM products WHERE id = ?");
-            $stmt->execute([$product_id]);
-            $product_exists = $stmt->fetch() !== false;
+// Get special deal products (e.g., where discount exists)
+$stmt = $pdo->query("SELECT p.*, c.name AS category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE p.discount IS NOT NULL LIMIT 2");
+$special_deals = $stmt->fetchAll() ?: [];
 
-            if ($product_exists) {
+// Add to Cart (restricted to signed-in users)
+if (isset($_POST['add_to_cart'])) {
+    $product_id = $_POST['product_id'] ?? '';
+    $product_name = $_POST['product_name'] ?? '';
+    $product_price = isset($_POST['product_price']) ? floatval($_POST['product_price']) : 0;
+    $product_image = $_POST['image'] ?? '';
+
+    if ($product_id) {
+        $stmt = $pdo->prepare("SELECT id FROM products WHERE id = ?");
+        $stmt->execute([$product_id]);
+        $product_exists = $stmt->fetch() !== false;
+
+        if ($product_exists) {
+            if (isset($_SESSION['user_id'])) {
                 $session_id = session_id();
                 try {
-                    // Insert or update cart item in database
                     $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, 1) 
                                          ON DUPLICATE KEY UPDATE quantity = quantity + 1");
                     $stmt->execute([$session_id, $product_id]);
 
-                    // Sync session data
                     if (!isset($_SESSION['cart'])) {
                         $_SESSION['cart'] = [];
                     }
@@ -50,23 +57,24 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                             'image' => $product_image
                         ];
                     }
+                    // Redirect with anchor to maintain position
+                    header("Location: " . $_SERVER['PHP_SELF'] . "#product-" . $product_id);
+                    exit;
                 } catch (PDOException $e) {
                     die("Database error: " . $e->getMessage());
                 }
+            } else {
+                header("Location: /E-commerce-Website/signin.php");
+                exit;
             }
         }
-
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit;
     }
+}
 
-    // Get cart count
-    $cart_count = 0;
-    if (isset($_SESSION['cart'])) {
-        $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
-    }
-} else {
-    die("Session failed to start.");
+// Get cart count
+$cart_count = 0;
+if (isset($_SESSION['cart'])) {
+    $cart_count = array_sum(array_column($_SESSION['cart'], 'quantity'));
 }
 ?>
 
@@ -77,7 +85,6 @@ if (session_status() === PHP_SESSION_ACTIVE) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Premium gaming hardware store featuring PCs, graphics cards, motherboards, and monitors.">
     <link rel="icon" href="https://img.icons8.com/ios-filled/50/000000/controller.png" type="image/png">
-    <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <title>The Tech Giants - Gaming Hardware Store</title>
     <style>
@@ -125,14 +132,14 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             align-items: center;
         }
 
-        .account-link, .cart-link {
+        .account-link, .cart-link, .logout {
             text-decoration: none;
             color: #333;
             margin-left: 10px;
             transition: color 0.3s;
         }
 
-        .account-link:hover, .cart-link:hover {
+        .account-link:hover, .cart-link:hover, .logout:hover {
             color: #ff6a00;
         }
 
@@ -746,7 +753,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             }
         }
 
-        /*Footer Styles*/
+        /* Footer Styles */
         .site-footer {
             background-color: #000;
             color: #f3f4f6;
@@ -854,15 +861,15 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             font-weight: 600;
         }
 
-     .footer-newsletter {
-    background: #111827;
-    color: #fff;
-    text-align: center;
-    padding: 2rem 1rem 2rem;
-    margin: 2rem auto 0 auto; /* Center horizontally */
-    border-radius: 0.5rem 0.5rem 0 0;
-    max-width: 1000px; /* Optional: make it narrower for better centering */
-}
+        .footer-newsletter {
+            background: #111827;
+            color: #fff;
+            text-align: center;
+            padding: 2rem 1rem 2rem;
+            margin: 2rem auto 0 auto;
+            border-radius: 0.5rem 0.5rem 0 0;
+            max-width: 1000px;
+        }
 
         .footer-newsletter h3 {
             font-size: 1.25rem;
@@ -936,7 +943,11 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             <a href="contact.php">Contact</a>
         </nav>
         <div class="user-actions">
-            <a href="#" class="account-link">👤 My Account</a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="profile.php" class="account-link">👤 <?= htmlspecialchars($_SESSION['username']) ?></a>
+            <?php else: ?>
+                <a href="signin.php" class="account-link">👤 My Account</a>
+            <?php endif; ?>
             <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
         </div>
     </header>
@@ -986,7 +997,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
 
             <div class="deals-container">
                 <?php foreach ($special_deals as $deal): ?>
-                    <div class="deal-card">
+                    <div class="deal-card" id="product-<?= htmlspecialchars($deal['id']) ?>">
                         <div class="save-tag">Save R<?= number_format($deal['old_price'] - $deal['price'], 2) ?></div>
                         <img src="<?= htmlspecialchars($deal['image']) ?>" alt="<?= htmlspecialchars($deal['name']) ?>" onerror="this.src='https://placehold.co/600x350/ff6a00/fff?text=Image+Error'">
                         <div class="deal-content">
@@ -1021,37 +1032,40 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
         </section>
 
-<section id="categories" class="categories">
+        <section class="categories" style="padding:50px 20px">
+  <div class="container">
     <h2>Shop by Category</h2>
-    <p>Find exactly what you're looking for</p>
-    <div class="category-grid">
-        <?php
+    <p >Find exactly what you're looking for</p>
+    <div class="category-grid" >
+      <?php
         $iconMap = [
-            "gaming-pcs" => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
-            "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
-            "motherboards" => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
-            "monitors" => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
-            "peripherals" => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
-            "audio" => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
+          "gaming-pcs"     => "https://img.icons8.com/ios-filled/50/ffffff/computer.png",
+          "graphics-cards" => "https://img.icons8.com/ios-filled/50/ffffff/video-card.png",
+          "motherboards"   => "https://img.icons8.com/ios-filled/50/ffffff/motherboard.png",
+          "monitors"       => "https://img.icons8.com/ios-filled/50/ffffff/monitor.png",
+          "peripherals"    => "https://img.icons8.com/ios-filled/50/ffffff/keyboard.png",
+          "audio"          => "https://img.icons8.com/ios-filled/50/ffffff/headphones.png"
         ];
 
-        foreach ($categories as $cat): 
-            $pageLink = $cat['id'] . ".php"; // link directly to the matching page
-        ?>
-            <a href="<?= htmlspecialchars($pageLink) ?>" class="category-box" data-cat="<?= htmlspecialchars($cat['id']) ?>">
-                <div class="category-icon">
-                    <img src="<?= $iconMap[$cat['id']] ?? 'https://img.icons8.com/ios-filled/50/ffffff/question-mark.png' ?>" 
-                         alt="<?= htmlspecialchars($cat['name']) ?> Icon">
-                </div>
-                <div class="category-name"><?= htmlspecialchars($cat['name']) ?></div>
-                <div class="category-count">Products</div>
-            </a>
-        <?php endforeach; ?>
+        $realCats = array_slice($categories, 0, 6);
+        foreach ($realCats as $cat):
+      ?>
+        <a href="<?= htmlspecialchars($cat['id']) ?>.php" 
+           class="category-box" >
+          <div class="category-icon" >
+            <img src="<?= $iconMap[$cat['id']] ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon" 
+                 >
+          </div>
+          <div class="category-name" >
+            <?= htmlspecialchars($cat['name']) ?>
+          </div>
+          <div class="category-count" >items</div>
+        </a>
+      <?php endforeach; ?>
     </div>
+  </div>
 </section>
 
-
-        <!-- FEATURED PRODUCTS -->
         <section class="featured-products-section">
             <div class="section-header">
                 <h2 class="section-title">Featured Products</h2>
@@ -1061,7 +1075,7 @@ if (session_status() === PHP_SESSION_ACTIVE) {
                 <?php 
                 $limited_products = array_slice($products, 0, 4);
                 foreach ($limited_products as $product): ?>
-                    <div class="product-card">
+                    <div class="product-card" id="product-<?= htmlspecialchars($product['id']) ?>">
                         <div class="product-image">
                             <img src="<?= htmlspecialchars($product['image']) ?>" alt="<?= htmlspecialchars($product['name']) ?>" onerror="this.src='https://placehold.co/300x200/ff6a00/fff?text=Image+Error'">
                             <?php if ($product['discount']): ?>
@@ -1090,7 +1104,6 @@ if (session_status() === PHP_SESSION_ACTIVE) {
             </div>
         </section>
 
-        <!-- READY TO GAME CTA -->
         <section class="cta-section">
             <h2>Ready to Upgrade Your Gaming?</h2>
             <p>Take your setup to the next level with our exclusive products.</p>
@@ -1098,7 +1111,6 @@ if (session_status() === PHP_SESSION_ACTIVE) {
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="site-footer">
         <div class="footer-top">
             <div class="footer-col">

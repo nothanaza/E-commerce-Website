@@ -2,6 +2,14 @@
 session_start();
 require_once 'components/db.php';
 
+// Session timeout (30 minutes inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) { // 30 minutes
+    session_destroy();
+    header("Location: /E-commerce-Website/index.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
     die("Session failed to start.");
 }
@@ -74,6 +82,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             max-width: 400px;
             text-align: center;
+            position: relative;
+        }
+        .back-arrow {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #ff6600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .back-arrow:hover {
+            color: #e65c00;
         }
         .logo {
             font-size: 28px;
@@ -132,11 +154,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 margin: 20px;
                 padding: 20px;
             }
+            .back-arrow {
+                top: 5px;
+                left: 5px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <a href="index.php" class="back-arrow">←</a>
         <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
         <h2>Sign In</h2>
         <?php if ($error): ?>
