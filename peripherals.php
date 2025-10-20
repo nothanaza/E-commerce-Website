@@ -87,6 +87,62 @@ if (isset($_SESSION['cart'])) {
         --radius: 16px;
     }
 
+     .header {
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff6a00;
+            cursor: pointer;
+        }
+
+        .nav a {
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 10px;
+            font-size: 16px;
+            color: #333;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover {
+            color: #ff6a00;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .account-link, .cart-link, .logout {
+            text-decoration: none;
+            color: #333;
+            margin-left: 10px;
+            transition: color 0.3s;
+        }
+
+        .account-link:hover, .cart-link:hover, .logout:hover {
+            color: #ff6a00;
+        }
+
+        .cart-badge {
+            background: #ff6a00;
+            color: #fff;
+            padding: 3px 8px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
+        
     .features-wrap {
         background: var(--page-bg);
         padding: 28px 12px;
@@ -616,17 +672,21 @@ if (isset($_SESSION['cart'])) {
 </head>
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="logo" onclick="window.location.href='/E-commerce-Website/index.php'">Tech Giants</div>
+     <header class="header">
+        <div class="logo" onclick="window.location.href='index.php'">Tech Giants</div>
         <nav class="nav">
-            <a href="/E-commerce-Website/index.php">Home</a>
-            <a href="/E-commerce-Website/shop.php">Shop</a>
-            <a href="/E-commerce-Website/about.php">About Us</a>
-            <a href="/E-commerce-Website/contact.php">Contact</a>
+            <a href="index.php">Home</a>
+            <a href="shop.php">Shop</a>
+            <a href="about.php">About Us</a>
+            <a href="contact.php">Contact</a>
         </nav>
         <div class="user-actions">
-            <a href="/E-commerce-Website/signin.php" class="account-link">👤 My Account</a>
-            <a href="/E-commerce-Website/cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="profile.php" class="account-link">👤 <?= htmlspecialchars($_SESSION['username']) ?></a>
+            <?php else: ?>
+                <a href="signin.php" class="account-link">👤 My Account</a>
+            <?php endif; ?>
+            <a href="cart.php" class="cart-link">🛒 <span class="cart-badge"><?= htmlspecialchars($cart_count) ?: 0 ?></span></a>
         </div>
     </header>
 

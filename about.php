@@ -804,16 +804,7 @@ if (isset($_SESSION['cart'])) {
   
 </footer>
 
-        <!-- Newsletter -->
-        <div class="footer-newsletter">
-            <h3>Stay Updated with Tech Giants</h3>
-            <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Enter your email" required>
-                <button type="submit">Subscribe</button>
-            </form>
-        </div>
-    </footer>
+
 </main>
 
 <?php ?>
