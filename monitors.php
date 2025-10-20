@@ -2,6 +2,14 @@
 session_start();
 require_once 'components/db.php';
 
+// Session timeout (30 minutes inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+    session_destroy();
+    header("Location: /E-commerce-Website/index.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
 // Get categories
 $stmt = $pdo->query("SELECT * FROM categories");
 $categories = $stmt->fetchAll() ?: [];
@@ -25,35 +33,43 @@ if (isset($_POST['add_to_cart'])) {
         $product_exists = $stmt->fetch();
 
         if ($product_exists && $product_exists['in_stock']) {
-            $session_id = session_id();
-            try {
-                // Insert or update cart item in database
-                $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, ?) 
-                                     ON DUPLICATE KEY UPDATE quantity = quantity + ?");
-                $stmt->execute([$session_id, $product_id, $quantity, $quantity]);
+            if (isset($_SESSION['user_id'])) {
+                $session_id = session_id(); // Note: Consider using user_id instead for consistency
+                try {
+                    // Insert or update cart item in database
+                    $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, ?) 
+                                         ON DUPLICATE KEY UPDATE quantity = quantity + ?");
+                    $stmt->execute([$session_id, $product_id, $quantity, $quantity]);
 
-                // Sync session data
-                if (!isset($_SESSION['cart'])) {
-                    $_SESSION['cart'] = [];
+                    // Sync session data
+                    if (!isset($_SESSION['cart'])) {
+                        $_SESSION['cart'] = [];
+                    }
+                    if (isset($_SESSION['cart'][$product_id])) {
+                        $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+                    } else {
+                        $_SESSION['cart'][$product_id] = [
+                            'id' => $product_id,
+                            'name' => $product_name,
+                            'price' => 'R ' . number_format($product_price, 2),
+                            'image' => $product_image,
+                            'quantity' => $quantity
+                        ];
+                    }
+                    // Redirect with anchor to maintain position
+                    $referer = $_SERVER['HTTP_REFERER'] ?? '/E-commerce-Website/monitors.php';
+                    $anchor = strpos($referer, '#') !== false ? parse_url($referer, PHP_URL_FRAGMENT) : 'product-' . $product_id;
+                    header("Location: /E-commerce-Website/monitors.php#" . $anchor);
+                    exit;
+                } catch (PDOException $e) {
+                    die("Database error: " . $e->getMessage());
                 }
-                if (isset($_SESSION['cart'][$product_id])) {
-                    $_SESSION['cart'][$product_id]['quantity'] += $quantity;
-                } else {
-                    $_SESSION['cart'][$product_id] = [
-                        'id' => $product_id,
-                        'name' => $product_name,
-                        'price' => 'R ' . number_format($product_price, 2),
-                        'image' => $product_image,
-                        'quantity' => $quantity
-                    ];
-                }
-            } catch (PDOException $e) {
-                die("Database error: " . $e->getMessage());
+            } else {
+                header("Location: /E-commerce-Website/signin.php?message=Please log in to add items to your cart.");
+                exit;
             }
         }
     }
-    header("Location: /E-commerce-Website/monitors.php");
-    exit;
 }
 
 // Get cart count
@@ -601,58 +617,7 @@ if (isset($_SESSION['cart'])) {
         font-weight: 600;
     }
 
-    .footer-newsletter {
-        background: #111827;
-        color: #fff;
-        text-align: center;
-        padding: 2rem 1rem 2rem;
-        margin: 2rem auto 0 auto;
-        border-radius: 0.5rem 0.5rem 0 0;
-        max-width: 1000px;
-    }
 
-    .footer-newsletter h3 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    .footer-newsletter p {
-        color: #d1d5db;
-        margin-bottom: 1rem;
-    }
-
-    .newsletter-form {
-        display: flex;
-        justify-content: center;
-        gap: 0.5rem;
-        flex-wrap: wrap;
-    }
-
-    .newsletter-form input {
-        padding: 0.75rem 1rem;
-        border-radius: 0.375rem;
-        border: 1px solid #374151;
-        background: #1f2937;
-        color: #f3f4f6;
-        flex: 1;
-        max-width: 250px;
-    }
-
-    .newsletter-form button {
-        padding: 0.75rem 1.5rem;
-        background: #f97316;
-        color: #fff;
-        border: none;
-        border-radius: 0.375rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.2s;
-    }
-
-    .newsletter-form button:hover {
-        background: #ea580c;
-    }
 
     @media (min-width: 768px) {
         .footer-top {
