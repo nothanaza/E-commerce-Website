@@ -2,6 +2,14 @@
 session_start();
 require_once 'components/db.php';
 
+// Session timeout (30 minutes inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+    session_destroy();
+    header("Location: /E-commerce-Website/index.php");
+    exit;
+}
+$_SESSION['last_activity'] = time();
+
 // Get categories
 $stmt = $pdo->query("SELECT * FROM categories");
 $categories = $stmt->fetchAll() ?: [];
@@ -25,35 +33,43 @@ if (isset($_POST['add_to_cart'])) {
         $product_exists = $stmt->fetch();
 
         if ($product_exists && $product_exists['in_stock']) {
-            $session_id = session_id();
-            try {
-                // Insert or update cart item in database
-                $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, ?) 
-                                     ON DUPLICATE KEY UPDATE quantity = quantity + ?");
-                $stmt->execute([$session_id, $product_id, $quantity, $quantity]);
+            if (isset($_SESSION['user_id'])) {
+                $session_id = session_id(); // Note: Consider using user_id instead for consistency
+                try {
+                    // Insert or update cart item in database
+                    $stmt = $pdo->prepare("INSERT INTO carts (session_id, product_id, quantity) VALUES (?, ?, ?) 
+                                         ON DUPLICATE KEY UPDATE quantity = quantity + ?");
+                    $stmt->execute([$session_id, $product_id, $quantity, $quantity]);
 
-                // Sync session data
-                if (!isset($_SESSION['cart'])) {
-                    $_SESSION['cart'] = [];
+                    // Sync session data
+                    if (!isset($_SESSION['cart'])) {
+                        $_SESSION['cart'] = [];
+                    }
+                    if (isset($_SESSION['cart'][$product_id])) {
+                        $_SESSION['cart'][$product_id]['quantity'] += $quantity;
+                    } else {
+                        $_SESSION['cart'][$product_id] = [
+                            'id' => $product_id,
+                            'name' => $product_name,
+                            'price' => 'R ' . number_format($product_price, 2),
+                            'image' => $product_image,
+                            'quantity' => $quantity
+                        ];
+                    }
+                    // Redirect with anchor to maintain position
+                    $referer = $_SERVER['HTTP_REFERER'] ?? '/E-commerce-Website/motherboards.php';
+                    $anchor = strpos($referer, '#') !== false ? parse_url($referer, PHP_URL_FRAGMENT) : 'product-' . $product_id;
+                    header("Location: /E-commerce-Website/motherboards.php#" . $anchor);
+                    exit;
+                } catch (PDOException $e) {
+                    die("Database error: " . $e->getMessage());
                 }
-                if (isset($_SESSION['cart'][$product_id])) {
-                    $_SESSION['cart'][$product_id]['quantity'] += $quantity;
-                } else {
-                    $_SESSION['cart'][$product_id] = [
-                        'id' => $product_id,
-                        'name' => $product_name,
-                        'price' => 'R ' . number_format($product_price, 2),
-                        'image' => $product_image,
-                        'quantity' => $quantity
-                    ];
-                }
-            } catch (PDOException $e) {
-                die("Database error: " . $e->getMessage());
+            } else {
+                header("Location: /E-commerce-Website/signin.php?message=Please log in to add items to your cart.");
+                exit;
             }
         }
     }
-    header("Location: /E-commerce-Website/motherboards.php");
-    exit;
 }
 
 // Get cart count
