@@ -47,14 +47,21 @@ if (isset($_POST['add_to_cart'])) {
                         'quantity' => $quantity
                     ];
                 }
-            } catch (PDOException $e) {
-                die("Database error: " . $e->getMessage());
+   // Redirect with anchor to maintain position
+                    $referer = $_SERVER['HTTP_REFERER'] ?? '/E-commerce-Website/graphics-cards.php';
+                    $anchor = strpos($referer, '#') !== false ? parse_url($referer, PHP_URL_FRAGMENT) : 'product-' . $product_id;
+                    header("Location: /E-commerce-Website/graphics-cards.php#" . $anchor);
+                    exit;
+                } catch (PDOException $e) {
+                    die("Database error: " . $e->getMessage());
+                }
+            } else {
+                header("Location: /E-commerce-Website/signin.php");
+                exit;
             }
         }
     }
-    header("Location: /E-commerce-Website/graphics-cards.php");
-    exit;
-}
+
 // Get cart count
 $cart_count = 0;
 if (isset($_SESSION['cart'])) {
