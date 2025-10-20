@@ -861,59 +861,6 @@ if (isset($_SESSION['cart'])) {
             font-weight: 600;
         }
 
-        .footer-newsletter {
-            background: #111827;
-            color: #fff;
-            text-align: center;
-            padding: 2rem 1rem 2rem;
-            margin: 2rem auto 0 auto;
-            border-radius: 0.5rem 0.5rem 0 0;
-            max-width: 1000px;
-        }
-
-        .footer-newsletter h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .footer-newsletter p {
-            color: #d1d5db;
-            margin-bottom: 1rem;
-        }
-
-        .newsletter-form {
-            display: flex;
-            justify-content: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .newsletter-form input {
-            padding: 0.75rem 1rem;
-            border-radius: 0.375rem;
-            border: 1px solid #374151;
-            background: #1f2937;
-            color: #f3f4f6;
-            flex: 1;
-            max-width: 250px;
-        }
-
-        .newsletter-form button {
-            padding: 0.75rem 1.5rem;
-            background: #f97316;
-            color: #fff;
-            border: none;
-            border-radius: 0.375rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .newsletter-form button:hover {
-            background: #ea580c;
-        }
-
         @media (min-width: 768px) {
             .footer-top {
                 grid-template-columns: repeat(4, 1fr);
