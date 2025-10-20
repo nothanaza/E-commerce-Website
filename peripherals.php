@@ -142,19 +142,21 @@ if (isset($_SESSION['cart'])) {
             border-radius: 50%;
             font-size: 12px;
         }
-        
+
     .features-wrap {
         background: var(--page-bg);
         padding: 28px 12px;
         font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
 
-    .container {
-        max-width: 1220px;
-        margin: 0 auto;
+    .hero{
+        background: var(--title-color);
+        padding: 80px 20px;
+        color: white;
+        text-align: center;
     }
 
-    .peripherals {
+    .hero .peripherals {
         display: inline-block;
         background: #ff6600;
         color: #fff;
@@ -165,7 +167,7 @@ if (isset($_SESSION['cart'])) {
         margin-bottom: 10px;
     }
 
-    .container h1 {
+    .hero h1 {
         text-align: center;
         color: white;
     }

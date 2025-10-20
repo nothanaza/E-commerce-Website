@@ -100,7 +100,13 @@ if (isset($_SESSION['cart'])) {
   margin: 0 auto;
 }
 
- .cards {
+
+    .container h1 {
+        text-align: center;
+        color: white;
+    }
+
+   .cards {
             display: inline-block;
             background: #ff6600;
             color: #fff;
@@ -110,10 +116,6 @@ if (isset($_SESSION['cart'])) {
             font-weight: 600;
             margin-bottom: 10px;
         }
-
-  .container h1{
-    text-align: center;
-    color:white;
 
  .header {
             background: #fff;

@@ -142,32 +142,45 @@ if (isset($_SESSION['cart'])) {
             border-radius: 50%;
             font-size: 12px;
         }
-        
+
     .features-wrap {
         background: var(--page-bg);
         padding: 28px 12px;
         font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
     }
 
-    .container {
+    .hero .container {
         max-width: 1220px;
         margin: 0 auto;
     }
-
-    .monitors {
+   .hero{
+        background: var(--title-color);
+        padding: 80px 20px;
+        color: white;
+        text-align: center;
+    }
+    .hero .monitors {
         display: inline-block;
         background: #ff6600;
         color: #fff;
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-size: 13px;
+        padding: 8px 20px;
+        border-radius: 24px;
+        font-size: 14px;
         font-weight: 600;
-        margin-bottom: 10px;
+        margin-bottom: 16px;
     }
-
-    .container h1 {
-        text-align: center;
+    .hero h1 {
         color: white;
+        font-size: 36px;
+        margin: 0 0 12px;
+    }
+    .hero p {
+        color: #ddd;
+        font-size: 18px;
+        margin: 0;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .features-grid {
