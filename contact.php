@@ -907,7 +907,7 @@ if (isset($_SESSION['cart'])) {
       <h4>Categories</h4>
       <ul>
             <li><a href="gaming-pcs.php">Gaming PCs</a></li>
-            <li><a href="graphic-cards.php">Graphics Cards</a></li>
+            <li><a href="graphics-cards.php">Graphics Cards</a></li>
              <li><a href="audio.php">Audio</a></li>
             <li><a href="monitors.php">Monitors</a></li>
             <li><a href="motherboards.php">Motherboards</a></li>
@@ -940,16 +940,6 @@ if (isset($_SESSION['cart'])) {
       <a href="#">Shipping Info</a>
     </div>
     <p class="powered">Powered by <span>Gaming Excellence</span></p>
-  </div>
-
-  <!-- Newsletter -->
-  <div class="footer-newsletter">
-    <h3>Stay Updated with Tech Giants</h3>
-    <p>Get the latest gaming hardware news, exclusive deals, and product launches delivered to your inbox.</p>
-    <form class="newsletter-form">
-      <input type="email" placeholder="Enter your email" required>
-      <button type="submit">Subscribe</button>
-    </form>
   </div>
 </footer>
 
