@@ -226,9 +226,7 @@ if (isset($_SESSION['cart'])) {
       ?>
         <a href="<?= htmlspecialchars($cat['id']) ?>.php" 
            class="category-box" 
-           style="background:#fff;border:1px solid #eceef2;border-radius:16px;text-align:center;padding:30px 20px;
-                  transition:transform 0.25s,box-shadow 0.25s;box-shadow:0 2px 6px rgba(0,0,0,0.05);
-                  cursor:pointer;text-decoration:none;color:inherit;">
+           ">
           <div class="category-icon" style="background:#ff6600;border-radius:50%;width:60px;height:60px;
                                             margin:0 auto 14px;display:flex;align-items:center;justify-content:center;">
             <img src="<?= $iconMap[$cat['id']] ?>" alt="<?= htmlspecialchars($cat['name']) ?> Icon" 
